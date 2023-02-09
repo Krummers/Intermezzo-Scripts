@@ -1,5 +1,5 @@
 # Intermezzo
-Script for automating Intermezzo patchers
+Script for automating Intermezzo patchers.
 
 Required Python modules:
 * patool
