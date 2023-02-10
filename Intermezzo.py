@@ -84,89 +84,89 @@ else:
         else:
             break
 
-# Defines script options in config.def if asked
-if os.path.exists(config):
-    while True:
-        config_option = str(input("Should a new settings file be created? (Y or N): ")).lower()
+# # Defines script options in config.def if asked
+# if os.path.exists(config):
+#     while True:
+#         config_option = str(input("Should a new settings file be created? (Y or N): ")).lower()
         
-        if config_option in im.yn:
-            if config_option in im.yn[0:2]:
-                os.remove(config)
-            break
-        else:
-            print("This is not an option. Please try again.")
-else:
-    config_option = "yes"
+#         if config_option in im.yn:
+#             if config_option in im.yn[0:2]:
+#                 os.remove(config)
+#             break
+#         else:
+#             print("This is not an option. Please try again.")
+# else:
+#     config_option = "yes"
 
-if config_option in im.yn[0:2]:    
-    # Defines game language
-    for k in im.script_list[0:10]:
-        print(k, "-", im.script_dict[k])
+# if config_option in im.yn[0:2]:    
+#     # Defines game language
+#     for k in im.script_list[0:10]:
+#         print(k, "-", im.script_dict[k])
     
-    while True:
-        language = str(input("Which language should be used? (Enter the corresponding letter): ")).upper()
+#     while True:
+#         language = str(input("Which language should be used? (Enter the corresponding letter): ")).upper()
         
-        if language == im.script_list[7]:
-            print("Wiimm does not like Italian. Please pick another language.")
-        elif language in im.script_list[0:10]:
-            break
-        else:
-            print("This is not an option. Please try again.")
+#         if language == im.script_list[7]:
+#             print("Wiimm does not like Italian. Please pick another language.")
+#         elif language in im.script_list[0:10]:
+#             break
+#         else:
+#             print("This is not an option. Please try again.")
     
-    # Defines fallback language
-    if language in im.script_list[5:10]:
-        for k in im.script_list[0:5]:
-            print(k, "-", im.script_dict[k])
+#     # Defines fallback language
+#     if language in im.script_list[5:10]:
+#         for k in im.script_list[0:5]:
+#             print(k, "-", im.script_dict[k])
         
-        while True:
-            language2 = str(input("Which fallback language should be used? (Enter the corresponding letter): ")).upper()
+#         while True:
+#             language2 = str(input("Which fallback language should be used? (Enter the corresponding letter): ")).upper()
             
-            if language2 in im.script_list[0:5]:
-                break
-            else:
-                print("This is not an option. Please try again.")
-    else:
-        language2 = language
+#             if language2 in im.script_list[0:5]:
+#                 break
+#             else:
+#                 print("This is not an option. Please try again.")
+#     else:
+#         language2 = language
     
-    # Defines build type
-    for k in range(1, 4):
-        print(str(k) + ". " + im.script_dict[im.script_list[k + 9]])
+#     # Defines build type
+#     for k in range(1, 4):
+#         print(str(k) + ". " + im.script_dict[im.script_list[k + 9]])
     
-    while True:
-        build_type = int(input("Which type of Intermezzo needs to be built? (Enter the corresponding number): "))
+#     while True:
+#         build_type = int(input("Which type of Intermezzo needs to be built? (Enter the corresponding number): "))
         
-        if build_type in range(1, 4):
-            build_type = im.script_list[build_type + 9]
-            break
-        else:
-            print("This is not an option. Please try again.")
+#         if build_type in range(1, 4):
+#             build_type = im.script_list[build_type + 9]
+#             break
+#         else:
+#             print("This is not an option. Please try again.")
     
-    # Defines savegame
-    if build_type in im.script_list[10:12]:
-        while True:
-            savegame = str(input("Does a seperate savegame need to be added? (Y or N): ")).lower()
+#     # Defines savegame
+#     if build_type in im.script_list[10:12]:
+#         while True:
+#             savegame = str(input("Does a seperate savegame need to be added? (Y or N): ")).lower()
             
-            if savegame in im.yn[0:2]:
-                savegame = "1"
-                break
-            elif savegame in im.yn[2:4]:
-                savegame = "0"
-                break
-            else:
-                print("This is not an option. Please try again.")
-    else:
-        split_iso = "1"
-        savegame = "1"
+#             if savegame in im.yn[0:2]:
+#                 savegame = "1"
+#                 break
+#             elif savegame in im.yn[2:4]:
+#                 savegame = "0"
+#                 break
+#             else:
+#                 print("This is not an option. Please try again.")
+#     else:
+#         split_iso = "1"
+#         savegame = "1"
     
-    # Creates config.def
-    f = open("config.def", "w")
-    f.write("MSGLANG1=\"{}\"\n".format(language))
-    f.write("MSGLANG2=\"{}\"\n".format(language2))
-    f.write("ISOMODE=\"{}\"\n".format(build_type))
-    if build_type == "riiv":
-        f.write("SPLITISO=\"{}\"\n".format(split_iso))
-    f.write("PRIV_SAVEGAME=\"{}\"\n".format(savegame))
-    f.close()
+#     # Creates config.def
+#     f = open("config.def", "w")
+#     f.write("MSGLANG1=\"{}\"\n".format(language))
+#     f.write("MSGLANG2=\"{}\"\n".format(language2))
+#     f.write("ISOMODE=\"{}\"\n".format(build_type))
+#     if build_type == "riiv":
+#         f.write("SPLITISO=\"{}\"\n".format(split_iso))
+#     f.write("PRIV_SAVEGAME=\"{}\"\n".format(savegame))
+#     f.close()
 
 # Directory setup before downloading
 intermezzo = pre + "-" + date
@@ -214,7 +214,8 @@ os.rename(os.path.join(cwd, "config.def"), os.path.join(directory, "config.def")
 
 # Starts the script
 os.chdir(directory)
-sp.run(".\create-images.bat --autorun", stdin = sp.PIPE)
+# sp.run(".\create-images.bat --autorun", stdin = sp.PIPE)
+sp.run(".\create-images.bat", stdin = sp.PIPE)
 os.chdir(cwd)
 
 # Cleans the directories
