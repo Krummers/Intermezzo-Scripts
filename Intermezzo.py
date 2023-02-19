@@ -86,7 +86,6 @@ else:
         else:
             break
 
-input("STOP")
 # Directory setup before downloading
 intermezzo = pre + "-" + date
 directory = os.path.join(cwd, intermezzo)
@@ -122,19 +121,16 @@ for f in os.listdir(cwd):
         break
 
 # Extracts txz and tar
-os.rename(txz, txz[0:-3] + "xz")
-pu.Archive(txz[0:-3] + "xz").extractall(cwd)
-os.rename(directory, tar)
+sp.run("7z x {}".format(txz))
+sp.run("7z x {}".format(tar))
 
-pu.Archive(tar).extractall(cwd)
-os.rename(txz[0:-3] + "xz", txz)
-
+# Moves patch.tar and ISO
 os.rename(patch2, os.path.join(directory, "patch2.tar"))
 os.rename(og_iso, os.path.join(directory, og_iso_name))
 
 # Starts the script
 os.chdir(directory)
-sp.run(bat)
+sp.run(bat, stdin = sp.PIPE)
 os.chdir(cwd)
 
 # Cleans the directories

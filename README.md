@@ -2,9 +2,10 @@
 Script for automating Intermezzo patchers.
 
 Required Python modules:
-* patool
-* pyunpack
 * requests
+
+Required programs (added to path):
+* 7zip
 
 Usage:
 1. Put your ISO/WBFS next to the script files.
