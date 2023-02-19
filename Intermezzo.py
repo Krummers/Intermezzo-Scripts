@@ -34,6 +34,7 @@ if pre == "mkw-intermezzo":
         if im.check_date_existance(d - k, pre):
             options.append(str(d - k))
 else:
+    option_name = []
     option_index = []
     while True:
         if im.check_date_existance(d - k, "recent-080-hacks"):
@@ -48,6 +49,7 @@ else:
             prefix = h[1]
         if im.check_date_existance(date, prefix):
             options.append(h[1])
+            option_name.append(im.clean_name[h[0]])
             option_index.append(h[0])
 
 # Defines which Intermezzo needs to be installed
@@ -66,7 +68,7 @@ if pre == "mkw-intermezzo":
             print("This is not an option. Please try again.")
 else:
     for h in range(len(options)):
-        print(option_index[h], ". ", options[h], sep = "")
+        print(option_index[h], ". ", option_name[h], sep = "")
 
     while True:
         choice = str(input("Which Intermezzo should be installed? (Enter the corresponding option): "))
@@ -84,6 +86,7 @@ else:
         else:
             break
 
+input("STOP")
 # Directory setup before downloading
 intermezzo = pre + "-" + date
 directory = os.path.join(cwd, intermezzo)
