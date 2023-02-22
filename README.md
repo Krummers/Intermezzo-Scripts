@@ -1,4 +1,4 @@
-# Intermezzo
+# Intermezzo Patcher
 Script for automating Intermezzo patchers.
 
 Required Python modules:
