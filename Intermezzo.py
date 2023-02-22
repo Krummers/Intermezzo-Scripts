@@ -2,7 +2,6 @@ import Intermezzo_functions as im
 import os
 import subprocess as sp
 import shutil as sh
-import pyunpack as pu
 import platform as pf
 
 cwd = os.getcwd()
