@@ -129,7 +129,7 @@ os.rename(og_iso, os.path.join(directory, og_iso_name))
 
 # Starts the script
 os.chdir(directory)
-sp.run(bat, stdin = sp.PIPE)
+sp.run(bat)
 os.chdir(cwd)
 
 # Cleans the directories
