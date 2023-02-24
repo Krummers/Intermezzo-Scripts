@@ -114,7 +114,7 @@ im.download_data(patch2_dl, patch2)
 
 # Locates the ISO
 for f in os.listdir(cwd):
-    if f.endswith(".iso") or f.endswith(".wbfs"):
+    if f.endswith(".iso") or f.endswith(".wbfs") or f.endswith(".wia") or f.endswith(".ciso") or f.endswith(".wdf") or f.endswith(".gcx"):
         og_iso = os.path.join(cwd, f)
         og_iso_name = f
         break
