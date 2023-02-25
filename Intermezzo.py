@@ -114,22 +114,22 @@ im.download_data(patch2_dl, patch2)
 
 # Locates the ISO
 for f in os.listdir(cwd):
-    if f.endswith(".iso") or f.endswith(".wbfs"):
-        og_iso = os.path.join(cwd, f)
-        og_iso_name = f
-        break
+    for k in im.iso_ext:
+        if f.endswith(k):
+            og_iso = os.path.join(cwd, f)
+            og_iso_name = f
+            break
 
 # Extracts txz and tar
 sp.run("7z x {}".format(txz))
 sp.run("7z x {}".format(tar))
 
-# Moves patch.tar and ISO
+# Moves patch2.tar
 os.rename(patch2, os.path.join(directory, "patch2.tar"))
-os.rename(og_iso, os.path.join(directory, og_iso_name))
 
 # Starts the script
 os.chdir(directory)
-sp.run(bat)
+sp.run("{} --source {} --dest {}".format(bat, og_iso, cwd))
 os.chdir(cwd)
 
 # Cleans the directories
@@ -137,20 +137,8 @@ print("Cleaning directory...")
 if os.path.exists(os.path.join(directory, "riiv-sd-card")):
     os.rename(os.path.join(directory, "riiv-sd-card", "riivolution"), os.path.join(cwd, "riivolution"))
     os.rename(os.path.join(directory, "riiv-sd-card", "Wiimm-Intermezzo"), os.path.join(cwd, "Wiimm-Intermezzo"))
-else:
-    iso_d = os.path.join(directory, "new-image")
-    i = os.listdir(iso_d)[0]
-    
-    if i.endswith(".iso"):
-        iso_name = i
-        os.rename(os.path.join(iso_d, iso_name), os.path.join(cwd, iso_name))
-    else:
-        wbfs_d = os.path.join(iso_d, i)
-        wbfs_name = os.listdir(wbfs_d)[0]
-        os.rename(os.path.join(wbfs_d, wbfs_name), os.path.join(cwd, wbfs_name))
 
-# Moves back the original ISO and deletes the rest
-os.rename(os.path.join(directory, og_iso_name), og_iso)
+# Deletes the patching directory
 os.remove(txz)
 os.remove(tar)
 sh.rmtree(directory)

@@ -57,6 +57,8 @@ script_dict = {"G": "German", "U": "English (NTSC)", \
                "iso": "ISO", "wbfs": "WBFS", \
                "riiv": "Riivolution"}
 
+iso_ext = ["iso", "ciso", "wdf", "wbfs", "gcx", "wia"]
+
 def download_data(link, location):
     data = rq.get(link)
     
