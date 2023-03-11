@@ -129,7 +129,7 @@ os.rename(patch2, os.path.join(directory, "patch2.tar"))
 
 # Starts the script
 os.chdir(directory)
-sp.run("{} --source {} --dest {}".format(bat, og_iso, cwd))
+sp.run("\"{}\" --source \"{}\" --dest \"{}\"".format(bat, og_iso, cwd))
 os.chdir(cwd)
 
 # Cleans the directories
