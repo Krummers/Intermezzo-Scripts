@@ -3,6 +3,10 @@ import os
 import subprocess as sp
 import shutil as sh
 import platform as pf
+import importlib.util as iu
+
+if iu.find_spec("requests") == None:
+    sp.run("pip install requests")
 
 cwd = os.getcwd()
 
