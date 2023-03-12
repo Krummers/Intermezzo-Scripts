@@ -8,7 +8,7 @@ import sys as sy
 
 if iu.find_spec("requests") == None:
     exe = sy.executable
-    sp.run("{} -mpip install requests".format(exe))
+    sp.run("\"{}\" -mpip install requests".format(exe))
 
 cwd = os.getcwd()
 
