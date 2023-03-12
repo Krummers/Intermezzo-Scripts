@@ -4,9 +4,11 @@ import subprocess as sp
 import shutil as sh
 import platform as pf
 import importlib.util as iu
+import sys as sy
 
 if iu.find_spec("requests") == None:
-    sp.run("pip install requests")
+    exe = sy.executable
+    sp.run("{} -mpip install requests".format(exe))
 
 cwd = os.getcwd()
 
