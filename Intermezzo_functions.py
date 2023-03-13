@@ -65,6 +65,17 @@ def download_data(link, location):
     with open(location, "wb") as k:
         k.write(data.content)
 
+def question(string):
+    while True:
+        option = str(input(string))
+        
+        if option.lower() in yn[0:2]:
+            return True
+        elif option.lower() in yn[2:4]:
+            return False
+        else:
+            print("This is not an option. Please try again.")
+
 def month_index(year):
     i = [None, 31, None, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     if year % 4 == 0:

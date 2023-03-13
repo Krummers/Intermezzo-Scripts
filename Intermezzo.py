@@ -143,6 +143,39 @@ print("Cleaning directory...")
 if os.path.exists(os.path.join(directory, "riiv-sd-card")):
     os.rename(os.path.join(directory, "riiv-sd-card", "riivolution"), os.path.join(cwd, "riivolution"))
     os.rename(os.path.join(directory, "riiv-sd-card", "Wiimm-Intermezzo"), os.path.join(cwd, "Wiimm-Intermezzo"))
+    
+if os.path.exists(os.path.join(cwd, "Wiimm-Intermezzo")):
+    v = im.question("Rename the Intermezzo so two or more can be installed at once? (Y or N): ")
+    
+if v:
+    while True:
+        suffix = str(input("Where should the folder be moved to? (Enter the preferred suffix): "))
+        
+        if suffix.isalnum():
+            break
+        else:
+            print("The suffix can only contain alphabetic and numeric characters. Please try again.")
+    
+    riiv = os.path.join(cwd, "riivolution")
+    riiw = os.path.join(cwd, "Wiimm-Intermezzo")
+    xml = os.path.join(riiv, "Wiimm-Intermezzo.xml")
+    
+    f = open(xml, "r")
+    txt = f.readlines()
+    f.close()
+    
+    for k in range(len(txt)):
+        s = txt[k]
+        s = s.replace("WiimmIntermezzo", "WiimmIntermezzo" + suffix)
+        s = s.replace("Wiimm-Intermezzo", "Wiimm-Intermezzo-" + suffix)
+        txt[k] = s
+    
+    f = open(xml, "w")
+    f.writelines(txt)
+    f.close()
+    
+    os.rename(riiw, riiw + "-" + suffix)
+    os.rename(xml, os.path.join(riiv, "Wiimm-Intermezzo-{}.xml".format(suffix)))
 
 # Deletes the patching directory
 os.remove(txz)
