@@ -146,6 +146,8 @@ if os.path.exists(os.path.join(directory, "riiv-sd-card")):
     
 if os.path.exists(os.path.join(cwd, "Wiimm-Intermezzo")):
     v = im.question("Rename the Intermezzo so two or more can be installed at once? (Y or N): ")
+else:
+    v = False
     
 if v:
     while True:
