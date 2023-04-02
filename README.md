@@ -1,7 +1,7 @@
 # Intermezzo Patcher
 Script for automating Intermezzo patchers.
 
-Required Python modules (this will be installed automatically):
+Required Python modules (this should be installed automatically):
 * requests
 
 Required programs (added to path):

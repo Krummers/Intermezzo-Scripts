@@ -130,12 +130,13 @@ for f in os.listdir(cwd):
 sp.run("7z x {}".format(txz))
 sp.run("7z x {}".format(tar))
 
-# Moves patch2.tar
+# Moves patch2.tar and ISO
 os.rename(patch2, os.path.join(directory, "patch2.tar"))
+os.rename(og_iso, os.path.join(directory, og_iso_name))
 
 # Starts the script
 os.chdir(directory)
-sp.run("\"{}\" --source \"{}\" --dest \"{}\"".format(bat, og_iso, cwd))
+sp.run(bat)
 os.chdir(cwd)
 
 # Cleans the directories
@@ -143,6 +144,17 @@ print("Cleaning directory...")
 if os.path.exists(os.path.join(directory, "riiv-sd-card")):
     os.rename(os.path.join(directory, "riiv-sd-card", "riivolution"), os.path.join(cwd, "riivolution"))
     os.rename(os.path.join(directory, "riiv-sd-card", "Wiimm-Intermezzo"), os.path.join(cwd, "Wiimm-Intermezzo"))
+else:
+    iso_d = os.path.join(directory, "new-image")
+    i = os.listdir(iso_d)[0]
+    
+    if i.endswith(".iso"):
+        iso_name = i
+        os.rename(os.path.join(iso_d, iso_name), os.path.join(cwd, iso_name))
+    else:
+        wbfs_d = os.path.join(iso_d, i)
+        wbfs_name = os.listdir(wbfs_d)[0]
+        os.rename(os.path.join(wbfs_d, wbfs_name), os.path.join(cwd, wbfs_name))
     
 if os.path.exists(os.path.join(cwd, "Wiimm-Intermezzo")):
     v = im.question("Rename the Intermezzo so two or more can be installed at once? (Y or N): ")
@@ -179,7 +191,8 @@ if v:
     os.rename(riiw, riiw + "-" + suffix)
     os.rename(xml, os.path.join(riiv, "Wiimm-Intermezzo-{}.xml".format(suffix)))
 
-# Deletes the patching directory
+# Moves back the original ISO and deletes the rest
+os.rename(os.path.join(directory, og_iso_name), og_iso)
 os.remove(txz)
 os.remove(tar)
 sh.rmtree(directory)
