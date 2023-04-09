@@ -3,12 +3,6 @@ import os
 import subprocess as sp
 import shutil as sh
 import platform as pf
-import importlib.util as iu
-import sys as sy
-
-if iu.find_spec("requests") == None:
-    exe = sy.executable
-    sp.run("\"{}\" -mpip install requests".format(exe))
 
 cwd = os.getcwd()
 
@@ -26,7 +20,6 @@ while True:
         break
     else:
         print("This is not an option. Please try again.")
-
         
 # Makes a list of Intermezzos available
 print("Importing available Intermezzos...")
