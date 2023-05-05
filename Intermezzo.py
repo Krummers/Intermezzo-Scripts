@@ -190,5 +190,4 @@ os.remove(txz)
 os.remove(tar)
 sh.rmtree(directory)
 
-print("All done!")
-input("Press enter to close: ")
+input("All done!")
