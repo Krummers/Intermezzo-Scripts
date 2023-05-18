@@ -106,10 +106,14 @@ download = link + intermezzo + ".txz"
 
 im.download_data(download, txz)
 
-# Retrieves the patch2.tar
+# Retrieves the patch2.tar and asks for custom one
 patch2 = os.path.join(cwd, "patch2.tar")
 
 im.download_data(patch2_dl, patch2)
+
+print("Replace the patch2.tar with a custom one if you know what you're doing.")
+print("Press enter once you have replaced it.")
+input("If you do not want this, press enter.")
 
 # Locates the ISO
 for f in os.listdir(cwd):
