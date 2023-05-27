@@ -94,7 +94,17 @@ if pf.uname()[0] == "Windows":
 else:
     bat = os.path.join(directory, "create-images.sh")
 
-print("Downloading and extracting files...")
+# Checks for patch2.tar and handles it if present
+patch2 = os.path.join(cwd, "patch2.tar")
+
+if os.path.exists(patch2):
+    v = im.question("A patch2.tar is already present. Should this one be used?")
+else:
+    v = False
+
+if not v:
+    print("Downloading and extracting files...")
+    im.download_data(patch2_dl, patch2)
 
 # Retrieves the Intermezzo
 if pre == "mkw-intermezzo":
@@ -103,17 +113,7 @@ else:
     link = "https://download.wiimm.de/intermezzo/texture-hacks/"
 
 download = link + intermezzo + ".txz"
-
 im.download_data(download, txz)
-
-# Retrieves the patch2.tar and asks for custom one
-patch2 = os.path.join(cwd, "patch2.tar")
-
-im.download_data(patch2_dl, patch2)
-
-print("Replace the patch2.tar with a custom one if you know what you're doing.")
-print("Press enter once you have replaced it.")
-input("If you do not want this, press enter.")
 
 # Locates the ISO
 for f in os.listdir(cwd):
@@ -154,7 +154,7 @@ else:
         os.rename(os.path.join(wbfs_d, wbfs_name), os.path.join(cwd, wbfs_name))
     
 if os.path.exists(os.path.join(cwd, "Wiimm-Intermezzo")):
-    v = im.question("Rename the Intermezzo so two or more can be installed at once? (Y or N): ")
+    v = im.question("Rename the Intermezzo so two or more can be installed at once?")
 else:
     v = False
     
