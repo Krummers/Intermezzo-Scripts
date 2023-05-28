@@ -38,6 +38,8 @@ clean_name = {"11": "Luigi Circuit", "12": "Moo Moo Meadows", \
               "83": "GCN DK Mountain", "84": "N64 Bowser's Castle", \
               "A": "Recent 80 Texture Hacks", "B": "Recent 200 Texture Hacks"}
 
+region_set = {"JAP", "KOR", "PAL", "USA"}
+
 opt_list = ["Regular", "regular", "R", "r", \
             "Texture", "texture", "T", "t", \
             "ISO", "iso", "I", "i", \
@@ -59,6 +61,25 @@ script_dict = {"G": "German", "U": "English (NTSC)", \
 
 iso_ext = ["iso", "ciso", "wdf", "wbfs", "gcx", "wia"]
 
+def read_file(file):
+    txt = open(file, "r")
+    info = txt.readlines()
+    txt.close()
+    for k in range(len(info)):
+        info[k] = info[k][:-1]
+    return info
+
+def rewrite_line(file, index, line):
+    txt = open(file, "r")
+    l = txt.readlines()
+    txt.close()
+    
+    l[index - 1] = line
+    
+    txt = open(file, "w")
+    txt.writelines(l)
+    txt.close()
+
 def download_data(link, location):
     data = rq.get(link)
     
@@ -67,7 +88,7 @@ def download_data(link, location):
 
 def question(string):
     while True:
-        option = str(input(string))
+        option = str(input(string + " (Y or N): "))
         
         if option.lower() in yn[0:2]:
             return True
