@@ -7,5 +7,5 @@ Setup and requirements (in order):
 2. Install 7zip (if not already) and add it to the path. This can be done by adding the location where 7zip is installed under Environment Variables > User Variables > Path > Edit > New. Save all screens once this is completed.
 
 Usage:
-1. Put your ISO/WBFS next to the script files.
+1. Put your ISO/WBFS next to the script files. An optional patch2.tar can be added if you want to customise your build.
 2. Start "Intermezzo.py" and follow the instructions.
