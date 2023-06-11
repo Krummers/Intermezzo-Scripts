@@ -161,8 +161,6 @@ if v:
     sp.run("7z a patch2.tar patch-dir")
     sh.rmtree("patch-dir")
 
-input("Test went well!")
-
 # Retrieves the Intermezzo
 print("Downloading Intermezzo...")
 if pre == "mkw-intermezzo":
