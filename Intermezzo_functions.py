@@ -48,17 +48,6 @@ opt_list = ["Regular", "regular", "R", "r", \
 
 yn = ["yes", "y", "no", "n"]
 
-script_list = ["G", "U", "E", "M", "S", "Q", "F", "I", "J", "K", \
-               "iso", "wbfs", "riiv"]
-    
-script_dict = {"G": "German", "U": "English (NTSC)", \
-               "E": "English (PAL)", "M": "Spanish (NTSC)", \
-               "S": "Spanish (PAL)", "Q": "French (NTSC)", \
-               "F": "French (PAL)", "I": "Italian", \
-               "J": "Japanese", "K": "Korean", \
-               "iso": "ISO", "wbfs": "WBFS", \
-               "riiv": "Riivolution"}
-
 iso_ext = ["iso", "ciso", "wdf", "wbfs", "gcx", "wia"]
 
 def read_file(file):
