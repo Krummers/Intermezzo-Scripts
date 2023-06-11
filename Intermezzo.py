@@ -97,12 +97,45 @@ else:
 # Checks for patch2.tar and handles it if present
 patch2 = os.path.join(cwd, "patch2.tar")
 
-if os.path.exists(patch2):
-    v = im.question("A patch2.tar is already present. Should this one be used?")
-else:
-    v = False
+options = []
+for language in im.lang_id_set:
+    patch_lang = os.path.join(cwd, "patch{}.tar".format(language))
+    if os.path.exists(patch_lang):
+        options.append(language)
 
-if not v:
+if len(options) == 0:
+    present = False
+elif len(options) == 1:
+    present = im.question("A {} patch2.tar has been found. Should this one be used?".format(im.lang_id_dict[options[0]]))
+    if present:
+        patch_lang = os.path.join(cwd, "patch{}.tar".format(options[0]))
+        os.rename(patch_lang, patch2)
+    else:
+        os.remove(os.path.join(cwd, "patch{}.tar".format(options[0])))
+elif os.path.exists(patch2):
+    present = im.question("A patch2.tar has been found. Should this one be used?")
+    if not present:
+        os.remove(patch2)
+else:
+    present = True
+    print("Multiple patches have been found.")
+    for option in options:
+        print(option, "-", im.lang_id_dict[option])
+    while True:
+        choice = str(input("Which patch2.tar should be used? (Enter the corresponding letter): ")).upper()
+        
+        if choice in options:
+            patch_lang = os.path.join(cwd, "patch{}.tar".format(choice))
+            os.rename(patch_lang, patch2)
+            options.remove(choice)
+            for option in options:
+                patch_lang = os.path.join(cwd, "patch{}.tar".format(option))
+                os.remove(patch_lang)
+            break
+        else:
+            print("This is not an option. Please try again.")
+
+if not present:
     print("Downloading patch2.tar...")
     im.download_data(patch2_dl, patch2)
 
@@ -127,6 +160,8 @@ if v:
     os.remove(patch2)
     sp.run("7z a patch2.tar patch-dir")
     sh.rmtree("patch-dir")
+
+input("Test went well!")
 
 # Retrieves the Intermezzo
 print("Downloading Intermezzo...")
