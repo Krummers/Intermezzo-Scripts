@@ -8,8 +8,8 @@ cwd = os.getcwd()
 
 # Locates the ISO
 while True:
-    name, location = im.find_iso()
-    if bool(name):
+    og_iso_name, og_iso = im.find_iso()
+    if bool(og_iso_name):
         break
     else:
         print("No ISO/WBFS was found!")
