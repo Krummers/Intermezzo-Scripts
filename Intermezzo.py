@@ -6,6 +6,15 @@ import platform as pf
 
 cwd = os.getcwd()
 
+# Locates the ISO
+while True:
+    name, location = im.find_iso()
+    if bool(name):
+        break
+    else:
+        print("No ISO/WBFS was found!")
+        input("Please put an ISO/WBFS next to the script files. (Press enter to restart): ")
+
 # Defines which type of Intermezzo needs to be installed
 while True:
     choice = str(input("Which type of Intermezzo should be installed? (Regular or Texture): "))
@@ -170,14 +179,6 @@ else:
 
 download = link + intermezzo + ".txz"
 im.download_data(download, txz)
-
-# Locates the ISO
-for f in os.listdir(cwd):
-    for k in im.iso_ext:
-        if f.endswith(k):
-            og_iso = os.path.join(cwd, f)
-            og_iso_name = f
-            break
 
 # Extracts txz and tar
 print("Extracting files...")

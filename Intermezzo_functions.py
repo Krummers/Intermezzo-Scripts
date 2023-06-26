@@ -93,6 +93,16 @@ def question(string):
         else:
             print("This is not an option. Please try again.")
 
+def find_iso():
+    cwd = os.getcwd()
+    for file in os.listdir(cwd):
+        for extension in iso_ext:
+            if file.endswith(extension):
+                name = file
+                location = os.path.join(cwd, file)
+                return name, location
+    return None, None
+
 def month_index(year):
     i = [None, 31, None, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     if year % 4 == 0:
