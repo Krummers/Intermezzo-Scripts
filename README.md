@@ -1,34 +1,40 @@
-# Intermezzo Patcher
-Script for automating Intermezzo patchers.
+# Intermezzo Scripts
+This repository contains various scripts for automating processes related to Intermezzos. Currently, there are two programs available:
+* Patcher: Automatically installs an Intermezzo.
+* Generator: Generates a second patch on top of the standard one of an Intermezz for customisation.
 
-### Setup and requirements (in order):
-1. Install [Python](https://www.python.org/downloads/) on the official website. Do not use any other method of installing. *(The program may not work properly)*
-2. Install the [requests](https://pypi.org/project/requests/) module with the command ```pip install requests``` in a console.
-3. Install [7zip](https://www.7-zip.org/download.html) (if not already) and add it to PATH. This can be done by adding the location where 7zip is installed under ```Environment Variables > User Variables > Path > Edit > New```. Save all screens once this is completed.
-4. Install [Wiimms SZS Tools](https://szs.wiimm.de/) and make sure it is added to PATH.
+## Installation and Tutorial
+1. Install [Python](https://www.python.org/downloads/) from the official website. Do not use any other method of installing.
+2. Install the following modules with the command ```pip install MODULE``` in a console:
+* [requests](https://pypi.org/project/requests/)
+* [python-dotenv](https://pypi.org/project/python-dotenv/)
+* [mwclient](https://pypi.org/project/mwclient/)
+3. Install [7zip](https://www.7-zip.org/download.html) and add it to PATH. This can be done by adding the location where 7zip is installed under ```Environment Variables > User Variables > Path > Edit > New```. Save all screens once this is completed.
+4. Install [Wiimms SZS Tools](https://szs.wiimm.de/) and check if it is added to PATH.
 
-### Usage:
-1. Clone the repository to your local machine.
-2. Put your ISO/WBFS next to the script files.
-3. Start ```Intermezzo.py``` and follow the instructions.
+### Requirements
 
-## Contributing
-To contribute to Intermezzo-Patcher, follow these steps:
+#### Patcher
+* Python
+* Modules
+** requests
+* 7zip
+* Wiimms SZS Tools
 
-1. Fork the repository and clone it to your local machine.
-2. Create a new branch: ```git checkout -b feature/my-feature.```
-3. Make your desired changes and additions.
-4. Commit your changes: ```git commit -m 'Add some feature'```.
-5. Push the branch to your forked repository: ```git push origin feature/my-feature```.
-6. Open a pull request on the main repository, describing your changes and the rationale behind them.
+#### Generator
+* Python
+* Modules
+** requests
+** python-dotenv
+** mwclient
+* 7zip
 
-Once your pull request is submitted, it will be reviewed by the project maintainers. They will provide feedback and work with you to ensure that your contribution aligns with the project's guidelines and quality standards.
+### Usage
 
-## Issue Reporting
-If you encounter any issues or have suggestions for improvement, please report them in the Issues section of this repository. We appreciate your feedback and will strive to address reported issues.
+#### Patcher
+1. Download the ```Patcher``` folder from this repository.
+2. Put your ISO/WBFS in this aforementioned folder.
+3. Activate ```Intermezzo.py``` and follow the instructions.
 
-## License
-Intermezzo-Patcher is distributed under the "GPL-3.0 license". Please refer to the LICENSE file for more information.
-
-## Credits
-[@Riddim-GLiTCH](https://github.com/Riddim-GLiTCH), [@TheIsmy64](https://github.com/TheIsmy64), [@exorcism0666](https://github.com/exorcism0666)
+#### Generator
+1. Since an API key is required, usage of this script is not possible.
