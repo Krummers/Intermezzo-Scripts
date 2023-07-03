@@ -17,16 +17,16 @@ This repository contains various scripts for automating processes related to Int
 #### Patcher
 * Python
 * Modules
-** requests
+ * requests
 * 7zip
 * Wiimms SZS Tools
 
 #### Generator
 * Python
 * Modules
-** requests
-** python-dotenv
-** mwclient
+ * requests
+ * python-dotenv
+ * mwclient
 * 7zip
 
 ### Usage
