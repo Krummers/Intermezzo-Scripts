@@ -1,0 +1,25 @@
+#BMG
+
+
+#--- online chat
+
+  M01	= \c{blue1}Intermezzo XX
+  M02	= \c{yor2}Host selects track, 500 races
+  M03   = \c{yor7}Krummers' FC: 0693-2070-4087
+  M04   = \c{blue2}discord.gg/PSBBuUa2Qe
+  M59	= \c{red1}We are switching to VS region 20222!
+  M60	= \c{red1}We are switching to battle region 20222!
+  M79	= \c{yor6}Grand Prix with 7 races!
+  M80	= \c{yor7}Grand Prix with 8 races!
+
+   7e2	= \c{blue1}Intermezzo XX
+   838	= \c{blue1}Intermezzo XX
+   fa1	= Region 20222
+  1004	= \c{blue1}Intermezzo XX
+  106f	= \c{blue1}VS, Intermezzo XX
+  1070	= \c{blue1}Battle, Intermezzo XX
+  10d7	= Private region for Intermezzo XX.
+
+  14bd	= Playing VS in a region!
+  14be	= Playing Battle in a region!
+
