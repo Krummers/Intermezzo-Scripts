@@ -7,21 +7,20 @@ import shutil as sh
 from datetime import date as dt
 
 lang_set = {"en", "nl", "fr-P", "fr-N", "de", "it", "ja", "ko", \
-            "pt-P", "pt-N", "ru", "es-P", "es-N"}
+            "pt-P", "pt-N", "es-P", "es-N"}
 
-region_lang_set = {"fr-P", "fr-N", "pt-P", "pt-N", "ru", "es-P", "es-N"}
+region_lang_set = {"fr-P", "fr-N", "pt-P", "pt-N", "es-P", "es-N"}
 
 lang_dict = {"en": "English", "nl": "Dutch", "fr-P": "French (PAL)", \
              "fr-N": "French (NTSC)", "de": "German", "it": "Italian", \
              "ja": "Japanese", "ko": "Korean", "pt-P": "Portuguese (PAL)", \
-             "pt-N": "Portuguese (NTSC)", "ru": "Russian", "es-P": "Spanish (NTSC)", \
+             "pt-N": "Portuguese (NTSC)", "es-P": "Spanish (NTSC)", \
              "es-N": "Spanish (NTSC)"}
 
 untitled_dict = {"en": "Untitled", "nl": "Onbenoemd", "fr-P": "Sans Titre", \
                  "fr-N": "Sans Titre", "de": "Unbenannt", "it": "Senza Titolo", \
                  "ja": "アンタイトルド", "ko": "Untitled", "pt-P": "Untitled", \
-                 "pt-N": "Untitled", "ru": "Untitled", "es-P": "Sin Título", \
-                 "es-N": "Sin Título"}
+                 "pt-N": "Untitled", "es-P": "Sin Título", "es-N": "Sin Título"}
 
 yn = ["yes", "y", "no", "n"]
 
@@ -77,85 +76,6 @@ slot_dict = {"T11": "7008", "T12": "7001", "T13": "7002", "T14": "7004", \
              "T81": "7018", "T82": "7016", "T83": "7013", "T84": "701c", \
              "U11": "7021", "U12": "7020", "U13": "7023", "U14": "7022", "U15": "7024", \
              "U21": "7027", "U22": "7028", "U23": "7029", "U24": "7025", "U25": "7026"}
-
-def call_wiiki():
-    return mw.MediaWiki(url = "https://wiki.tockdom.com/w/api.php", user_agent = "KrummersNeedAPIAccess")
-
-def find_article(name):
-    wiiki = call_wiiki()
-    try:
-        article = wiiki.page(name, auto_suggest = False)
-    except mw.PageError:
-        try:
-            article_name_len = float("inf")
-            candidates = wiiki.search(name)
-            if not bool(candidates):
-                return None
-            for k in candidates:
-                if not k.startswith(name):
-                    continue
-                if len(k) < article_name_len:
-                    article_name_len = len(k)
-                    new_name = k
-            try:
-                test = new_name
-            except NameError:
-                return None
-            article = wiiki.page(new_name, auto_suggest = False)
-        except mw.PageError or UnboundLocalError:
-            return None
-    return article
-
-def split_region_translation(translation, language):
-    if language not in region_lang_set:
-        return translation
-    region = language[-1]
-    if translation.find("<br>") == -1:
-        return translation
-    elif region == "P":
-        return translation[translation.find(">") + 1:translation.find("(PAL)") - 1]
-    elif region == "N":
-        return translation[:translation.find("(NTSC)") - 1]
-
-def translate(name, language):
-    if language not in lang_set:
-        return None
-    if language in region_lang_set:
-        wiiki_language = language[:-2]
-    else:
-        wiiki_language = language
-    if language == "en":
-        return name
-    if name.startswith("Untitled"):
-        if language == "ja":
-            return untitled_dict[language] + chr(65297 + int(name[-1]) - 1)
-        else:
-            return untitled_dict[language] + name[-2:]
-    if name.startswith("WiiU"):
-        return translate("Wii U" + name[4:], language)
-    
-    article = find_article(name)
-    if article == None:
-        return None
-    else:
-        s = article.wikitext
-    
-    if s.find("{{Language-Info") == -1:
-        return None
-    
-    b = s.find("|{}=".format(wiiki_language)) + 4
-    s = s[b:]
-    e = s.find("\n")
-    s = s[:e]
-    
-    if s == "{{no|-}}":
-        return None
-    elif s.startswith("{{yes|"):
-        s = s[6:s.find("}}")]
-    elif s.startswith("{{maybe|"):
-        s = s[8:s.find("}}")]
-    
-    return split_region_translation(s, language)
 
 def get_prefix_list():
     location = os.path.join(os.getcwd(), "prefixes.txt")
