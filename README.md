@@ -1,7 +1,7 @@
 # Intermezzo Scripts
 This repository contains various scripts for automating processes related to Intermezzos. Currently, there are two programs available:
 * Patcher: Automatically installs an Intermezzo.
-* Generator: Generates a second patch on top of the standard one of an Intermezz for customisation.
+* Generator: Generates a ```patch2.tar```, which can be applied on an Intermezzo for customisation.
 
 ## Installation and Tutorial
 1. Install [Python](https://www.python.org/downloads/) from the official website. Do not use any other method of installing.
