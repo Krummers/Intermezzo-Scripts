@@ -16,6 +16,10 @@ lang_dict = {"en": "English", "nl": "Dutch", "fr-P": "French (PAL)", \
              "pt-N": "Portuguese (NTSC)", "es-P": "Spanish (NTSC)", \
              "es-N": "Spanish (NTSC)"}
 
+lang_id_dict = {"nl": "N", "fr-P": "F", "fr-N": "Q", "de": "G", \
+                "it": "I", "ja": "J", "ko": "K", "pt-P": "P", \
+                "pt-N": "B", "es-P": "S", "es-N": "M"}
+
 untitled_dict = {"en": "Untitled", "nl": "Onbenoemd", "fr-P": "Sans Titre", \
                  "fr-N": "Sans Titre", "de": "Unbenannt", "it": "Senza Titolo", \
                  "ja": "アンタイトルド", "ko": "Untitled", "pt-P": "Untitled", \

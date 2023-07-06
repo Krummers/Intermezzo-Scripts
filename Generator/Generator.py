@@ -260,7 +260,7 @@ for k in {"force.txt", "force-G.txt", "force-S.txt"}:
     
 # Makes patch2.tar
 print("Creating patch2.tar...")
-sp.run("7z a patch2.tar \"{}\"".format(patch_dir))
+sp.run("7z a patch{}.tar \"{}\"".format(gt.lang_id_dict[language], patch_dir))
 
 # Cleaning directory
 print("Cleaning directory...")
