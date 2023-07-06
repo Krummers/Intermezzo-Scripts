@@ -42,7 +42,7 @@ region_set = {"JAP", "KOR", "PAL", "USA"}
 
 lang_id_set = {"N", "E", "F", "G", "I", "J", "K", "M", "Q", "S", "U"}
 
-lang_id_dict = {"N": "Dutch", "E": "English (PAL)", "F": "French (PAL)", \
+id_lang_dict = {"N": "Dutch", "E": "English (PAL)", "F": "French (PAL)", \
                 "G": "German", "I": "Italian", "J": "Japanese", \
                 "K": "Korean", "M": "Spanish (NTSC)", "Q": "French (NTSC)", \
                 "S": "Spanish (PAL)", "U": "English (NTSC)"}

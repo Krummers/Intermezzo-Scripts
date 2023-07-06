@@ -115,7 +115,7 @@ for language in im.lang_id_set:
 if len(options) == 0:
     present = False
 elif len(options) == 1:
-    present = im.question("A {} patch2.tar has been found. Should this one be used?".format(im.lang_id_dict[options[0]]))
+    present = im.question("A {} patch2.tar has been found. Should this one be used?".format(im.id_lang_dict[options[0]]))
     if present:
         patch_lang = os.path.join(cwd, "patch{}.tar".format(options[0]))
         os.rename(patch_lang, patch2)
@@ -129,7 +129,7 @@ else:
     present = True
     print("Multiple patches have been found.")
     for option in options:
-        print(option, "-", im.lang_id_dict[option])
+        print(option, "-", im.id_lang_dict[option])
     while True:
         choice = str(input("Which patch2.tar should be used? (Enter the corresponding letter): ")).upper()
         
