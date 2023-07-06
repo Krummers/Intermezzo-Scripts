@@ -1,6 +1,5 @@
 import dotenv as de
 import os
-import mediawiki as mw
 import mwclient as mc
 import requests as rq
 import shutil as sh
