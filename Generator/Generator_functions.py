@@ -116,6 +116,30 @@ def rewrite_line(file, index, line):
     txt.writelines(l)
     txt.close()
 
+def find_message(file, setting):
+    txt = open(file, "r")
+    l = txt.readlines()
+    txt.close()
+    
+    for x in range(len(l)):
+        if l[x].strip().startswith(setting):
+            return x + 1
+
+def edit_message(file, setting, option):
+    txt = open(file, "r")
+    l = txt.readlines()
+    txt.close()
+    
+    position = find_message(file, setting)
+    
+    equal = l[position - 1].find("=")
+    
+    l[position - 1] = l[position - 1][:equal + 2] + option + "\n"
+    
+    txt = open(file, "w")
+    txt.writelines(l)
+    txt.close()
+
 def download_data(link, location):
     data = rq.get(link)
     

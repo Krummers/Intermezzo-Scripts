@@ -244,16 +244,13 @@ for k in {"_base.txt", "en-all.txt", "en-nin.txt"}:
 
 os.rename(os.path.join(patch_dir, "bmg", "messages", "force.txt"), "force.txt")
 
-rename = [(6, "  M01	= \c{blue1}Intermezzo " + date), \
-          (15, "   7e2	= \c{blue1}Intermezzo " + date), \
-          (16, "   838	= \c{blue1}Intermezzo " + date), \
-          (18, "  1004	= \c{blue1}Intermezzo " + date), \
-          (19, "  106f	= \c{blue1}VS, Intermezzo " + date), \
-          (20, "  1070	= \c{blue1}Battle, Intermezzo " + date), \
-          (21, "  10d7	= Private region for Intermezzo " + date + ".")]
-
-for k, l in rename:
-    gt.rewrite_line("force.txt", k, l + "\n")
+gt.edit_message("force.txt", "M01", "\\c{blue1}Intermezzo " + date)
+gt.edit_message("force.txt", "7e2", "\\c{blue1}Intermezzo " + date)
+gt.edit_message("force.txt", "838", "\\c{blue1}Intermezzo " + date)
+gt.edit_message("force.txt", "1004", "\\c{blue1}Intermezzo " + date)
+gt.edit_message("force.txt", "106f", "\\c{blue1}VS, Intermezzo " + date)
+gt.edit_message("force.txt", "1070", "\\c{blue1}Battle, Intermezzo " + date)
+gt.edit_message("force.txt", "10d7", "Private region for Intermezzo " + date)
 
 for k in {"force.txt", "force-G.txt", "force-S.txt"}:
     sh.copyfile("force.txt", os.path.join(patch_dir, "bmg", "messages", k))

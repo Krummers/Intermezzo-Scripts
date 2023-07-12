@@ -82,7 +82,7 @@ def find_setting(file, setting):
     txt.close()
     
     for x in range(len(l)):
-        if l[x].startswith(setting):
+        if l[x].strip().startswith(setting):
             return x + 1
 
 def edit_setting(file, setting, option):
