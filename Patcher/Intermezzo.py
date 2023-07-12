@@ -158,8 +158,8 @@ if v:
     lpar = os.path.join(lecode, "lpar.txt")
     os.system("wlect lpar \"{}\" > \"{}\" -BH".format(os.path.join(lecode, "lecode-JAP.bin"), lpar))
     
-    im.rewrite_line(lpar, 8, "LIMIT-MODE\t= LE$EXPERIMENTAL\n")
-    im.rewrite_line(lpar, 13, "PERF-MONITOR\t= 2\n")
+    im.edit_setting(lpar, "LIMIT-MODE", "LE$EXPERIMENTAL")
+    im.edit_setting(lpar, "PERF-MONITOR", "2")
     
     for r in im.region_set:
         region = os.path.join(lecode, "lecode-{}.bin".format(r))
