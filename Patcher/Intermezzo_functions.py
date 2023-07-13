@@ -40,13 +40,6 @@ clean_name = {"11": "Luigi Circuit", "12": "Moo Moo Meadows", \
 
 region_set = {"JAP", "KOR", "PAL", "USA"}
 
-lang_id_set = {"N", "E", "F", "G", "I", "J", "K", "M", "Q", "S", "U"}
-
-id_lang_dict = {"N": "Dutch", "E": "English (PAL)", "F": "French (PAL)", \
-                "G": "German", "I": "Italian", "J": "Japanese", \
-                "K": "Korean", "M": "Spanish (NTSC)", "Q": "French (NTSC)", \
-                "S": "Spanish (PAL)", "U": "English (NTSC)"}
-
 opt_list = ["Regular", "regular", "R", "r", \
             "Texture", "texture", "T", "t", \
             "ISO", "iso", "I", "i", \
@@ -156,6 +149,26 @@ def check_date_existance(d, pre):
         return True
     else:
         return False
+
+class Language(object):
+    
+    identifiers = ["B", "F", "G", "I", "J", "K", "M", "N", "P", "Q", "S"]
+    languages = ["Portuguese (NTSC)", "French (PAL)", "German", \
+                 "Italian", "Japanese", "Korean", "Spanish (NTSC)", \
+                 "Dutch", "Portuguese (PAL)", "French (NTSC)", \
+                 "Spanish (PAL)"]
+    abbreviations = ["pt-N" , "fr-P", "de", "it", "ja", \
+                     "ko", "es-N", "nl", "pt-P", "fr-P", \
+                     "es-P"]
+    
+    def __init__(self, identifier):
+        self.position = Language.identifiers.index(identifier)
+        self.identifier = identifier
+        self.language = Language.languages[self.position]
+        self.abbreviation = Language.abbreviations[self.position]
+    
+    def __repr__(self):
+        return self.language
 
 class date(object):
     

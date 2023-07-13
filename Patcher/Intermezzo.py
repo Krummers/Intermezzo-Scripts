@@ -103,19 +103,19 @@ if pf.uname()[0] == "Windows":
 else:
     bat = os.path.join(directory, "create-images.sh")
 
-# Checks for patch2.tar and handles it if present
+# Checks for patch2.tar and handles them if present
 patch2 = os.path.join(cwd, "patch2.tar")
 
 options = []
-for language in im.lang_id_set:
-    patch_lang = os.path.join(cwd, "patch{}.tar".format(language))
+for identifier in im.Language.identifiers:
+    patch_lang = os.path.join(cwd, "patch{}.tar".format(identifier))
     if os.path.exists(patch_lang):
-        options.append(language)
+        options.append(identifier)
 
 if len(options) == 0:
     present = False
 elif len(options) == 1:
-    present = im.question("A {} patch2.tar has been found. Should this one be used?".format(im.id_lang_dict[options[0]]))
+    present = im.question("A {} patch2.tar has been found. Should this one be used?".format(im.Language(options[0]).language))
     if present:
         patch_lang = os.path.join(cwd, "patch{}.tar".format(options[0]))
         os.rename(patch_lang, patch2)
@@ -129,7 +129,8 @@ else:
     present = True
     print("Multiple patches have been found.")
     for option in options:
-        print(option, "-", im.id_lang_dict[option])
+        language = im.Language(option)
+        print(language.identifier, "-", language.language)
     while True:
         choice = str(input("Which patch2.tar should be used? (Enter the corresponding letter): ")).upper()
         
