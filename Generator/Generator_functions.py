@@ -5,21 +5,6 @@ import requests as rq
 import shutil as sh
 from datetime import date as dt
 
-lang_set = {"en", "nl", "fr-P", "fr-N", "de", "it", "ja", "ko", \
-            "pt-P", "pt-N", "es-P", "es-N"}
-
-region_lang_set = {"fr-P", "fr-N", "pt-P", "pt-N", "es-P", "es-N"}
-
-lang_dict = {"en": "English", "nl": "Dutch", "fr-P": "French (PAL)", \
-             "fr-N": "French (NTSC)", "de": "German", "it": "Italian", \
-             "ja": "Japanese", "ko": "Korean", "pt-P": "Portuguese (PAL)", \
-             "pt-N": "Portuguese (NTSC)", "es-P": "Spanish (NTSC)", \
-             "es-N": "Spanish (NTSC)"}
-
-lang_id_dict = {"nl": "N", "fr-P": "F", "fr-N": "Q", "de": "G", \
-                "it": "I", "ja": "J", "ko": "K", "pt-P": "P", \
-                "pt-N": "B", "es-P": "S", "es-N": "M"}
-
 untitled_dict = {"en": "Untitled", "nl": "Onbenoemd", "fr-P": "Sans Titre", \
                  "fr-N": "Sans Titre", "de": "Unbenannt", "it": "Senza Titolo", \
                  "ja": "アンタイトルド", "ko": "Untitled", "pt-P": "Untitled", \
@@ -197,6 +182,26 @@ def check_date_existance(d, pre):
     else:
         return False
 
+class Language(object):
+    
+    identifiers = ["B", "F", "G", "I", "J", "K", "M", "N", "P", "Q", "S"]
+    languages = ["Portuguese (NTSC)", "French (PAL)", "German", \
+                 "Italian", "Japanese", "Korean", "Spanish (NTSC)", \
+                 "Dutch", "Portuguese (PAL)", "French (NTSC)", \
+                 "Spanish (PAL)"]
+    abbreviations = ["pt-N" , "fr-P", "de", "it", "ja", \
+                     "ko", "es-N", "nl", "pt-P", "fr-P", \
+                     "es-P"]
+    
+    def __init__(self, identifier):
+        self.position = Language.identifiers.index(identifier)
+        self.identifier = identifier
+        self.language = Language.languages[self.position]
+        self.abbreviation = Language.abbreviations[self.position]
+    
+    def __repr__(self):
+        return self.language
+
 class Wiiki(object):
     
     class Article(object):
@@ -276,7 +281,7 @@ class Wiiki(object):
         return categories
     
     def translate(self, title, language):
-        if language in region_lang_set:
+        if language in {"fr-P", "fr-N", "pt-P", "pt-N", "es-P", "es-N"}:
             wiiki_language = language[:-2]
         else:
             wiiki_language = language

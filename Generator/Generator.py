@@ -82,15 +82,16 @@ else:
             break
 
 # Defines to which language should be translated
-for k in sorted(gt.lang_set):
-    print(k, "-", gt.lang_dict[k])
+for identifier in gt.Language.identifiers:
+    print(identifier, "-", gt.Language(identifier).language)
 
 while True:
-    language = str(input("Which language should be translated to? (Enter the correct abbreviation): "))
+    language = str(input("Which language should be translated to? (Enter the correct identifier): ")).upper()
     
-    if language not in gt.lang_set:
+    if language not in gt.Language.identifiers:
         print("This is not an option. Please try again.")
     else:
+        language = gt.Language(language)
         break
 
 # Defines which patches should be applied
@@ -165,7 +166,7 @@ for k in range(len(info)):
     colour_version = l[10]
     
     # Translates the track name
-    translation = wiiki.translate(prefix + track, language)
+    translation = wiiki.translate(prefix + track, language.abbreviation)
     
     # Translation ratio
     total += 1
@@ -212,9 +213,9 @@ for k in range(len(info)):
     info[k] = l
     # Printing results
     if prefix != "":
-        print("Translation to {} is {} {}.".format(gt.lang_dict[language], prefix, translation))
+        print("Translation to {} is {} {}.".format(language.language, prefix, translation))
     else:
-        print("Translation to {} is {}.".format(gt.lang_dict[language], translation))
+        print("Translation to {} is {}.".format(language.language, translation))
 
 print("Translated {} of {} names.".format(translated, total))
 print("Translation ratio is {}%.".format(round((translated / total) * 100, 2)))
@@ -257,7 +258,7 @@ for k in {"force.txt", "force-G.txt", "force-S.txt"}:
     
 # Makes patch2.tar
 print("Creating patch2.tar...")
-sp.run("7z a patch{}.tar \"{}\"".format(gt.lang_id_dict[language], patch_dir))
+sp.run("7z a patch{}.tar \"{}\"".format(language.identifier, patch_dir))
 
 # Cleaning directory
 print("Cleaning directory...")
