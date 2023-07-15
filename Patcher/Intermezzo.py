@@ -221,10 +221,10 @@ if v:
     while True:
         suffix = str(input("Where should the folder be moved to? (Enter the preferred suffix): "))
         
-        if suffix.isalnum():
+        if suffix.replace("-", "").isalnum():
             break
         else:
-            print("The suffix can only contain alphabetic and numeric characters. Please try again.")
+            print("The suffix can only contain dashes and alphabetic and numeric characters. Please try again.")
     
     riiv = os.path.join(cwd, "riivolution")
     riiw = os.path.join(cwd, "Wiimm-Intermezzo")
