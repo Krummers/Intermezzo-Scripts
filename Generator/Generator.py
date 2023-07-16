@@ -168,7 +168,7 @@ for k in range(len(info)):
     # Translates the track name
     translation = wiiki.translate(prefix + track, language.abbreviation)
     
-    # Translation ratio
+        # Translation ratio
     total += 1
     if translation != None:
         translated += 1
@@ -217,8 +217,19 @@ for k in range(len(info)):
     else:
         print("Translation to {} is {}.".format(language.language, translation))
 
-print("Translated {} of {} names.".format(translated, total))
-print("Translation ratio is {}%.".format(round((translated / total) * 100, 2)))
+percentage = str(round(translated / total * 100, 2)).replace(".", ",") + "%"
+
+print("Translated {}/{} names.".format(translated, total))
+print("Translation ratio is {}.".format(percentage))
+
+if not os.path.exists(os.path.join(cwd, "Statistics.txt")):
+    gt.write_file("Statistics.txt", language.language + " - " + \
+                  str(translated) + "/" + str(total) + " (" + str(percentage) + ")")
+else:
+    lines = gt.read_file("Statistics.txt")
+    lines.append("\n" + language.language + " - " + str(translated) + "/" + \
+                 str(total) + " (" + str(percentage) + ")")
+    gt.write_file("Statistics.txt", lines)
 
 for k in range(len(info)):
     if type(info[k]) == str:

@@ -73,7 +73,7 @@ def get_prefix_list():
     
     prefixes = set(["SFC", "64", "GC", "Wii U"])
     for k in range(len(info)):
-        if info[k][0] == "#":
+        if info[k][0] == "#" or info[k][0] == "@":
             continue
         prefixes.add(info[k][:info[k].find("|")])
     os.remove("prefixes.txt")
