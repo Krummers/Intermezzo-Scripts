@@ -248,9 +248,11 @@ class Wiiki(object):
             return result
         else:
             length = float("inf")
-            for title in result:
-                if len(title) < length:
-                    approximation = title
+            for article in result:
+                if title not in article:
+                    continue
+                if len(article) < length:
+                    approximation = article
                     length = len(approximation)
             return approximation
     
