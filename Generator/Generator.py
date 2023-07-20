@@ -223,11 +223,11 @@ print("Translated {}/{} names.".format(translated, total))
 print("Translation ratio is {}.".format(percentage))
 
 if not os.path.exists(os.path.join(cwd, "Statistics.txt")):
-    gt.write_file("Statistics.txt", language.language + " - " + \
+    gt.write_file("Statistics.txt", "* " + language.language + " - " + \
                   str(translated) + "/" + str(total) + " (" + str(percentage) + ")")
 else:
     lines = gt.read_file("Statistics.txt")
-    lines.append("\n" + language.language + " - " + str(translated) + "/" + \
+    lines.append("\n* " + language.language + " - " + str(translated) + "/" + \
                  str(total) + " (" + str(percentage) + ")")
     gt.write_file("Statistics.txt", lines)
 
