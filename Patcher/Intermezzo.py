@@ -252,5 +252,8 @@ os.rename(os.path.join(directory, og_iso_name), og_iso)
 os.remove(txz)
 os.remove(tar)
 sh.rmtree(directory)
+for file in os.listdir():
+    if file.startswith("PaxHeaders"):
+        sh.rmtree(file)
 
 input("All done!")
