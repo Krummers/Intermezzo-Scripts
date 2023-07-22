@@ -154,7 +154,7 @@ v = im.question("Enable the performance monitor?")
 
 if v:
     print("Extracting patch2.tar...")
-    sp.run("7z x \"{}\"".format(patch2))
+    sp.run(["7z", "x", "patch2.tar"])
     lecode = os.path.join(cwd, "patch-dir", "lecode")
     lpar = os.path.join(lecode, "lpar.txt")
     os.system("wlect lpar \"{}\" > \"{}\" -BH".format(os.path.join(lecode, "lecode-JAP.bin"), lpar))
@@ -168,7 +168,7 @@ if v:
     
     os.remove(lpar)
     os.remove(patch2)
-    sp.run("7z a patch2.tar patch-dir")
+    sp.run(["7z", "a", "patch2.tar", "patch-dir"])
     sh.rmtree("patch-dir")
 
 # Retrieves the Intermezzo
@@ -183,8 +183,8 @@ im.download_data(download, txz)
 
 # Extracts txz and tar
 print("Extracting files...")
-sp.run("7z x {}".format(txz))
-sp.run("7z x {}".format(tar))
+sp.run(["7z", "x", txz])
+sp.run(["7z", "x", tar])
 
 # Moves patch2.tar and ISO
 os.rename(patch2, os.path.join(directory, "patch2.tar"))
@@ -192,7 +192,7 @@ os.rename(og_iso, os.path.join(directory, og_iso_name))
 
 # Starts the script
 os.chdir(directory)
-sp.run(bat)
+sp.run([bat])
 os.chdir(cwd)
 
 # Cleans the directories
