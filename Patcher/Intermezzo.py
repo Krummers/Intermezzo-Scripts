@@ -99,9 +99,9 @@ directory = os.path.join(cwd, intermezzo)
 txz = intermezzo + ".txz"
 tar = intermezzo + ".tar"
 if pf.uname()[0] == "Windows":
-    bat = os.path.join(directory, "create-images.bat")
+    bat = ["create-images.bat"]
 else:
-    bat = os.path.join(directory, "create-images.sh")
+    bat = ["chmod", "+x", "create-images.sh"]
 
 # Checks for patch2.tar and handles them if present
 patch2 = os.path.join(cwd, "patch2.tar")
@@ -192,7 +192,7 @@ os.rename(og_iso, os.path.join(directory, og_iso_name))
 
 # Starts the script
 os.chdir(directory)
-sp.run([bat])
+sp.run(bat)
 os.chdir(cwd)
 
 # Cleans the directories
