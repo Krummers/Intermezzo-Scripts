@@ -102,6 +102,7 @@ if pf.uname()[0] == "Windows":
     bat = ["create-images.bat"]
 else:
     bat = ["chmod", "+x", "create-images.sh"]
+    bat2 = ["./create-images.sh"]
 
 # Checks for patch2.tar and handles them if present
 patch2 = os.path.join(cwd, "patch2.tar")
@@ -192,7 +193,11 @@ os.rename(og_iso, os.path.join(directory, og_iso_name))
 
 # Starts the script
 os.chdir(directory)
-sp.run(bat)
+if pf.uname()[0] == "Windows":
+    sp.run(bat)
+else:
+    sp.run(bat)
+    sp.run(bat2)
 os.chdir(cwd)
 
 # Cleans the directories
