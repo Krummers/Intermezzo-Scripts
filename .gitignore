@@ -1,3 +1,7 @@
-__pycache__/
+**/__pycache__
 *.iso
+*.ciso
+*.wdf
 *.wbfs
+*.gcx
+*.wia
