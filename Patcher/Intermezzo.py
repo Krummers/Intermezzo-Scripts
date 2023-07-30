@@ -257,4 +257,11 @@ for file in os.listdir():
     if file.startswith("PaxHeaders"):
         sh.rmtree(file)
 
+# Executes pycache setting
+setting = os.path.join(cwd, "Settings", "pycache.txt")
+delete_pycache = bool(int(im.read_file(setting)[1]))
+
+if delete_pycache and os.path.exists("__pycache__"):
+    sh.rmtree("__pycache__")
+
 input("All done!")
