@@ -58,6 +58,11 @@ def read_file(file):
         info[k] = info[k][:-1]
     return info
 
+def write_file(file, info):
+    txt = open(file, "w", encoding = "utf-8")
+    txt.writelines(info)
+    txt.close()
+
 def rewrite_line(file, index, line):
     txt = open(file, "r")
     l = txt.readlines()
