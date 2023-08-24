@@ -58,6 +58,7 @@ if pre == "mkw-intermezzo":
         
         if index in range(len(options)):
             date = options[index]
+            im_type = "Intermezzo"
             break
         else:
             print("This is not an option. Please try again.")
@@ -74,6 +75,7 @@ else:
                     pre = option_index[h][0] + "." + option_index[h][1] + "-" + options[h]
                 except IndexError:
                     pre = options[h]
+                im_type = gt.clean_name[choice]
                 break
         
         if pre == "tmp":
@@ -256,13 +258,13 @@ for k in {"_base.txt", "en-all.txt", "en-nin.txt"}:
 
 os.rename(os.path.join(patch_dir, "bmg", "messages", "force.txt"), "force.txt")
 
-gt.edit_message("force.txt", "M01", "\\c{blue1}Intermezzo " + date)
-gt.edit_message("force.txt", "7e2", "\\c{blue1}Intermezzo " + date)
-gt.edit_message("force.txt", "838", "\\c{blue1}Intermezzo " + date)
-gt.edit_message("force.txt", "1004", "\\c{blue1}Intermezzo " + date)
-gt.edit_message("force.txt", "106f", "\\c{blue1}VS, Intermezzo " + date)
-gt.edit_message("force.txt", "1070", "\\c{blue1}Battle, Intermezzo " + date)
-gt.edit_message("force.txt", "10d7", "Private region for Intermezzo " + date)
+gt.edit_message("force.txt", "M01", "\\c{blue1}" + im_type + " " + date)
+gt.edit_message("force.txt", "7e2", "\\c{blue1}" + im_type + " " + date)
+gt.edit_message("force.txt", "838", "\\c{blue1}" + im_type + " " + date)
+gt.edit_message("force.txt", "1004", "\\c{blue1}" + im_type + " " + date)
+gt.edit_message("force.txt", "106f", "\\c{blue1}VS, " + im_type + " " + date)
+gt.edit_message("force.txt", "1070", "\\c{blue1}Battle, " + im_type + " " + date)
+gt.edit_message("force.txt", "10d7", "Private region for " + im_type + " " + date)
 
 for k in {"force.txt", "force-G.txt", "force-S.txt"}:
     sh.copyfile("force.txt", os.path.join(patch_dir, "bmg", "messages", k))
