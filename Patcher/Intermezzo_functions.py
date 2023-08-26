@@ -331,15 +331,18 @@ class Setting(object):
     
     def __init__(self, name, value = None):
         self.name = name
-        if not self.exists():
+        if not self.file_exists():
+            self.create()
             self.set_value(value)
-        self.value = self.get_value()
     
     def __str__(self):
-        return self.name + " - " + str(self.value)
+        return self.name + " - " + str(self.get_value())
     
     def __repr__(self):
-        return "Setting: {}\nValue: {}".format(self.name, self.value)
+        return "Setting: {}\nValue: {}".format(self.name, self.get_value())
+    
+    def file_exists(self):
+        return True if os.path.exists(self.path()) else False
     
     def exists(self):
         if os.path.exists(self.path()) and self.get_value() is not None:
@@ -350,10 +353,16 @@ class Setting(object):
     def path(self):
         return os.path.join(os.getcwd(), "Settings", self.name + ".cfg")
     
+    def create(self):
+        if not os.path.exists(os.path.join(os.getcwd(), "Settings")):
+            os.mkdir("Settings")
+        file = open(self.path(), "x")
+        file.close()
+    
     def set_value(self, value):
         with open(self.path(), "wb") as file:
             pk.dump(value, file)
     
     def get_value(self):
-        with open(self.path(), "rb") as setting:
-            return pk.load(setting)
+        with open(self.path(), "rb") as file:
+            return pk.load(file)
