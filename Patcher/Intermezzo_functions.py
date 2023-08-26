@@ -1,4 +1,5 @@
 import os
+import pickle as pk
 import requests as rq
 from datetime import date as dt
 
@@ -49,6 +50,8 @@ opt_list = ["Regular", "regular", "R", "r", \
 yn = ["yes", "y", "no", "n"]
 
 iso_ext = ["iso", "ciso", "wdf", "wbfs", "gcx", "wia"]
+
+settings = sorted(["directory", "iso-rename", "pycache", "riivo-suffix"])
 
 def read_file(file):
     txt = open(file, "r")
@@ -323,3 +326,34 @@ class date(object):
     
     def __radd__(self, other):
         return self.__add__(other)
+
+class Setting(object):
+    
+    def __init__(self, name, value = None):
+        self.name = name
+        if not self.exists():
+            self.set_value(value)
+        self.value = self.get_value()
+    
+    def __str__(self):
+        return self.name + " - " + str(self.value)
+    
+    def __repr__(self):
+        return "Setting: {}\nValue: {}".format(self.name, self.value)
+    
+    def exists(self):
+        if os.path.exists(self.path()) and self.get_value() is not None:
+            return True
+        else:
+            return False
+    
+    def path(self):
+        return os.path.join(os.getcwd(), "Settings", self.name + ".cfg")
+    
+    def set_value(self, value):
+        with open(self.path(), "wb") as file:
+            pk.dump(value, file)
+    
+    def get_value(self):
+        with open(self.path(), "rb") as setting:
+            return pk.load(setting)

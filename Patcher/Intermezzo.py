@@ -6,6 +6,14 @@ import platform as pf
 
 cwd = os.getcwd()
 
+# Checks if all settings are defined
+while True:
+    if not all([im.Setting(setting).exists() for setting in im.settings]):
+        print("Not all settings are defined!")
+        input("Activate \"Intermezzo_settings.py\" before continuing. (Press enter to restart): ")
+    else:
+        break
+
 # Locates the ISO
 while True:
     og_iso_name, og_iso = im.find_iso()
@@ -70,6 +78,7 @@ if pre == "mkw-intermezzo":
         
         if index in range(len(options)):
             date = options[index]
+            im_type = "Intermezzo"
             break
         else:
             print("This is not an option. Please try again.")
@@ -86,6 +95,7 @@ else:
                     pre = option_index[h][0] + "." + option_index[h][1] + "-" + options[h]
                 except IndexError:
                     pre = options[h]
+                im_type = im.clean_name[choice]
                 break
         
         if pre == "tmp":
@@ -202,51 +212,10 @@ if os.path.exists(os.path.join(directory, "riiv-sd-card")):
     os.rename(os.path.join(directory, "riiv-sd-card", "riivolution"), os.path.join(cwd, "riivolution"))
     os.rename(os.path.join(directory, "riiv-sd-card", "Wiimm-Intermezzo"), os.path.join(cwd, "Wiimm-Intermezzo"))
 else:
-    iso_d = os.path.join(directory, "new-image")
-    i = os.listdir(iso_d)[0]
-    
-    if i.endswith(".iso"):
-        iso_name = i
-        os.rename(os.path.join(iso_d, iso_name), os.path.join(cwd, iso_name))
-    else:
-        wbfs_d = os.path.join(iso_d, i)
-        wbfs_name = os.listdir(wbfs_d)[0]
-        os.rename(os.path.join(wbfs_d, wbfs_name), os.path.join(cwd, wbfs_name))
-    
-if os.path.exists(os.path.join(cwd, "Wiimm-Intermezzo")):
-    v = im.question("Rename the Intermezzo so two or more can be installed at once?")
-else:
-    v = False
-    
-if v:
-    while True:
-        suffix = str(input("Where should the folder be moved to? (Enter the preferred suffix): "))
-        
-        if suffix.replace("-", "").isalnum():
-            break
-        else:
-            print("The suffix can only contain dashes and alphabetic and numeric characters. Please try again.")
-    
-    riiv = os.path.join(cwd, "riivolution")
-    riiw = os.path.join(cwd, "Wiimm-Intermezzo")
-    xml = os.path.join(riiv, "Wiimm-Intermezzo.xml")
-    
-    f = open(xml, "r")
-    txt = f.readlines()
-    f.close()
-    
-    for k in range(len(txt)):
-        s = txt[k]
-        s = s.replace("WiimmIntermezzo", "WiimmIntermezzo" + suffix)
-        s = s.replace("Wiimm-Intermezzo", "Wiimm-Intermezzo-" + suffix)
-        txt[k] = s
-    
-    f = open(xml, "w")
-    f.writelines(txt)
-    f.close()
-    
-    os.rename(riiw, riiw + "-" + suffix)
-    os.rename(xml, os.path.join(riiv, "Wiimm-Intermezzo-{}.xml".format(suffix)))
+    iso_directory = os.path.join(directory, "new-image")
+    iso_folder = os.path.join(iso_directory, os.listdir(iso_directory)[0])
+    iso_name = os.listdir(os.path.join(iso_directory, iso_folder))[0]
+    os.rename(os.path.join(iso_folder, iso_name), os.path.join(cwd, iso_name))
 
 # Moves back the original ISO and deletes the rest
 os.rename(os.path.join(directory, og_iso_name), og_iso)
@@ -257,9 +226,71 @@ for file in os.listdir():
     if file.startswith("PaxHeaders"):
         sh.rmtree(file)
 
+# Executes riivo-suffix setting
+if im.Setting("riivo-suffix").get_value() and os.path.exists("riivolution"):
+    if pre == "mkw-intermezzo":
+        suffix = "-" + date
+    else:
+        suffix = "-" + intermezzo
+    riivolution = os.path.join(cwd, "riivolution")
+    Wiimm_Intermezzo = os.path.join(cwd, "Wiimm-Intermezzo")
+    xml = os.path.join(riivolution, "Wiimm-Intermezzo.xml")
+    
+    f = open(xml, "r")
+    txt = f.readlines()
+    f.close()
+    
+    for k in range(len(txt)):
+        s = txt[k]
+        s = s.replace("WiimmIntermezzo", "WiimmIntermezzo" + suffix[1:])
+        s = s.replace("Wiimm-Intermezzo", "Wiimm-Intermezzo" + suffix)
+        txt[k] = s
+    
+    f = open(xml, "w")
+    f.writelines(txt)
+    f.close()
+    
+    os.rename(Wiimm_Intermezzo, Wiimm_Intermezzo + suffix)
+    os.rename(xml, os.path.join(riivolution, "Wiimm-Intermezzo-{}.xml".format(suffix[1:])))
+else:
+    suffix = ""
+
+# Executes iso-rename setting
+if not os.path.exists("riivolution"):
+    for file in os.listdir(cwd):
+        for extension in im.iso_ext:
+            if file.endswith(extension) and file != og_iso_name:
+                new_iso = file
+                exit_ = True
+                break
+            else:
+                exit_ = False
+        if exit_:
+            break
+    os.rename(os.path.join(cwd, new_iso), os.path.join(cwd, im_type + " " + date + "." + extension))
+
+# Executes directory setting
+directory = im.Setting("directory").get_value()
+if os.path.exists("riivolution"):
+    riivolution = os.path.join(cwd, "riivolution")
+    Wiimm_Intermezzo = os.path.join(cwd, "Wiimm-Intermezzo" + suffix)
+    os.rename(riivolution, os.path.join(directory, "riivolution"))
+    os.rename(Wiimm_Intermezzo, os.path.join(directory, "Wiimm-Intermezzo" + suffix))
+else:
+    for file in os.listdir(cwd):
+        for extension in im.iso_ext:
+            if file.endswith(extension) and file != og_iso_name:
+                new_iso = file
+                exit_ = True
+                break
+            else:
+                exit_ = False
+        if exit_:
+            break
+    os.rename(os.path.join(cwd, new_iso), os.path.join(directory, new_iso))
+
 # Executes pycache setting
-setting = os.path.join(cwd, "Settings", "pycache.txt")
-delete_pycache = bool(int(im.read_file(setting)[1]))
+delete_pycache = im.Setting("pycache").get_value()
 
 if delete_pycache and os.path.exists("__pycache__"):
     sh.rmtree("__pycache__")

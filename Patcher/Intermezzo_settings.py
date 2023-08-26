@@ -1,48 +1,50 @@
 import Intermezzo_functions as im
 import os
 
-cwd = os.getcwd()
-
 while True:
-
-    edit = im.question("Do you want to edit the settings?")
+    # Print all settings
+    print("Current settings: ")
+    [print(im.Setting(setting)) for setting in im.settings]
     
-    if edit:
-        files = os.listdir("Settings")
-        for file, x in zip(files, range(len(files))):
-            print(chr(x + 65), ". ", file[:-4], sep = "")
-        
-        while True:
-            setting = str(input("Which setting should be edited? (Enter the corresponding letter): "))
+    # Print setting selection screen
+    print()
+    for setting, x in zip(im.settings, range(len(im.settings))):
+        print(chr(x + 65), ". ", setting, sep = "")
+    print("X. Exit the menu")
+    
+    setting = str(input("Which setting should be edited? (Enter the corresponding letter): ")).upper()
+    
+    match setting:
+        case "A":
+            print("The current value is:", im.Setting("directory").get_value())
+            print("Enter the directory where the files should be moved to after patching, separated by a comma.")
+            folders = str(input("Directory: ")).split(",")
             
-            setting = ord(setting.upper()) - 65
-            if setting <= len(files):
-                setting = os.path.join(cwd, "Settings", files[setting])
-                break
-            else:
-                print("This is not an option. Please try again.")
-        
-        print("The current value of this setting is:")
-        information = im.read_file(setting)
-        variant = information[0]
-        value = information[1:]
-        
-        if variant == "bool":
-            print(bool(int(value[0])))
+            drive = os.path.splitdrive(os.getcwd())[0]
             
-            delete_pycache = im.question("Delete the __pycache__ folder after patching?")
+            directory = drive + os.sep
+            for folder in folders:
+                directory = os.path.join(directory, folder)
             
-            if delete_pycache:
-                information = [variant + "\n", "1\n"]
-                print("Setting set to: True")
-            else:
-                information = [variant + "\n", "0\n"]
-                print("Setting set to: False")
+            im.Setting("directory").set_value(directory)
+        case "B":
+            print("The current value is:", im.Setting("iso-rename").get_value())
+            iso_rename = im.question("Rename an ISO after patching?")
             
-            im.write_file(setting, information)
-        elif variant == "directory":
-            pass
-    else:
-        break
+            im.Setting("iso-rename").set_value(iso_rename)
+        case "C":
+            print("The current value is:", im.Setting("pycache").get_value())
+            delete_pycache = im.question("Delete the \"__pycache__\" folder after patching?")
+
+            im.Setting("pycache").set_value(delete_pycache)
+        case "D":
+            print("The current value is:", im.Setting("riivo-suffix").get_value())
+            riivo_suffix = im.question("Add a suffix to Riivolution builds after patching?")
+            
+            im.Setting("riivo-suffix").set_value(riivo_suffix)
+        case "X":
+            break
+        case other:
+            print("This is not an option. Please try again.")
 
 input("All done!")
