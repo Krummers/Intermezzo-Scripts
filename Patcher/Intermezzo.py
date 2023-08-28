@@ -1,4 +1,5 @@
 import Intermezzo_functions as im
+import Intermezzo_settings as it
 import os
 import subprocess as sp
 import shutil as sh
@@ -10,7 +11,7 @@ cwd = os.getcwd()
 while True:
     if not all([im.Setting(setting).exists() for setting in im.settings]):
         print("Not all settings are defined!")
-        input("Activate \"Intermezzo_settings.py\" before continuing. (Press enter to restart): ")
+        it.main()
     else:
         break
 
