@@ -116,6 +116,7 @@ else:
 
 # Checks for patch2.tar and handles them if present
 patch2 = os.path.join(cwd, "patch2.tar")
+pref_language = im.Setting("pref-language").get_value()
 
 options = []
 for identifier in im.Language.identifiers:
@@ -143,7 +144,10 @@ else:
         language = im.Language(option)
         print(language.identifier, "-", language.language)
     while True:
-        choice = str(input("Which patch2.tar should be used? (Enter the corresponding letter): ")).upper()
+        if pref_language not in options:
+            choice = str(input("Which patch2.tar should be used? (Enter the corresponding letter): ")).upper()
+        else:
+            choice = pref_language
         
         if choice in options:
             patch_lang = os.path.join(cwd, "patch{}.tar".format(choice))
@@ -160,10 +164,10 @@ if not present:
     print("Downloading patch2.tar...")
     im.download_data(patch2_dl, patch2)
 
-# Performance monitor option
-v = im.question("Enable the performance monitor?")
+# Executes perf-monitor setting
+perf_monitor = im.Setting("perf-monitor").get_value()
 
-if v:
+if perf_monitor:
     print("Extracting patch2.tar...")
     sp.run(["7z", "x", "patch2.tar"])
     lecode = os.path.join(cwd, "patch-dir", "lecode")

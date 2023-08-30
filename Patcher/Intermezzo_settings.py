@@ -1,13 +1,7 @@
 import Intermezzo_functions as im
 import os
-import platform as pf
 
 def main():
-    if pf.uname()[0] == "Windows":
-        command = "cls"
-    else:
-        command = "clear"
-    
     while True:
         # Print all settings
         print("Current settings: ")
@@ -35,28 +29,54 @@ def main():
                     directory = os.path.join(directory, folder)
                 
                 im.Setting("directory").set_value(directory)
-                os.system(command)
+                im.clear_screen()
             case "B":
                 print("The current value is:", im.Setting("iso-rename").get_value())
                 iso_rename = im.question("Rename an ISO after patching?")
                 
                 im.Setting("iso-rename").set_value(iso_rename)
-                os.system(command)
+                im.clear_screen()
             case "C":
+                print("The current value is:", im.Setting("perf-monitor").get_value())
+                perf_monitor = im.question("Enable the performance monitor?")
+                
+                im.Setting("perf-monitor").set_value(perf_monitor)
+                im.clear_screen()
+            case "D":
+                pref_language = im.Setting("pref-language").get_value()
+                if pref_language is not None:
+                    print("The current value is:", im.Language(pref_language))
+                else:
+                    print("The current value is:", pref_language)
+                
+                for identifier in im.Language.identifiers:
+                    print(identifier, "-", im.Language(identifier).language)
+                
+                while True:
+                    language = str(input("What is your preferred language? (Enter the correct identifier): ")).upper()
+                    
+                    if language not in im.Language.identifiers:
+                        print("This is not an option. Please try again.")
+                    else:
+                        break
+                
+                im.Setting("pref-language").set_value(language)
+                im.clear_screen()
+            case "E":
                 print("The current value is:", im.Setting("pycache").get_value())
                 delete_pycache = im.question("Delete the \"__pycache__\" folder after patching?")
     
                 im.Setting("pycache").set_value(delete_pycache)
-                os.system(command)
-            case "D":
+                im.clear_screen()
+            case "F":
                 print("The current value is:", im.Setting("riivo-suffix").get_value())
                 riivo_suffix = im.question("Add a suffix to Riivolution builds after patching?")
                 
                 im.Setting("riivo-suffix").set_value(riivo_suffix)
-                os.system(command)
+                im.clear_screen()
             case "X":
                 break
-            case other:
+            case _:
                 print("This is not an option. Please try again.")
     
     input("All done!")

@@ -1,5 +1,6 @@
 import os
 import pickle as pk
+import platform as pf
 import requests as rq
 from datetime import date as dt
 
@@ -51,7 +52,8 @@ yn = ["yes", "y", "no", "n"]
 
 iso_ext = ["iso", "ciso", "wdf", "wbfs", "gcx", "wia"]
 
-settings = sorted(["directory", "iso-rename", "pycache", "riivo-suffix"])
+settings = ["directory", "iso-rename", "perf-monitor", "pref-language", \
+            "pycache", "riivo-suffix"]
 
 def read_file(file):
     txt = open(file, "r")
@@ -128,6 +130,12 @@ def find_iso():
                 return name, location
     return None, None
 
+def clear_screen():
+    if pf.uname()[0] == "Windows":
+        os.system("cls")
+    else:
+        os.system("clear")
+
 def month_index(year):
     i = [None, 31, None, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     if year % 4 == 0:
@@ -174,6 +182,9 @@ class Language(object):
         self.identifier = identifier
         self.language = Language.languages[self.position]
         self.abbreviation = Language.abbreviations[self.position]
+    
+    def __str__(self):
+        return self.language + " (" + self.identifier + ")"
     
     def __repr__(self):
         return self.language
