@@ -68,7 +68,7 @@ else:
     options = []
     while True:
         if (date - x).intermezzo("recent-080-hacks"):
-            date = str(date - x)
+            date = date - x
             break
         x += 1
     
@@ -81,6 +81,7 @@ else:
         if date.intermezzo(codename):
             choices.append(slot)
             options.append(cs.names[slot])
+    date = str(date)
 
 # Define which Intermezzo needs to be installed
 if prefix == "mkw-intermezzo":
