@@ -250,7 +250,7 @@ for file in os.listdir():
         sh.rmtree(file)
 
 # Execute riivo-suffix setting
-riivo_suffix = fl.CFG(os.path.join(settings.path, "riivo-suffix.cfg"))
+riivo_suffix = fl.CFG(os.path.join(settings.path, "riivo-suffix.cfg")).get_value()
 if riivolution.exists() and riivo_suffix:
     suffix = date if prefix == "mkw-intermezzo" else intermezzo
     xml = fl.TXT(os.path.join(riivolution.path, "Wiimm-Intermezzo.xml"))
@@ -263,7 +263,7 @@ if riivolution.exists() and riivo_suffix:
     Wiimm_Intermezzo.rename(f"Wiimm-Intermezzo-{suffix}")
 
 # Execute iso-rename setting
-iso_rename = fl.CFG(os.path.join(settings.path, "iso-rename.cfg"))
+iso_rename = fl.CFG(os.path.join(settings.path, "iso-rename.cfg")).get_value()
 if new_iso.exists and iso_rename:
     for file in os.listdir():
         for extension in cs.extensions:
