@@ -1,303 +1,294 @@
-import Intermezzo_functions as im
 import Intermezzo_settings as it
 import os
 import subprocess as sp
 import shutil as sh
 import platform as pf
 
-cwd = os.getcwd()
+import Modules.constants as cs
+import Modules.date as dt
+import Modules.file as fl
+import Modules.functions as ft
 
-# Checks if all settings are defined
+cwd = os.getcwd()
+settings = fl.Folder(os.path.join(cwd, "Settings"))
+
+# Check if all settings are defined
 while True:
-    if not all([im.Setting(setting).exists() for setting in im.settings]):
+    if not all([fl.CFG(os.path.join(settings.path, setting + ".cfg")).exists() for setting in cs.settings]):
         print("Not all settings are defined!")
         it.main()
     else:
         break
 
-# Locates the ISO
+# Locate ISO
 while True:
-    og_iso_name, og_iso = im.find_iso()
-    if bool(og_iso_name):
+    for file in os.listdir(cwd):
+        for extension in cs.extensions:
+            if file.endswith(extension):
+                iso = fl.File(os.path.join(cwd, file))
+                break_loop = True
+                break
+            break_loop = False
+        if break_loop:
+            break
+        break_loop = False
+    if break_loop:
         break
-    else:
-        print("No ISO/WBFS was found!")
-        input("Please put an ISO/WBFS next to the script files. (Press enter to restart): ")
+    print("No ISO was found!")
+    input("Please put an ISO in this directory. (Press enter to restart): ")
 
-# Defines which type of Intermezzo needs to be installed
+# Define which type of Intermezzo needs to be installed
 while True:
-    choice = str(input("Which type of Intermezzo should be installed? (Regular or Texture): "))
+    choice = str(input("Which type of Intermezzo should be installed? (Regular or Texture): ")).lower()
     
-    if choice in im.opt_list[0:4]:
-        pre = "mkw-intermezzo"
-        patch2_dl = "https://cdn.discordapp.com/attachments/870580346033430549/1112290380034080838/patch2.tar"
+    if choice in cs.types[:2]:
+        prefix = "mkw-intermezzo"
+        patch2_download = "https://cdn.discordapp.com/attachments/870580346033430549/1112290380034080838/patch2.tar"
         break
-    elif choice in im.opt_list[4:8]:
-        pre = "tmp"
-        patch2_dl = "https://cdn.discordapp.com/attachments/870580346033430549/1112290692870459432/patch2.tar"
+    elif choice in cs.types[2:]:
+        prefix = ""
+        patch2_download = "https://cdn.discordapp.com/attachments/870580346033430549/1112290692870459432/patch2.tar"
         break
     else:
         print("This is not an option. Please try again.")
-        
-# Makes a list of Intermezzos available
+
+# Make a list of Intermezzos available
 print("Importing available Intermezzos...")
 options = []
-d = im.date()
-k = 0
+date = dt.Date()
+x = 0
 
-if pre == "mkw-intermezzo":
-    for k in range(60):
-        if im.check_date_existance(d - k, pre):
-            options.append(str(d - k))
+if prefix == "mkw-intermezzo":
+    date = dt.Date()
+    for x in range(60):
+        if (date - x).intermezzo(prefix):
+            options.append(str(date - x))
 else:
-    option_name = []
-    option_index = []
+    choices = []
+    options = []
     while True:
-        if im.check_date_existance(d - k, "recent-080-hacks"):
-            date = str(d - k)
+        if (date - x).intermezzo("recent-080-hacks"):
+            date = str(date - x)
             break
-        k = k + 1
+        x += 1
     
-    for h in sorted(im.name_dict.items()):
-        try:
-            prefix = h[0][0] + "." + h[0][1] + "-" + h[1]
-        except IndexError:
-            prefix = h[1]
-        if im.check_date_existance(date, prefix):
-            options.append(h[1])
-            option_name.append(im.clean_name[h[0]])
-            option_index.append(h[0])
+    for item in cs.names.items():
+        slot, name = item[0], item[1]
+        if slot.isnumeric():
+            codename = slot[0] + "." + slot[1] + "-" + cs.codenames[slot]
+        else:
+            codename = cs.codenames[slot]
+        if date.intermezzo(codename):
+            choices.append(slot)
+            options.append(cs.names[slot])
 
-# Defines which Intermezzo needs to be installed
-if pre == "mkw-intermezzo":
-    for h in range(len(options)):
-        print(chr(h + 65), ". ", options[h], sep = "")
+# Define which Intermezzo needs to be installed
+if prefix == "mkw-intermezzo":
+    for x in range(len(options)):
+        print(chr(x + 65), ". ", options[x], sep = "")
     
     while True:
         choice = str(input("Which Intermezzo should be installed? (Enter the corresponding option): "))
-        index = ord(choice.upper()) - 65
         
-        if index in range(len(options)):
-            date = options[index]
-            im_type = "Intermezzo"
+        if all([choice.isalpha(), len(choice) == 1, ord(choice.upper()) - 65 in range(len(options))]):
+            choice = ord(choice.upper()) - 65
+            date = options[choice]
+            title = "Intermezzo"
             break
         else:
             print("This is not an option. Please try again.")
 else:
-    for h in range(len(options)):
-        print(option_index[h], ". ", option_name[h], sep = "")
-
+    for x in range(len(options)):
+        print(choices[x], ". ", options[x], sep = "")
+    
     while True:
         choice = str(input("Which Intermezzo should be installed? (Enter the corresponding option): "))
         
-        for h in range(len(option_index)):
-            if choice == option_index[h]:
-                try:
-                    pre = option_index[h][0] + "." + option_index[h][1] + "-" + options[h]
-                except IndexError:
-                    pre = options[h]
-                im_type = im.clean_name[choice]
-                break
-        
-        if pre == "tmp":
-            print("This is not an option. Please try again.")
-        else:
+        if choice in choices:
+            index = choices.index(choice)
+            if choice.isnumeric():
+                prefix = choice[0] + "." + choice[1] + "-" + cs.codenames[choice]
+            else:
+                prefix = cs.codenames[choice]
+                title = cs.names[choice]
             break
+        else:
+            print("This is not an option. Please try again.")
 
-# Directory setup before downloading
-intermezzo = pre + "-" + date
-directory = os.path.join(cwd, intermezzo)
-txz = intermezzo + ".txz"
-tar = intermezzo + ".tar"
-if pf.uname()[0] == "Windows":
-    script = [["create-images.bat"]]
-else:
-    script = [["chmod", "+x", "create-images.sh"], ["./create-images.sh"]]
-
-# Checks for patch2.tar and handles them if present
-patch2 = os.path.join(cwd, "patch2.tar")
-pref_language = im.Setting("pref-language").get_value()
+# Check and handle patch2.tar
+patch2 = fl.TAR(os.path.join(cwd, "patch2.tar"))
+pref_language = fl.CFG(os.path.join(settings.path, "pref-language.cfg")).get_value()
 
 options = []
-for identifier in im.Language.identifiers:
-    patch_lang = os.path.join(cwd, "patch{}.tar".format(identifier))
-    if os.path.exists(patch_lang):
+for identifier in cs.identifiers:
+    patchX = fl.TAR(os.path.join(cwd, f"patch{identifier}.tar"))
+    if patchX.exists():
         options.append(identifier)
 
 if len(options) == 0:
     present = False
 elif len(options) == 1:
-    present = im.question("A {} patch2.tar has been found. Should this one be used?".format(im.Language(options[0]).language))
-    if present:
-        patch_lang = os.path.join(cwd, "patch{}.tar".format(options[0]))
-        os.rename(patch_lang, patch2)
+    identifier = options[0]
+    if pref_language != identifier:
+        print(f"A {cs.languages[cs.identifiers.index(identifier)]} patch2.tar has been found.")
+        choice = ft.question("Use this patch2.tar?")
     else:
-        os.remove(os.path.join(cwd, "patch{}.tar".format(options[0])))
-elif os.path.exists(patch2):
-    present = im.question("A patch2.tar has been found. Should this one be used?")
-    if not present:
-        os.remove(patch2)
-else:
+        choice = True
+        
+    patchX = fl.TAR(os.path.join(cwd, f"patch{identifier}.tar"))
+    if choice:
+        present = True
+        patchX.rename(patch2.path)
+    else:
+        patchX.delete()
+        present = False
+elif patch2.exists():
     present = True
-    print("Multiple patches have been found.")
+else:
     for option in options:
-        language = im.Language(option)
-        print(language.identifier, "-", language.language)
+        language = cs.languages[cs.identifiers.index(option)]
+        print(option, ". ", language, sep = "")
+    
     while True:
         if pref_language not in options:
-            choice = str(input("Which patch2.tar should be used? (Enter the corresponding letter): ")).upper()
+            choice = str(input("Which patch2.tar should be used? (Enter the corresponding option): "))
         else:
             choice = pref_language
         
         if choice in options:
-            patch_lang = os.path.join(cwd, "patch{}.tar".format(choice))
-            os.rename(patch_lang, patch2)
             options.remove(choice)
             for option in options:
-                patch_lang = os.path.join(cwd, "patch{}.tar".format(option))
-                os.remove(patch_lang)
+                patchX = fl.TAR(os.path.join(cwd, f"patch{option}.tar"))
+                patchX.delete()
+            patchX = fl.TAR(os.path.join(cwd, f"patch{choice}.tar"))
+            patchX.rename(patch2.path)
+            present = True
             break
         else:
             print("This is not an option. Please try again.")
 
 if not present:
     print("Downloading patch2.tar...")
-    im.download_data(patch2_dl, patch2)
+    ft.download(patch2_download, patch2.path)
 
-# Executes perf-monitor setting
-perf_monitor = im.Setting("perf-monitor").get_value()
+# Execute perf-monitor setting
+perf_monitor = fl.CFG(os.path.join(settings.path, "perf-monitor.cfg")).get_value()
 
 if perf_monitor:
-    print("Extracting patch2.tar...")
-    sp.run(["7z", "x", "patch2.tar"])
-    lecode = os.path.join(cwd, "patch-dir", "lecode")
-    lpar = os.path.join(lecode, "lpar.txt")
-    os.system("wlect lpar \"{}\" > \"{}\" -BH".format(os.path.join(lecode, "lecode-JAP.bin"), lpar))
+    print("Enabling the performance monitor...")
+    patch2.extract()
+    lpar = fl.TXT(os.path.join(patch2.extract_folder, "lecode", "lpar.txt"))
+    jap = fl.File(os.path.join(lpar.folder, "lecode-JAP.bin"))
+    os.system(f"wlect lpar \"{jap.path}\" > \"{lpar.path}\" -BH")
+    lpar.rewrite(8, "LIMIT-MODE\t= LE$EXPERIMENTAL")
+    lpar.rewrite(13, "PERF-MONITOR\t= 2")
     
-    im.edit_setting(lpar, "LIMIT-MODE", "LE$EXPERIMENTAL")
-    im.edit_setting(lpar, "PERF-MONITOR", "2")
+    for region in cs.regions:
+        lecode_bin = fl.File(os.path.join(lpar.folder, f"lecode-{region}.bin"))
+        os.system(f"wlect patch \"{lecode_bin.path}\" --lpar \"{lpar.path}\" -o")
     
-    for r in im.region_set:
-        region = os.path.join(lecode, "lecode-{}.bin".format(r))
-        os.system("wlect patch \"{}\" --lpar \"{}\" -o".format(region, lpar))
-    
-    os.remove(lpar)
-    os.remove(patch2)
-    sp.run(["7z", "a", "patch2.tar", "patch-dir"])
-    sh.rmtree("patch-dir")
+    lpar.delete()
+    patch2.build()
 
-# Retrieves the Intermezzo
+# Setup directory before patching
+intermezzo = prefix + "-" + date
+directory = fl.Folder(os.path.join(cwd, intermezzo))
+txz = fl.TXZ(os.path.join(cwd, intermezzo + ".txz"))
+if pf.uname()[0] == "Windows":
+    script = [["create-images.bat"]]
+else:
+    script = [["chmod", "+x", "create-images.sh"], ["./create-images.sh"]]
+
+# Download Intermezzo
 print("Downloading Intermezzo...")
-if pre == "mkw-intermezzo":
+if prefix == "mkw-intermezzo":
     link = "https://download.wiimm.de/intermezzo/"
 else:
     link = "https://download.wiimm.de/intermezzo/texture-hacks/"
+link = link + intermezzo + ".txz"
+ft.download(link, txz.path)
 
-download = link + intermezzo + ".txz"
-im.download_data(download, txz)
-
-# Extracts txz and tar
+# Extract TXZ and TAR
 print("Extracting files...")
-sp.run(["7z", "x", txz])
-sp.run(["7z", "x", tar])
+txz.extract()
+tar = fl.TAR(txz.tar)
+tar.extract()
 
-# Moves patch2.tar and ISO
-os.rename(patch2, os.path.join(directory, "patch2.tar"))
-os.rename(og_iso, os.path.join(directory, og_iso_name))
+# Move ISO and patch2.tar
+patch2.move_down([intermezzo])
+iso.move_down([intermezzo])
 
-# Starts the script
-os.chdir(directory)
+# Start script
+os.chdir(directory.path)
 for command in script:
     sp.run(command)
 os.chdir(cwd)
 
-# Cleans the directories
-print("Cleaning directory...")
-if os.path.exists(os.path.join(directory, "riiv-sd-card")):
-    os.rename(os.path.join(directory, "riiv-sd-card", "riivolution"), os.path.join(cwd, "riivolution"))
-    os.rename(os.path.join(directory, "riiv-sd-card", "Wiimm-Intermezzo"), os.path.join(cwd, "Wiimm-Intermezzo"))
+# Clean directory
+riivolution = fl.Folder(os.path.join(directory.path, "riiv-sd-card", "riivolution"))
+Wiimm_Intermezzo = fl.Folder(os.path.join(directory.path, "riiv-sd-card", "Wiimm-Intermezzo"))
+new_image = fl.Folder(os.path.join(directory.path, "new-image"))
+if new_image.exists():
+    subfolder = fl.Folder(os.path.join(new_image.path, os.listdir(new_image.path)[0]))
+    new_iso = fl.File(os.path.join(subfolder.path, os.listdir(subfolder.path)[0]))
 else:
-    iso_directory = os.path.join(directory, "new-image")
-    iso_folder = os.path.join(iso_directory, os.listdir(iso_directory)[0])
-    iso_name = os.listdir(os.path.join(iso_directory, iso_folder))[0]
-    os.rename(os.path.join(iso_folder, iso_name), os.path.join(cwd, iso_name))
+    new_iso = fl.File(os.path.join(new_image.path, "nonexistent.iso"))
 
-# Moves back the original ISO and deletes the rest
-os.rename(os.path.join(directory, og_iso_name), og_iso)
-os.remove(txz)
-os.remove(tar)
-sh.rmtree(directory)
+if riivolution.exists() and Wiimm_Intermezzo.exists():
+    riivolution.move_up(2)
+    Wiimm_Intermezzo.move_up(2)
+
+if new_iso.exists():
+    new_iso.move_up(3)
+
+iso.move_up(1)
+tar.delete()
+txz.delete()
 for file in os.listdir():
     if file.startswith("PaxHeaders"):
         sh.rmtree(file)
 
-# Executes riivo-suffix setting
-if im.Setting("riivo-suffix").get_value() and os.path.exists("riivolution"):
-    if pre == "mkw-intermezzo":
-        suffix = "-" + date
-    else:
-        suffix = "-" + intermezzo
-    riivolution = os.path.join(cwd, "riivolution")
-    Wiimm_Intermezzo = os.path.join(cwd, "Wiimm-Intermezzo")
-    xml = os.path.join(riivolution, "Wiimm-Intermezzo.xml")
-    
-    f = open(xml, "r")
-    txt = f.readlines()
-    f.close()
-    
-    for k in range(len(txt)):
-        s = txt[k]
-        s = s.replace("WiimmIntermezzo", "WiimmIntermezzo" + suffix[1:])
-        s = s.replace("Wiimm-Intermezzo", "Wiimm-Intermezzo" + suffix)
-        txt[k] = s
-    
-    f = open(xml, "w")
-    f.writelines(txt)
-    f.close()
-    
-    os.rename(Wiimm_Intermezzo, Wiimm_Intermezzo + suffix)
-    os.rename(xml, os.path.join(riivolution, "Wiimm-Intermezzo-{}.xml".format(suffix[1:])))
-else:
-    suffix = ""
+# Execute riivo-suffix setting
+riivo_suffix = fl.CFG(os.path.join(settings.path, "riivo-suffix.cfg"))
+if riivolution.exists() and riivo_suffix:
+    suffix = date if prefix == "mkw-intermezzo" else intermezzo
+    xml = fl.TXT(os.path.join(riivolution.path, "Wiimm-Intermezzo.xml"))
+    lines = xml.read()
+    for x in range(len(lines)):
+        lines[x] = lines[x].replace("WiimmIntermezzo", f"WiimmIntermezzo{suffix}")
+        lines[x] = lines[x].replace("Wiimm-Intermezzo", f"Wiimm-Intermezzo-{suffix}")
+    xml.write(lines)
+    xml.rename(f"Wiimm-Intermezzo-{suffix}.xml")
+    Wiimm_Intermezzo.rename(f"Wiimm-Intermezzo-{suffix}")
 
-# Executes iso-rename setting
-if not os.path.exists("riivolution"):
-    for file in os.listdir(cwd):
-        for extension in im.iso_ext:
-            if file.endswith(extension) and file != og_iso_name:
-                new_iso = file
-                exit_ = True
+# Execute iso-rename setting
+iso_rename = fl.CFG(os.path.join(settings.path, "iso-rename.cfg"))
+if new_iso.exists and iso_rename:
+    for file in os.listdir():
+        for extension in cs.extensions:
+            if file.endswith(extension) and file != iso.filename:
+                new_iso.rename(title + " " + date + "." + extension)
+                break_loop = True
                 break
-            else:
-                exit_ = False
-        if exit_:
+            break_loop = False
+        if break_loop:
             break
-    os.rename(os.path.join(cwd, new_iso), os.path.join(cwd, im_type + " " + date + "." + extension))
+        break_loop = False
 
-# Executes directory setting
-directory = im.Setting("directory").get_value()
-if os.path.exists("riivolution"):
-    riivolution = os.path.join(cwd, "riivolution")
-    Wiimm_Intermezzo = os.path.join(cwd, "Wiimm-Intermezzo" + suffix)
-    os.rename(riivolution, os.path.join(directory, "riivolution"))
-    os.rename(Wiimm_Intermezzo, os.path.join(directory, "Wiimm-Intermezzo" + suffix))
-else:
-    for file in os.listdir(cwd):
-        for extension in im.iso_ext:
-            if file.endswith(extension) and file != og_iso_name:
-                new_iso = file
-                exit_ = True
-                break
-            else:
-                exit_ = False
-        if exit_:
-            break
-    os.rename(os.path.join(cwd, new_iso), os.path.join(directory, new_iso))
+# Execute directory setting
+directory = fl.Folder(fl.CFG(os.path.join(settings.path, "directory.cfg")).get_value())
+
+if riivolution.exists() and Wiimm_Intermezzo.exists():
+    riivolution.move(os.path.join(directory.path, riivolution.filename))
+    Wiimm_Intermezzo.move(os.path.join(directory.path, Wiimm_Intermezzo.filename))
+if new_iso.exists():
+    new_iso.move(os.path.join(directory.path, new_iso.filename))
 
 # Executes pycache setting
-delete_pycache = im.Setting("pycache").get_value()
+delete_pycache = fl.CFG(os.path.join(settings.path, "pycache.cfg"))
+pycache = fl.Folder(os.path.join(cwd, "__pycache__"))
 
-if delete_pycache and os.path.exists("__pycache__"):
-    sh.rmtree("__pycache__")
+if pycache.exists() and delete_pycache:
+    pycache.delete()
 
 input("All done!")

@@ -1,15 +1,21 @@
-import Intermezzo_functions as im
 import os
+
+import Modules.constants as cs
+import Modules.file as fl
+import Modules.functions as ft
+
+cwd = os.getcwd()
+settings = fl.Folder(os.path.join(cwd, "Settings"))
 
 def main():
     while True:
         # Print all settings
         print("Current settings: ")
-        [print(im.Setting(setting)) for setting in im.settings]
+        [print(fl.CFG(os.path.join(settings.path, setting + ".cfg"))) for setting in cs.settings]
         
         # Print setting selection screen
         print()
-        for setting, x in zip(im.settings, range(len(im.settings))):
+        for setting, x in zip(cs.settings, range(len(cs.settings))):
             print(chr(x + 65), ". ", setting, sep = "")
         print("X. Exit the menu")
         
@@ -17,7 +23,8 @@ def main():
         
         match setting:
             case "A":
-                print("The current value is:", im.Setting("directory").get_value())
+                cfg = fl.CFG(os.path.join(settings.path, "directory.cfg"))
+                print("The current value is:", cfg.get_value())
                 print("Enter the directory where the files should be moved to after patching, separated by a comma.")
                 print("Do not include the drive name. Start from the first folder of your location.")
                 folders = str(input("Directory: ")).split(",")
@@ -28,52 +35,53 @@ def main():
                 for folder in folders:
                     directory = os.path.join(directory, folder)
                 
-                im.Setting("directory").set_value(directory)
-                im.clear_screen()
+                cfg.set_value(directory)
+                ft.clear_screen()
             case "B":
-                print("The current value is:", im.Setting("iso-rename").get_value())
-                iso_rename = im.question("Rename an ISO after patching?")
+                cfg = fl.CFG(os.path.join(settings.path, "iso-rename.cfg"))
+                print("The current value is:", cfg.get_value())
+                iso_rename = ft.question("Rename an ISO after patching?")
                 
-                im.Setting("iso-rename").set_value(iso_rename)
-                im.clear_screen()
+                cfg.set_value(iso_rename)
+                ft.clear_screen()
             case "C":
-                print("The current value is:", im.Setting("perf-monitor").get_value())
-                perf_monitor = im.question("Enable the performance monitor?")
+                cfg = fl.CFG(os.path.join(settings.path, "perf-monitor.cfg"))
+                print("The current value is:", cfg.get_value())
+                perf_monitor = ft.question("Enable the performance monitor?")
                 
-                im.Setting("perf-monitor").set_value(perf_monitor)
-                im.clear_screen()
+                cfg.set_value(perf_monitor)
+                ft.clear_screen()
             case "D":
-                pref_language = im.Setting("pref-language").get_value()
-                if pref_language is not None:
-                    print("The current value is:", im.Language(pref_language))
-                else:
-                    print("The current value is:", pref_language)
+                cfg = fl.CFG(os.path.join(settings.path, "pref-language.cfg"))
+                print("The current value is:", cfg.get_value())
                 
-                for identifier in im.Language.identifiers:
-                    print(identifier, "-", im.Language(identifier).language)
+                for identifier in cs.identifiers:
+                    print(identifier, ". ", cs.languages[cs.identifiers.index(identifier)], sep = "")
                 
                 while True:
-                    language = str(input("What is your preferred language? (Enter the correct identifier): ")).upper()
+                    pref_language = str(input("What is your preferred language? (Enter the correct identifier): ")).upper()
                     
-                    if language not in im.Language.identifiers:
-                        print("This is not an option. Please try again.")
-                    else:
+                    if pref_language in cs.identifiers:
                         break
+                    else:
+                        print("This is not an option. Please try again.")
                 
-                im.Setting("pref-language").set_value(language)
-                im.clear_screen()
+                cfg.set_value(pref_language)
+                ft.clear_screen()
             case "E":
-                print("The current value is:", im.Setting("pycache").get_value())
-                delete_pycache = im.question("Delete the \"__pycache__\" folder after patching?")
+                cfg = fl.CFG(os.path.join(settings.path, "pycache.cfg"))
+                print("The current value is:", cfg.get_value())
+                delete_pycache = ft.question("Delete the \"__pycache__\" folder after patching?")
     
-                im.Setting("pycache").set_value(delete_pycache)
-                im.clear_screen()
+                cfg.set_value(delete_pycache)
+                ft.clear_screen()
             case "F":
-                print("The current value is:", im.Setting("riivo-suffix").get_value())
-                riivo_suffix = im.question("Add a suffix to Riivolution builds after patching?")
+                cfg = fl.CFG(os.path.join(settings.path, "riivo-suffix.cfg"))
+                print("The current value is:", cfg.get_value())
+                riivo_suffix = ft.question("Add a suffix to Riivolution builds after patching?")
                 
-                im.Setting("riivo-suffix").set_value(riivo_suffix)
-                im.clear_screen()
+                cfg.set_value(riivo_suffix)
+                ft.clear_screen()
             case "X":
                 break
             case _:
