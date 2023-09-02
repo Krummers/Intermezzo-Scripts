@@ -61,9 +61,9 @@ class Date(object):
 
     def intermezzo(self, prefix):
         if prefix == "mkw-intermezzo":
-            link = "https://download.wiimm.de/intermezzo/mkw-intermezzo-" + str(self) + "-names.txt"
+            link = f"https://download.wiimm.de/intermezzo/{prefix}-{str(self)}-names.txt"
         else:
-            link = "https://download.wiimm.de/intermezzo/texture-hacks/" + prefix + "-" + str(self) + "-names.txt"
+            link = f"https://download.wiimm.de/intermezzo/texture-hacks/{prefix}-{str(self)}-names.txt"
         check = fl.TXT(os.path.join(os.getcwd(), "check.txt"))
         ft.download(link, check.path)
         line = check.read()[2]
