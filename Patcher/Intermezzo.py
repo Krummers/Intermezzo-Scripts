@@ -126,7 +126,9 @@ for identifier in cs.identifiers:
     if patchX.exists():
         options.append(identifier)
 
-if len(options) == 0:
+if patch2.exists():
+    present = True
+elif len(options) == 0:
     present = False
 elif len(options) == 1:
     identifier = options[0]
@@ -143,8 +145,6 @@ elif len(options) == 1:
     else:
         patchX.delete()
         present = False
-elif patch2.exists():
-    present = True
 else:
     for option in options:
         language = cs.languages[cs.identifiers.index(option)]
@@ -252,6 +252,7 @@ for file in os.listdir():
 # Execute riivo-suffix setting
 riivo_suffix = fl.CFG(os.path.join(settings.path, "riivo-suffix.cfg")).get_value()
 if riivolution.exists() and riivo_suffix:
+    print("Adding suffix to Riivolution build...")
     suffix = date if prefix == "mkw-intermezzo" else intermezzo
     xml = fl.TXT(os.path.join(riivolution.path, "Wiimm-Intermezzo.xml"))
     lines = xml.read()
@@ -265,6 +266,7 @@ if riivolution.exists() and riivo_suffix:
 # Execute iso-rename setting
 iso_rename = fl.CFG(os.path.join(settings.path, "iso-rename.cfg")).get_value()
 if new_iso.exists and iso_rename:
+    print("Renaming ISO...")
     for file in os.listdir():
         for extension in cs.extensions:
             if file.endswith(extension) and file != iso.filename:
@@ -278,6 +280,7 @@ if new_iso.exists and iso_rename:
 
 # Execute directory setting
 directory = fl.Folder(fl.CFG(os.path.join(settings.path, "directory.cfg")).get_value())
+print("Moving new build...")
 
 if riivolution.exists() and Wiimm_Intermezzo.exists():
     riivolution.move(os.path.join(directory.path, riivolution.filename))
@@ -290,6 +293,7 @@ delete_pycache = fl.CFG(os.path.join(settings.path, "pycache.cfg")).get_value()
 pycache = fl.Folder(os.path.join(cwd, "__pycache__"))
 
 if pycache.exists() and delete_pycache:
+    print("Deleting \"__pycache__\" folder...")
     pycache.delete()
 
 input("All done!")
