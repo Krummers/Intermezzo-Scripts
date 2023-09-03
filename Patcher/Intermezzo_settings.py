@@ -24,14 +24,15 @@ def main():
         match setting:
             case "A":
                 cfg = fl.CFG(os.path.join(settings.path, "directory.cfg"))
+                drive = os.path.splitdrive(os.getcwd())[0]
                 print("The current value is:", cfg.get_value())
                 print(f"Enter the directory where the files should be moved to after patching, separated by the {os.sep} character.")
                 print("Do not include the drive name. Start with the first folder of your directory.")
+                print(f"For example, the directory {drive}Users{os.sep}admin{os.sep}Documents would be entered as Users{os.sep}admin{os.sep}Documents.")
                 
                 while True:
                     folders = str(input("Directory: ")).split(os.sep)
                     
-                    drive = os.path.splitdrive(os.getcwd())[0]
                     
                     directory = drive + os.sep
                     for folder in folders:
