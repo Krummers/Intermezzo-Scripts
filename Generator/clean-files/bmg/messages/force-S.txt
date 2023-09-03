@@ -4,7 +4,7 @@
 #--- online chat
 
   M01	= \c{blue1}Intermezzo XX
-  M02	= \c{yor2}Host selects 500 races
+  M02	= \c{yor2}Host selects 500 races!
   M03   = \c{yor7}Krummers' FC: 0693-2070-4087
   M04   = \c{blue2}discord.gg/PSBBuUa2Qe
   M59	= \c{red1}We are switching to VS region 20222!
