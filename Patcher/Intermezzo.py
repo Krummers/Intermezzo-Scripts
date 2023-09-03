@@ -286,7 +286,7 @@ if new_iso.exists():
     new_iso.move(os.path.join(directory.path, new_iso.filename))
 
 # Executes pycache setting
-delete_pycache = fl.CFG(os.path.join(settings.path, "pycache.cfg"))
+delete_pycache = fl.CFG(os.path.join(settings.path, "pycache.cfg")).get_value()
 pycache = fl.Folder(os.path.join(cwd, "__pycache__"))
 
 if pycache.exists() and delete_pycache:
