@@ -265,7 +265,7 @@ if riivolution.exists() and riivo_suffix:
 
 # Execute iso-rename setting
 iso_rename = fl.CFG(os.path.join(settings.path, "iso-rename.cfg")).get_value()
-if new_iso.exists and iso_rename:
+if new_iso.exists() and iso_rename:
     print("Renaming ISO...")
     for file in os.listdir():
         for extension in cs.extensions:
