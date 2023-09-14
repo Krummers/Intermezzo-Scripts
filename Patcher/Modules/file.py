@@ -59,7 +59,7 @@ class Folder(File):
 class TXT(File):
     
     def read(self):
-        with open(self.path, "r") as file:
+        with open(self.path, "r", encoding = "utf-8") as file:
             lines = file.readlines()
         for x in range(len(lines)):
             lines[x] = lines[x][:-1]
