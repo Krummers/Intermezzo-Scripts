@@ -33,7 +33,6 @@ def main():
                 while True:
                     folders = str(input("Directory: ")).split(os.sep)
                     
-                    
                     directory = drive + os.sep
                     for folder in folders:
                         directory = os.path.join(directory, folder)
@@ -46,20 +45,42 @@ def main():
                 cfg.set_value(directory)
                 ft.clear_screen()
             case "B":
+                cfg = fl.CFG(os.path.join(settings.path, "downloads.cfg"))
+                drive = os.path.splitdrive(os.getcwd())[0]
+                print("The current value is:", cfg.get_value())
+                print(f"Enter the directory that should be scanned for downloaded patches, separated by the {os.sep} character.")
+                print("Do not include the drive name. Start with the first folder of your directory.")
+                print(f"For example, the directory {drive}{os.sep}Users{os.sep}admin{os.sep}Downloads would be entered as Users{os.sep}admin{os.sep}Downloads.")
+                
+                while True:
+                    folders = str(input("Directory: ")).split(os.sep)
+                    
+                    directory = drive + os.sep
+                    for folder in folders:
+                        directory = os.path.join(directory, folder)
+                    
+                    if os.path.exists(directory):
+                        break
+                    else:
+                        print("This directory does not exist. Please try again.")
+                
+                cfg.set_value(directory)
+                ft.clear_screen()
+            case "C":
                 cfg = fl.CFG(os.path.join(settings.path, "iso-rename.cfg"))
                 print("The current value is:", cfg.get_value())
                 iso_rename = ft.question("Rename an ISO after patching?")
                 
                 cfg.set_value(iso_rename)
                 ft.clear_screen()
-            case "C":
+            case "D":
                 cfg = fl.CFG(os.path.join(settings.path, "perf-monitor.cfg"))
                 print("The current value is:", cfg.get_value())
                 perf_monitor = ft.question("Enable the performance monitor?")
                 
                 cfg.set_value(perf_monitor)
                 ft.clear_screen()
-            case "D":
+            case "E":
                 cfg = fl.CFG(os.path.join(settings.path, "pref-language.cfg"))
                 print("The current value is:", cfg.get_value())
                 
@@ -76,14 +97,14 @@ def main():
                 
                 cfg.set_value(pref_language)
                 ft.clear_screen()
-            case "E":
+            case "F":
                 cfg = fl.CFG(os.path.join(settings.path, "pycache.cfg"))
                 print("The current value is:", cfg.get_value())
                 delete_pycache = ft.question("Delete the \"__pycache__\" folder after patching?")
     
                 cfg.set_value(delete_pycache)
                 ft.clear_screen()
-            case "F":
+            case "G":
                 cfg = fl.CFG(os.path.join(settings.path, "riivo-suffix.cfg"))
                 print("The current value is:", cfg.get_value())
                 riivo_suffix = ft.question("Add a suffix to Riivolution builds after patching?")

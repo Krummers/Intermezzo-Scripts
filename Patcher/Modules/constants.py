@@ -1,5 +1,5 @@
-settings = ["directory", "iso-rename", "perf-monitor", "pref-language", \
-            "pycache", "riivo-suffix"]
+settings = ["directory", "downloads", "iso-rename", "perf-monitor", \
+            "pref-language", "pycache", "riivo-suffix"]
 
 extensions = ["iso", "ciso", "wdf", "wbfs", "gcx", "wia"]
 

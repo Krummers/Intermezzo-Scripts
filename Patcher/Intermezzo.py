@@ -37,6 +37,13 @@ while True:
     print("No ISO was found!")
     input("Please put an ISO in this directory. (Press enter to restart): ")
 
+# Move downloaded patches into main directory
+downloads = fl.CFG(os.path.join(settings.path, "downloads.cfg")).get_value()
+for identifier in cs.identifiers + ["2"]:
+    file = fl.File(os.path.join(downloads, f"patch{identifier}.tar"))
+    if file.exists():
+        file.move(os.path.join(cwd, file.filename))
+
 # Define which type of Intermezzo needs to be installed
 while True:
     choice = str(input("Which type of Intermezzo should be installed? (Regular or Texture): ")).lower()
