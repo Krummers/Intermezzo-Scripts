@@ -98,7 +98,9 @@ if prefix == "mkw-intermezzo":
     while True:
         choice = str(input("Which Intermezzo should be installed? (Enter the corresponding option): "))
         
-        if all([choice.isalpha(), len(choice) == 1, ord(choice.upper()) - 65 in range(len(options))]):
+        if len(choice) != 1:
+            print("This is not an option. Please try again.")
+        elif choice.isalpha() and ord(choice.upper()) - 65 in range(len(options)):
             choice = ord(choice.upper()) - 65
             date = options[choice]
             title = "Intermezzo"
