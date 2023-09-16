@@ -74,13 +74,20 @@ def main():
                 cfg.set_value(iso_rename)
                 ft.clear_screen()
             case "D":
+                cfg = fl.CFG(os.path.join(settings.path, "overwrite-perm.cfg"))
+                print("The current value is:", cfg.get_value())
+                overwrite_perm = ft.question("Allow files to be overwritten?")
+                
+                cfg.set_value(overwrite_perm)
+                ft.clear_screen()
+            case "E":
                 cfg = fl.CFG(os.path.join(settings.path, "perf-monitor.cfg"))
                 print("The current value is:", cfg.get_value())
                 perf_monitor = ft.question("Enable the performance monitor?")
                 
                 cfg.set_value(perf_monitor)
                 ft.clear_screen()
-            case "E":
+            case "F":
                 cfg = fl.CFG(os.path.join(settings.path, "pref-language.cfg"))
                 print("The current value is:", cfg.get_value())
                 
@@ -97,14 +104,14 @@ def main():
                 
                 cfg.set_value(pref_language)
                 ft.clear_screen()
-            case "F":
+            case "G":
                 cfg = fl.CFG(os.path.join(settings.path, "pycache.cfg"))
                 print("The current value is:", cfg.get_value())
                 delete_pycache = ft.question("Delete the \"__pycache__\" folder after patching?")
     
                 cfg.set_value(delete_pycache)
                 ft.clear_screen()
-            case "G":
+            case "H":
                 cfg = fl.CFG(os.path.join(settings.path, "riivo-suffix.cfg"))
                 print("The current value is:", cfg.get_value())
                 riivo_suffix = ft.question("Add a suffix to Riivolution builds after patching?")
