@@ -37,6 +37,15 @@ while True:
     print("No ISO was found!")
     input("Please put an ISO in this directory. (Press enter to restart): ")
 
+# Check if all user-defined directories exist
+while True:
+    if not all([os.path.exists(fl.CFG(os.path.join(settings.path, setting + ".cfg")).get_value()) \
+                for setting in ["directory", "downloads"]]):
+        print("Not all drives are accessible!")
+        input("Please make all drives defined in the settings available. (Press enter to restart): ")
+    else:
+        break
+
 # Move downloaded patches into main directory
 downloads = fl.CFG(os.path.join(settings.path, "downloads.cfg")).get_value()
 for identifier in cs.identifiers + ["2"]:

@@ -24,8 +24,8 @@ def main():
         match setting:
             case "A":
                 cfg = fl.CFG(os.path.join(settings.path, "directory.cfg"))
-                drive = os.path.splitdrive(os.getcwd())[0]
                 print("The current value is:", cfg.get_value())
+                drive = ft.drive_selection()
                 print(f"Enter the directory where the files should be moved to after patching, separated by the {os.sep} character.")
                 print("Do not include the drive name. Start with the first folder of your directory.")
                 print(f"For example, the directory {drive}{os.sep}Users{os.sep}admin{os.sep}Documents would be entered as Users{os.sep}admin{os.sep}Documents.")
@@ -46,8 +46,8 @@ def main():
                 ft.clear_screen()
             case "B":
                 cfg = fl.CFG(os.path.join(settings.path, "downloads.cfg"))
-                drive = os.path.splitdrive(os.getcwd())[0]
                 print("The current value is:", cfg.get_value())
+                drive = ft.drive_selection()
                 print(f"Enter the directory that should be scanned for downloaded patches, separated by the {os.sep} character.")
                 print("Do not include the drive name. Start with the first folder of your directory.")
                 print(f"For example, the directory {drive}{os.sep}Users{os.sep}admin{os.sep}Downloads would be entered as Users{os.sep}admin{os.sep}Downloads.")
