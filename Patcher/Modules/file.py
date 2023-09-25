@@ -66,7 +66,7 @@ class TXT(File):
         return lines
 
     def write(self, lines):
-        with open(self.path, "w") as file:
+        with open(self.path, "w", encoding = "utf-8") as file:
             file.writelines("\n".join(lines))
 
     def rewrite(self, index, line):
