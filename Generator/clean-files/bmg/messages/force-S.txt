@@ -7,10 +7,14 @@
   M02	= \c{yor2}Host selects 500 races!
   M03   = \c{yor7}Krummers' FC: 0693-2070-4087
   M04   = \c{blue2}discord.gg/PSBBuUa2Qe
+  M38	= Look into the Discord channel!
+  M39	= Listen to the Discord voice chat!
   M59	= \c{red1}We are switching to VS region 20222!
   M60	= \c{red1}We are switching to battle region 20222!
   M79	= \c{yor6}Grand Prix with 7 races!
   M80	= \c{yor7}Grand Prix with 8 races!
+  M91	= These used to be Kanto's favourite messages...
+  M92	= These used to be Kanto's favourite messages...
 
    7e2	= \c{blue1}Intermezzo XX
    838	= \c{blue1}Intermezzo XX
