@@ -1,7 +1,6 @@
 import os
 import platform as pf
 import requests as rq
-import win32api as wa
 
 import Modules.constants as cs
 
@@ -24,20 +23,19 @@ def question(string):
 
 def drive_selection():
     if pf.uname()[0] == "Windows":
-        choices = []
-        options = []
-        for drive in wa.GetLogicalDriveStrings().split("\000")[:-1]:
-            choices.append(drive[:-2])
-            options.append(drive[:-1])
+        drives = []
+        for letter in [chr(x) for x in range(65, 65 + 26)]:
+            if os.path.exists(f"{letter}:"):
+                drives.append(letter)
         
-        for x in range(len(options)):
-            print(f"{choices[x]}. Drive {options[x]}")
+        for letter in drives:
+            print(f"{letter}. Drive {letter}:")
         
         while True:
             choice = str(input("Which drive should be used? (Enter the corresponding option): ")).upper()
             
-            if choice in choices:
-                return options[choices.index(choice)]
+            if choice in drives:
+                return choice
             else:
                 print("This is not an option. Please try again.")
     else:
