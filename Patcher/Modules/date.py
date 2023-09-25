@@ -58,6 +58,69 @@ class Date(object):
                     result.month = 12
                 result.day = result.days[result.month]
         return result
+    
+    def __lt__(self, other):
+        if not isinstance(other, Date):
+            raise TypeError("'other' must be a Date object")
+        if self.year < other.year:
+            return True
+        elif self.year > other.year:
+            return False
+        elif self.month < other.month:
+            return True
+        elif self.month > other.month:
+            return False
+        elif self.day < other.day:
+            return True
+        else:
+            return False
+    
+    def __le__(self, other):
+        if not isinstance(other, Date):
+            raise TypeError("'other' must be a Date object")
+        return self == other or self < other
+    
+    def __eq__(self, other):
+        if not isinstance(other, Date):
+            raise TypeError("'other' must be a Date object")
+        return self.year == other.year and self.month == other.month and self.day == other.day
+
+    def __ne__(self, other):
+        if not isinstance(other, Date):
+            raise TypeError("'other' must be a Date object")
+        return self.year != other.year or self.month != other.month or self.day != other.day
+    
+    def __ge__(self, other):
+        if not isinstance(other, Date):
+            raise TypeError("'other' must be a Date object")
+        return self == other or self > other
+    
+    def __gt__(self, other):
+        if not isinstance(other, Date):
+            raise TypeError("'other' must be a Date object")
+        if self.year > other.year:
+            return True
+        elif self.year < other.year:
+            return False
+        elif self.month > other.month:
+            return True
+        elif self.month < other.month:
+            return False
+        elif self.day > other.day:
+            return True
+        else:
+            return False
+    
+    def difference(self, other):
+        if not isinstance(other, Date):
+            raise TypeError("'other' must be a Date object")
+        big = max(self, other)
+        small = min(self, other)
+        
+        x = 0
+        while small + x != big:
+            x += 1
+        return x
 
     def intermezzo(self, prefix):
         if prefix == "mkw-intermezzo":

@@ -115,6 +115,17 @@ class CFG(File):
         with open(self.path, "rb") as setting:
             return pk.load(setting)
 
+class CHC(CFG):
+    
+    def __init__(self, path):
+        if not path.endswith("chc"):
+            raise ValueError("not a chc file")
+        self.path = path
+        self.folder = os.path.dirname(path)
+        self.filename = os.path.basename(path)
+        self.name = self.filename[:-4]
+        self.create()
+
 class TXZ(File):
     
     def __init__(self, path):

@@ -11,6 +11,7 @@ import Modules.functions as ft
 
 cwd = os.getcwd()
 settings = fl.Folder(os.path.join(cwd, "Settings"))
+cache = fl.Folder(os.path.join(cwd, "Cache"))
 
 # Check if all settings are defined
 while True:
@@ -75,29 +76,79 @@ date = dt.Date()
 x = 0
 
 if prefix == "mkw-intermezzo":
-    date = dt.Date()
-    for x in range(60):
-        if (date - x).intermezzo(prefix):
-            options.append(str(date - x))
+    regular = fl.CHC(os.path.join(cache.path, "regular.chc"))
+    if not regular.exists():
+        date = dt.Date()
+        regular_cache = []
+        for x in range(60):
+            if (date - x).intermezzo(prefix):
+                options.append(str(date - x))
+                regular_cache.append(date - x)
+    else:
+        regular_cache = regular.get_value()
+        date = dt.Date()
+        for x in range(len(regular_cache)):
+            if not regular_cache[x].intermezzo(prefix):
+                regular_cache = regular_cache[:x]
+                break
+        latest_known = regular_cache[0]
+        for x in range(1, latest_known.difference(date) + 1):
+            if (latest_known + x).intermezzo(prefix):
+                regular_cache.insert(0, latest_known + x)
+        options = [str(date) for date in regular_cache]
+    regular.set_value(regular_cache)
 else:
-    choices = []
-    options = []
-    while True:
-        if (date - x).intermezzo("recent-080-hacks"):
-            date = date - x
-            break
-        x += 1
-    
-    for item in cs.names.items():
-        slot, name = item[0], item[1]
-        if slot.isnumeric():
-            codename = slot[0] + "." + slot[1] + "-" + cs.codenames[slot]
-        else:
-            codename = cs.codenames[slot]
-        if date.intermezzo(codename):
-            choices.append(slot)
-            options.append(cs.names[slot])
-    date = str(date)
+    texture = fl.CHC(os.path.join(cache.path, "texture.chc"))
+    if not texture.exists():
+        while True:
+            if (date - x).intermezzo("recent-080-hacks"):
+                date = date - x
+                break
+            x += 1
+        
+        texture_cache = {"date": date}
+        choices = []
+        options = []
+        for item in cs.names.items():
+            slot, name = item[0], item[1]
+            if slot.isnumeric():
+                codename = slot[0] + "." + slot[1] + "-" + cs.codenames[slot]
+            else:
+                codename = cs.codenames[slot]
+            if date.intermezzo(codename):
+                choices.append(slot)
+                options.append(cs.names[slot])
+        texture_cache["slots"] = choices
+        date = str(date)
+    else:
+        texture_cache = texture.get_value()
+        date = texture_cache["date"]
+        if not date.intermezzo("recent-080-hacks"):
+            date = dt.Date()
+            while True:
+                if (date - x).intermezzo("recent-080-hacks"):
+                    date = date - x
+                    break
+                x += 1
+        
+        texture_cache["date"] = date
+        slots = texture_cache["slots"]
+        choices = []
+        options = []
+        for slot in slots:
+            if slot.isnumeric():
+                codename = slot[0] + "." + slot[1] + "-" + cs.codenames[slot]
+            else:
+                codename = cs.codenames[slot]
+            if date.intermezzo(codename):
+                for x in range(slots.index(slot), len(slots)):
+                    choices.append(slots[x])
+                    options.append(cs.names[slots[x]])
+                break
+        
+        texture_cache["slots"] = slots
+        date = str(date)
+    texture.set_value(texture_cache)
 
 # Define which Intermezzo needs to be installed
 if prefix == "mkw-intermezzo":
