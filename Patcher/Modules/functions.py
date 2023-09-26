@@ -35,7 +35,7 @@ def drive_selection():
             choice = str(input("Which drive should be used? (Enter the corresponding option): ")).upper()
             
             if choice in drives:
-                return choice
+                return f"{choice}:"
             else:
                 print("This is not an option. Please try again.")
     else:
