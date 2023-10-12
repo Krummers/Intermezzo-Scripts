@@ -221,7 +221,7 @@ class Wiiki(object):
         api = info["API"]
         username = info["USERNAME"]
         password = info["PASSWORD"]
-        wiiki = mc.Site("wiki.tockdom.com", clients_useragent = api)
+        wiiki = mc.Site("wiki.tockdom.com", custom_headers = {"User-Agent": api})
         wiiki.login(username, password)
         self.wiiki = wiiki
         self.username = username
