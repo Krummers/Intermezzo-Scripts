@@ -61,7 +61,7 @@ class TXT(File):
     def read(self):
         with open(self.path, "r", encoding = "utf-8") as file:
             lines = file.readlines()
-        for x in range(len(lines)):
+        for x in range(len(lines) - 1):
             lines[x] = lines[x][:-1]
         return lines
 
