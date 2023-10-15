@@ -16,7 +16,7 @@ def main():
         # Print setting selection screen
         print()
         for setting, x in zip(cs.settings, range(len(cs.settings))):
-            print(chr(x + 65), ". ", setting, sep = "")
+            print(f"{chr(x + 65)}. {setting}")
         print("X. Exit the menu")
         
         setting = str(input("Which setting should be edited? (Enter the corresponding letter): ")).upper()
