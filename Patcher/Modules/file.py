@@ -88,13 +88,11 @@ class CFG(File):
         self.create()
     
     def __str__(self):
-        largest_variable = len(max(cs.settings, key = len))
+        length = len(max(cs.settings, key = len)) + 6
         tabulation = self.name
-        length = len(tabulation)
-        while length <= largest_variable:
-            tabulation += "\t"
-            length = (length + 4) & ~3
-        return tabulation + "\t" + str(self.get_value())
+        while len(tabulation) < length:
+            tabulation += " "
+        return tabulation + str(self.get_value())
     
     def __repr__(self):
         return f"{self.name} (self.get_value())"
