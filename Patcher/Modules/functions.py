@@ -3,6 +3,7 @@ import platform as pf
 import requests as rq
 
 import Modules.constants as cs
+import Modules.file as fl
 
 def download(link, path):
     data = rq.get(link)
@@ -46,3 +47,24 @@ def clear_screen():
         os.system("cls")
     else:
         os.system("clear")
+
+def rename_riivolution(riivolution, Wiimm_Intermezzo, new_suffix):
+    for file in os.listdir(riivolution.path):
+        if file.endswith(".xml"):
+            xml = fl.TXT(os.path.join(riivolution.path, file))
+            break
+    if xml.filename != "Wiimm-Intermezzo.xml":
+        current_suffix = xml.filename[len("Wiimm-Intermezzo-"):xml.filename.find(".xml")]
+    else:
+        current_suffix = ""
+    lines = xml.read()
+    for x in range(len(lines)):
+        lines[x] = lines[x].replace(f"WiimmIntermezzo{current_suffix}", f"WiimmIntermezzo{new_suffix}")
+        if current_suffix:
+            lines[x] = lines[x].replace(f"Wiimm-Intermezzo-{current_suffix}", f"Wiimm-Intermezzo-{new_suffix}")
+        else:
+            lines[x] = lines[x].replace("Wiimm-Intermezzo", f"Wiimm-Intermezzo-{new_suffix}")
+    xml.write(lines)
+    xml.rename(f"Wiimm-Intermezzo-{new_suffix}.xml")
+    Wiimm_Intermezzo.rename(f"Wiimm-Intermezzo-{new_suffix}")
+    return riivolution, Wiimm_Intermezzo

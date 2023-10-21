@@ -323,14 +323,7 @@ riivo_suffix = fl.CFG(os.path.join(settings.path, "riivo-suffix.cfg")).get_value
 if riivolution.exists() and riivo_suffix:
     print("Adding suffix to Riivolution build...")
     suffix = date if prefix == "mkw-intermezzo" else intermezzo
-    xml = fl.TXT(os.path.join(riivolution.path, "Wiimm-Intermezzo.xml"))
-    lines = xml.read()
-    for x in range(len(lines)):
-        lines[x] = lines[x].replace("WiimmIntermezzo", f"WiimmIntermezzo{suffix}")
-        lines[x] = lines[x].replace("Wiimm-Intermezzo", f"Wiimm-Intermezzo-{suffix}")
-    xml.write(lines)
-    xml.rename(f"Wiimm-Intermezzo-{suffix}.xml")
-    Wiimm_Intermezzo.rename(f"Wiimm-Intermezzo-{suffix}")
+    riivolution, Wiimm_Intermezzo = ft.rename_riivolution(riivolution, Wiimm_Intermezzo, suffix)
 
 # Execute iso-rename setting
 iso_rename = fl.CFG(os.path.join(settings.path, "iso-rename.cfg")).get_value()
@@ -349,12 +342,39 @@ if new_iso.exists() and iso_rename:
 
 # Execute directory setting
 directory = fl.Folder(fl.CFG(os.path.join(settings.path, "directory.cfg")).get_value())
+overwrite = fl.CFG(os.path.join(settings.path, "overwrite-perm.cfg")).get_value()
+
+old_iso = os.path.join(directory.path, new_iso.filename)
+
 print("Moving new build...")
 
 if riivolution.exists() and Wiimm_Intermezzo.exists():
-    riivolution.move(os.path.join(directory.path, riivolution.filename))
-    Wiimm_Intermezzo.move(os.path.join(directory.path, Wiimm_Intermezzo.filename))
+    if overwrite:
+        fl.Folder(os.path.join(directory.path, riivolution.filename)).merge(riivolution)
+        fl.Folder(os.path.join(directory.path, Wiimm_Intermezzo.filename)).merge(Wiimm_Intermezzo)
+    else:
+        x = 1
+        check = os.path.join(directory.path, Wiimm_Intermezzo.filename)
+        while os.path.exists(check):
+            x += 1
+            check = os.path.join(directory.path, f"{Wiimm_Intermezzo.filename}-{x}")
+        if x > 1:
+            suffix = Wiimm_Intermezzo.filename[len("Wiimm-Intermezzo-"):]
+            riivolution, Wiimm_Intermezzo = ft.rename_riivolution(riivolution, Wiimm_Intermezzo, f"{suffix}-{x}")
+        fl.Folder(os.path.join(directory.path, riivolution.filename)).merge(riivolution)
+        Wiimm_Intermezzo.move(os.path.join(directory.path, Wiimm_Intermezzo.filename))
 if new_iso.exists():
+    if os.path.exists(old_iso) and overwrite:
+        os.remove(old_iso)
+    x = 1
+    name = new_iso.filename
+    check = os.path.join(directory.path, new_iso.filename)
+    while os.path.exists(check):
+        x += 1
+        name = new_iso.filename[new_iso.filename.rfind("."):] + f"-{x}" + new_iso.filename[:new_iso.filename.rfind(".")]
+        check = os.path.join(directory.path, name)
+    if x > 1:
+        new_iso.rename(name)
     new_iso.move(os.path.join(directory.path, new_iso.filename))
 
 # Executes pycache setting

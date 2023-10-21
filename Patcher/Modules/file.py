@@ -24,7 +24,9 @@ class File(object):
     def move(self, path):
         if self.filename != os.path.basename(path):
             raise ValueError("filename must match its previous one")
-        os.rename(self.path, path)
+        if not os.path.exists(os.path.dirname(path)):
+            os.makedirs(os.path.dirname(path))
+        sh.move(self.path, path)
         self.__init__(path)
     
     def move_down(self, folders, create_folders = True):
@@ -38,7 +40,7 @@ class File(object):
         if not os.path.exists(new_folder):
             os.makedirs(new_folder)
         new_path = os.path.join(new_folder, self.filename)
-        os.rename(self.path, new_path)
+        sh.move(self.path, new_path)
         self.__init__(new_path)
     
     def move_up(self, amount):
@@ -54,6 +56,25 @@ class File(object):
         os.remove(self.path)
 
 class Folder(File):
+    
+    def merge(self, other):
+        if not isinstance(other, Folder):
+            raise TypeError("'other' must be a folder")
+        for file in os.listdir(other.path):
+            if os.path.isfile(os.path.join(other.path, file)):
+                old = File(os.path.join(self.path, file))
+                new = File(os.path.join(other.path, file))
+            else:
+                old = Folder(os.path.join(self.path, file))
+                new = Folder(os.path.join(other.path, file))
+            
+            if type(old) == File:
+                if old.exists() and new.exists():
+                    old.delete()
+                new.move(old.path)
+            else:
+                old.merge(new)
+        other.delete()
     
     def delete(self):
         sh.rmtree(self.path)
