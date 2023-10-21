@@ -9,14 +9,11 @@ settings = fl.Folder(os.path.join(cwd, "Settings"))
 
 def main():
     while True:
-        # Print all settings
-        print("Current settings: ")
-        [print(fl.CFG(os.path.join(settings.path, setting + ".cfg"))) for setting in cs.settings]
         
         # Print setting selection screen
-        print()
+        print("Current settings: ")
         for setting, x in zip(cs.settings, range(len(cs.settings))):
-            print(f"{chr(x + 65)}. {setting}")
+            print(f"{chr(x + 65)}. {fl.CFG(os.path.join(settings.path, setting + '.cfg'))}")
         print("X. Exit the menu")
         
         setting = str(input("Which setting should be edited? (Enter the corresponding letter): ")).upper()
