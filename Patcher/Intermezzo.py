@@ -60,7 +60,7 @@ while True:
     
     if choice in cs.types[:2]:
         prefix = "mkw-intermezzo"
-        patch2_download = "https://cdn.discordapp.com/attachments/870580346033430549/1148152537418055680/patch2.tar"
+        patch2_download = "https://cdn.discordapp.com/attachments/870580346033430549/1166816190040121428/patch2.tar"
         break
     elif choice in cs.types[2:]:
         prefix = ""
