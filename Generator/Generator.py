@@ -249,7 +249,6 @@ sh.rmtree(patch_dir)
 sh.copytree(clean_files, patch_dir)
 
 gt.extract_folder_option(patch_dir, patch_type)
-gt.extract_folder_option(os.path.join(patch_dir, "lecode"), patch_type)
 
 # Edits text files for patch2.tar
 print("Writing text files...")
