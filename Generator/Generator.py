@@ -253,6 +253,7 @@ gt.extract_folder_option(os.path.join(patch_dir, "lecode"), patch_type)
 
 # Edits text files for patch2.tar
 print("Writing text files...")
+os.makedirs(os.path.join(patch_dir, "bmg", "track-names"))
 for k in {"_base.txt", "en-all.txt", "en-nin.txt"}:
     sh.copyfile("translate.txt", os.path.join(patch_dir, "bmg", "track-names", k))
 
