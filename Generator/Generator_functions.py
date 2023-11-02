@@ -248,6 +248,7 @@ class Wiiki(object):
             return result
         else:
             length = float("inf")
+            approximation = None
             for article in result:
                 if title not in article:
                     continue
