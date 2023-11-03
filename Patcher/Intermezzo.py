@@ -180,7 +180,7 @@ else:
                 prefix = choice[0] + "." + choice[1] + "-" + cs.codenames[choice]
             else:
                 prefix = cs.codenames[choice]
-                title = cs.names[choice]
+            title = cs.names[choice]
             break
         else:
             print("This is not an option. Please try again.")
