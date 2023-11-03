@@ -241,25 +241,6 @@ if not present:
     print("Downloading patch2.tar...")
     ft.download(patch2_download, patch2.path)
 
-# Execute perf-monitor setting
-perf_monitor = fl.CFG(os.path.join(settings.path, "perf-monitor.cfg")).get_value()
-
-if perf_monitor:
-    print("Enabling the performance monitor...")
-    patch2.extract()
-    lpar = fl.TXT(os.path.join(patch2.extract_folder, "lecode", "lpar.txt"))
-    jap = fl.File(os.path.join(lpar.folder, "lecode-JAP.bin"))
-    os.system(f"wlect lpar \"{jap.path}\" > \"{lpar.path}\" -BH")
-    lpar.rewrite(8, "LIMIT-MODE\t= LE$EXPERIMENTAL")
-    lpar.rewrite(13, "PERF-MONITOR\t= 2")
-    
-    for region in cs.regions:
-        lecode_bin = fl.File(os.path.join(lpar.folder, f"lecode-{region}.bin"))
-        os.system(f"wlect patch \"{lecode_bin.path}\" --lpar \"{lpar.path}\" -o")
-    
-    lpar.delete()
-    patch2.build()
-
 # Setup directory before patching
 intermezzo = prefix + "-" + date
 directory = fl.Folder(os.path.join(cwd, intermezzo))
@@ -283,6 +264,35 @@ print("Extracting files...")
 txz.extract()
 tar = fl.TAR(txz.tar)
 tar.extract()
+
+# Edit LPAR file (cup icon size and perf-monitor setting)
+perf_monitor = fl.CFG(os.path.join(settings.path, "perf-monitor.cfg")).get_value()
+
+print("Setting cup icon size...")
+patch = fl.TAR(os.path.join(tar.extract_folder, "patch.tar"))
+patch.extract()
+patch2.extract()
+lpar = fl.TXT(os.path.join(patch2.extract_folder, "lecode", "lpar.txt"))
+lebin_old = fl.File(os.path.join(patch.extract_folder, "lecode", "lecode-JAP.bin"))
+lebin_new = fl.File(os.path.join(lpar.folder, "lecode-JAP.bin"))
+os.system(f"wlect lpar \"{lebin_new.path}\" > \"{lpar.path}\" -BH")
+
+lpar.append("[LECODE-PARAMETERS]")
+os.system(f"wlect lpar -q \"{lebin_old.path}\" | grep CUP-ICON-SIZE >> \"{lpar.path}\"")
+
+if perf_monitor:
+    print("Enabling the performance monitor...")
+    
+    lpar.append("LIMIT-MODE\t= LE$EXPERIMENTAL")
+    lpar.append("PERF-MONITOR\t= 2")
+    
+for region in cs.regions:
+    lecode_bin = fl.File(os.path.join(lpar.folder, f"lecode-{region}.bin"))
+    os.system(f"wlect patch -q \"{lecode_bin.path}\" --lpar \"{lpar.path}\" -o")
+
+lpar.delete()
+patch.delete_extract()
+patch2.build()
 
 # Move ISO and patch2.tar
 patch2.move_down([intermezzo])

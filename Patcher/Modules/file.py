@@ -96,6 +96,10 @@ class TXT(File):
         lines = self.read()
         lines[index - 1] = line
         self.write(lines)
+    
+    def append(self, line):
+        with open(self.path, "a", encoding = "utf-8") as file:
+            file.writelines(line + "\n")
 
 class CFG(File):
     
@@ -206,3 +210,7 @@ class TAR(File):
         os.remove(self.path)
         if self.extract_folder:
             sh.rmtree(self.extract_folder)
+    
+    def delete_extract(self):
+        sh.rmtree(self.extract_folder)
+        self.extract_folder = None
