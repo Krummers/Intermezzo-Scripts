@@ -246,7 +246,7 @@ intermezzo = prefix + "-" + date
 directory = fl.Folder(os.path.join(cwd, intermezzo))
 txz = fl.TXZ(os.path.join(cwd, intermezzo + ".txz"))
 if pf.uname()[0] == "Windows":
-    script = [["create-images.bat"]]
+    script = [["create-images-32.bat"]]
 else:
     script = [["chmod", "+x", "create-images.sh"], ["./create-images.sh"]]
 
