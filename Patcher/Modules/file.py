@@ -2,8 +2,6 @@ import os
 import pickle as pk
 import shutil as sh
 
-import Modules.constants as cs
-
 cwd = os.getcwd()
 
 class File(object):
