@@ -58,6 +58,8 @@ class Folder(File):
     def merge(self, other):
         if not isinstance(other, Folder):
             raise TypeError("'other' must be a folder")
+        if self.path == other.path:
+            return
         for file in os.listdir(other.path):
             if os.path.isfile(os.path.join(other.path, file)):
                 old = File(os.path.join(self.path, file))
