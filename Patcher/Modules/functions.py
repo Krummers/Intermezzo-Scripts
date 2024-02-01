@@ -40,7 +40,7 @@ def drive_selection():
             else:
                 print("This is not an option. Please try again.")
     else:
-        return ""
+        return "/"
 
 def clear_screen():
     if pf.uname()[0] == "Windows":
