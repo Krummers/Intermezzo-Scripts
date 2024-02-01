@@ -70,7 +70,7 @@ while True:
         print("This is not an option. Please try again.")
 
 # Make a list of Intermezzos available
-print("Importing available Intermezzos...")
+print("Importing available Intermezzi...")
 options = []
 date = dt.Date()
 x = 0
@@ -101,7 +101,7 @@ else:
     texture = fl.CHC(os.path.join(cache.path, "texture.chc"))
     if not texture.exists():
         while True:
-            if (date - x).intermezzo("recent-080-hacks"):
+            if (date - x).intermezzo("texture-hacks"):
                 date = date - x
                 break
             x += 1
@@ -123,10 +123,10 @@ else:
     else:
         texture_cache = texture.get_value()
         date = texture_cache["date"]
-        if not date.intermezzo("recent-080-hacks"):
+        if not date.intermezzo("texture-hacks"):
             date = dt.Date()
             while True:
-                if (date - x).intermezzo("recent-080-hacks"):
+                if (date - x).intermezzo("texture-hacks"):
                     date = date - x
                     break
                 x += 1
