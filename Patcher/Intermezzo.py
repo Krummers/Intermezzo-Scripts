@@ -275,7 +275,7 @@ patch2.extract()
 lpar = fl.TXT(os.path.join(patch2.extract_folder, "lecode", "lpar.txt"))
 lebin_old = fl.File(os.path.join(patch.extract_folder, "lecode", "lecode-JAP.bin"))
 lebin_new = fl.File(os.path.join(lpar.folder, "lecode-JAP.bin"))
-os.system(f"wlect lpar \"{lebin_new.path}\" > \"{lpar.path}\" -BH")
+os.system(f"wlect lpar \"{lebin_new.path}\" > \"{lpar.path}\" -BHq")
 
 lpar.append("[LECODE-PARAMETERS]")
 os.system(f"wlect lpar -q \"{lebin_old.path}\" | grep CUP-ICON-SIZE >> \"{lpar.path}\"")
