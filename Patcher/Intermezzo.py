@@ -60,11 +60,11 @@ while True:
     
     if choice in cs.types[:2]:
         prefix = "mkw-intermezzo"
-        patch2_download = "https://cdn.discordapp.com/attachments/870580346033430549/1203065144498724874/patch2.tar"
+        patch2_download = "https://cdn.discordapp.com/attachments/870580346033430549/1203114020106805300/patch2.tar"
         break
     elif choice in cs.types[2:]:
         prefix = ""
-        patch2_download = "https://cdn.discordapp.com/attachments/870580346033430549/1203065214229160066/patch2.tar"
+        patch2_download = "https://cdn.discordapp.com/attachments/870580346033430549/1203114063949987950/patch2.tar"
         break
     else:
         print("This is not an option. Please try again.")
@@ -275,7 +275,7 @@ patch2.extract()
 lpar = fl.TXT(os.path.join(patch2.extract_folder, "lecode", "lpar.txt"))
 lebin_old = fl.File(os.path.join(patch.extract_folder, "lecode", "lecode-JAP.bin"))
 lebin_new = fl.File(os.path.join(lpar.folder, "lecode-JAP.bin"))
-os.system(f"wlect lpar \"{lebin_new.path}\" > \"{lpar.path}\" -BH")
+os.system(f"wlect lpar \"{lebin_new.path}\" > \"{lpar.path}\" -BHq")
 
 lpar.append("[LECODE-PARAMETERS]")
 os.system(f"wlect lpar -q \"{lebin_old.path}\" | grep CUP-ICON-SIZE >> \"{lpar.path}\"")
