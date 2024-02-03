@@ -5,6 +5,8 @@ extensions = ["iso", "ciso", "wdf", "wbfs", "gcx", "wia"]
 
 types = ["regular", "r", "texture", "t"]
 
+modes = ["200cc", "Random Items"]
+
 binaries = ["yes", "y", "no", "n"]
 
 regions = {"JAP", "KOR", "PAL", "USA"}

@@ -69,7 +69,7 @@ while True:
     else:
         print("This is not an option. Please try again.")
 
-# Make a list of Intermezzos available
+# Make a list of Intermezzi available
 print("Importing available Intermezzi...")
 options = []
 date = dt.Date()
