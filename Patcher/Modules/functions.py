@@ -5,6 +5,8 @@ import requests as rq
 import Modules.constants as cs
 import Modules.file as fl
 
+cwd = os.getcwd()
+
 def download(link, path):
     data = rq.get(link)
     
@@ -40,7 +42,7 @@ def drive_selection():
             else:
                 print("This is not an option. Please try again.")
     else:
-        return "/"
+        return os.path.splitdrive(cwd)[0]
 
 def clear_screen():
     if pf.uname()[0] == "Windows":
