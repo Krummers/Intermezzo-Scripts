@@ -238,8 +238,7 @@ else:
             print("This is not an option. Please try again.")
 
 if not present:
-    print("Downloading patch2.tar...")
-    ft.download(patch2_download, patch2.path)
+    ft.download(patch2_download, patch2.path, progress = True)
 
 # Setup directory before patching
 intermezzo = prefix + "-" + date
@@ -251,13 +250,12 @@ else:
     script = [["chmod", "+x", "create-images.sh"], ["./create-images.sh"]]
 
 # Download Intermezzo
-print("Downloading Intermezzo...")
 if prefix == "mkw-intermezzo":
     link = "https://download.wiimm.de/intermezzo/"
 else:
     link = "https://download.wiimm.de/intermezzo/texture-hacks/"
 link = link + intermezzo + ".txz"
-ft.download(link, txz.path)
+ft.download(link, txz.path, progress = True)
 
 # Extract TXZ and TAR
 print("Extracting files...")
