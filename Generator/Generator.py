@@ -289,7 +289,7 @@ statistics = fl.TXT(os.path.join(cwd, "Statistics.txt"))
 results = f"* {cs.languages[cs.identifiers.index(language)]} - {translated}/{total} ({translated / total * 100:.2f}%)"
 
 if not statistics.exists():
-    statistics.write([results])
+    statistics.write([f"{results}\n"])
 else:
     statistics.append(results)
 
