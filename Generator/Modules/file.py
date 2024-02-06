@@ -51,6 +51,8 @@ class File(object):
         return os.path.exists(self.path)
     
     def copy(self, path):
+        if not os.path.exists(os.path.dirname(path)):
+            os.makedirs(os.path.dirname(path))
         sh.copyfile(self.path, path)
     
     def delete(self):
@@ -59,6 +61,8 @@ class File(object):
 class Folder(File):
     
     def copy(self, path):
+        if not os.path.exists(os.path.dirname(path)):
+            os.makedirs(os.path.dirname(path))
         sh.copytree(self.path, path)
     
     def merge(self, other):
