@@ -5,11 +5,28 @@ import requests as rq
 import Modules.constants as cs
 import Modules.file as fl
 
-def download(link, path):
-    data = rq.get(link)
-    
+cwd = os.getcwd()
+
+def download(link, path, progress = None):
     with open(path, "wb") as file:
-        file.write(data.content)
+        with rq.get(link, stream = True) as data:
+            if progress:
+                print(f"Downloading {progress}...")
+                total = data.headers.get("content-length")
+                
+                if total is None:
+                    file.write(data.content)
+                else:
+                    download = 0
+                    total = int(total)
+                    for chunk in data.iter_content(chunk_size = 1024):
+                        download += len(chunk)
+                        file.write(chunk)
+                        completion = int(100 * download / total)
+                        print(f"\r[{'=' * completion}{' ' * (100 - completion)}]", f"{completion}%", end = "") 
+                print("\n")
+            else:
+                file.write(data.content)
 
 def question(string):
     while True:
@@ -40,7 +57,7 @@ def drive_selection():
             else:
                 print("This is not an option. Please try again.")
     else:
-        return "/"
+        return os.path.splitdrive(cwd)[0]
 
 def clear_screen():
     if pf.uname()[0] == "Windows":

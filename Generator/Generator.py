@@ -1,6 +1,5 @@
 import os
 import subprocess as sp
-import shutil as sh
 
 import Modules.constants as cs
 import Modules.date as dt

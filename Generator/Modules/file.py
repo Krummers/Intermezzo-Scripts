@@ -97,12 +97,6 @@ class TXT(File):
         for x in range(len(lines) - 1):
             lines[x] = lines[x][:-1]
         return lines
-    
-    def find(self, string):
-        lines = self.read()
-        for x in range(len(lines)):
-            if lines[x].strip().startswith(string):
-                return x + 1
 
     def write(self, lines):
         with open(self.path, "w", encoding = "utf-8") as file:
@@ -112,6 +106,12 @@ class TXT(File):
         lines = self.read()
         lines[index - 1] = line
         self.write(lines)
+    
+    def find(self, string):
+        lines = self.read()
+        for x in range(len(lines)):
+            if lines[x].strip().startswith(string):
+                return x + 1
     
     def append(self, line):
         with open(self.path, "a", encoding = "utf-8") as file:
