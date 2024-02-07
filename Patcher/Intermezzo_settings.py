@@ -127,7 +127,7 @@ def main():
             case "S":
                 standard = ft.question("Enter default settings?")
                 if standard:
-                    standards = [cwd, cwd, True, True, True, "N", True, False]
+                    standards = [cwd, cwd, True, True, True, "E", True, False]
                     for value, setting in zip(standards, cs.settings):
                         cfg = fl.CFG(os.path.join(settings.path, f"{setting}.cfg"))
                         cfg.set_value(value)
