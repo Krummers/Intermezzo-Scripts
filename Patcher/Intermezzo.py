@@ -263,6 +263,25 @@ txz.extract()
 tar = fl.TAR(txz.tar)
 tar.extract()
 
+# Execute gesso and kumo setting
+gesso = fl.CFG(os.path.join(settings.path, "gesso.cfg")).get_value()
+kumo = fl.CFG(os.path.join(settings.path, "kumo.cfg")).get_value()
+
+if gesso != "feather" or kumo != "normal":
+    patch2.extract()
+    if gesso != "feather":
+        print(f"Copying {gesso}...")
+        brres = fl.File(os.path.join(patch2.extract_folder, "common", "gesso.brres"))
+        other = fl.File(os.path.join(cwd, "Files", "gesso", f"{gesso}.brres"))
+        brres.delete()
+        other.copy(brres.path)
+    if kumo != "normal":
+        print(f"Copying {kumo}...")
+        brres = fl.File(os.path.join(patch2.extract_folder, "common", "kumo.brres"))
+        other = fl.File(os.path.join(cwd, "Files", "kumo", f"{kumo}.brres"))
+        other.copy(brres.path)
+    patch2.build()
+
 # Execute perf-monitor setting
 perf_monitor = fl.CFG(os.path.join(settings.path, "perf-monitor.cfg")).get_value()
 patch = fl.TAR(os.path.join(tar.extract_folder, "patch.tar"))

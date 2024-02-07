@@ -1,5 +1,10 @@
-settings = ["directory", "downloads", "iso-rename", "overwrite-perm", \
-            "perf-monitor", "pref-language", "pycache", "riivo-suffix"]
+settings = ["directory", "downloads", "gesso", "iso-rename", "kumo", \
+            "overwrite-perm", "perf-monitor", "pref-language", "pycache", \
+            "riivo-suffix"]
+
+gesso = ["feather", "krummy"]
+
+kumo = ["normal", "flipped-thunder", "mega", "pac-man", "sad-cat"]
 
 extensions = ["iso", "ciso", "wdf", "wbfs", "gcx", "wia"]
 
