@@ -265,11 +265,12 @@ tar.extract()
 
 # Execute perf-monitor setting
 perf_monitor = fl.CFG(os.path.join(settings.path, "perf-monitor.cfg")).get_value()
+patch = fl.TAR(os.path.join(tar.extract_folder, "patch.tar"))
 
 if perf_monitor:
     print("Enabling the performance monitor...")
-    patch2.extract()
-    lpar = fl.TXT(os.path.join(patch2.extract_folder, "lecode", "lpar.txt"))
+    patch.extract()
+    lpar = fl.TXT(os.path.join(patch.extract_folder, "lecode", "lpar.txt"))
     jap = fl.File(os.path.join(lpar.folder, "lecode-JAP.bin"))
     os.system(f"wlect lpar \"{jap.path}\" > \"{lpar.path}\" -BH")
     lpar.rewrite(lpar.find("LIMIT-MODE"), "LIMIT-MODE\t= LE$EXPERIMENTAL")
@@ -280,7 +281,7 @@ if perf_monitor:
         os.system(f"wlect patch \"{lebin.path}\" --lpar \"{lpar.path}\" -o")
     
     lpar.delete()
-    patch2.build()
+    patch.build()
 
 # Move ISO and patch2.tar
 patch2.move_down([intermezzo])
