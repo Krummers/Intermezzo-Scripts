@@ -7,11 +7,11 @@ import Modules.file as fl
 
 cwd = os.getcwd()
 
-def download(link, path, progress = False):
+def download(link, path, progress = None):
     with open(path, "wb") as file:
         with rq.get(link, stream = True) as data:
             if progress:
-                print(f"Downloading {link}...")
+                print(f"Downloading {progress}...")
                 total = data.headers.get("content-length")
                 
                 if total is None:

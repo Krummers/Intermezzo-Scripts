@@ -238,7 +238,7 @@ else:
             print("This is not an option. Please try again.")
 
 if not present:
-    ft.download(patch2_download, patch2.path, progress = True)
+    ft.download(patch2_download, patch2.path, progress = "patch2.tar")
 
 # Setup directory before patching
 intermezzo = prefix + "-" + date
@@ -255,7 +255,7 @@ if prefix == "mkw-intermezzo":
 else:
     link = "https://download.wiimm.de/intermezzo/texture-hacks/"
 link = link + intermezzo + ".txz"
-ft.download(link, txz.path, progress = True)
+ft.download(link, txz.path, progress = "Intermezzo")
 
 # Extract TXZ and TAR
 print("Extracting files...")
