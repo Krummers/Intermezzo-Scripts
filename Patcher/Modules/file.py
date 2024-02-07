@@ -97,6 +97,12 @@ class TXT(File):
         lines[index - 1] = line
         self.write(lines)
     
+    def find(self, string):
+        lines = self.read()
+        for x in range(len(lines)):
+            if lines[x].startswith(string):
+                return x + 1
+    
     def append(self, line):
         with open(self.path, "a", encoding = "utf-8") as file:
             file.writelines(line + "\n")

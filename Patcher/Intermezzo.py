@@ -60,11 +60,11 @@ while True:
     
     if choice in cs.types[:2]:
         prefix = "mkw-intermezzo"
-        patch2_download = "https://cdn.discordapp.com/attachments/870580346033430549/1204523462081650738/patch2.tar"
+        patch2_download = "https://drive.google.com/uc?id=1WARKQAZb-9Vky-oyjgOgqjep0SLiBG1N&export=download"
         break
     elif choice in cs.types[2:]:
         prefix = ""
-        patch2_download = "https://cdn.discordapp.com/attachments/870580346033430549/1204523527924093039/patch2.tar"
+        patch2_download = "https://drive.google.com/uc?id=1WDYTgw73XOZEPAnlNsqKURm3hudfQnhD&export=download"
         break
     else:
         print("This is not an option. Please try again.")
@@ -263,34 +263,24 @@ txz.extract()
 tar = fl.TAR(txz.tar)
 tar.extract()
 
-# Edit LPAR file (cup icon size and perf-monitor setting)
+# Execute perf-monitor setting
 perf_monitor = fl.CFG(os.path.join(settings.path, "perf-monitor.cfg")).get_value()
-
-print("Setting cup icon size...")
-patch = fl.TAR(os.path.join(tar.extract_folder, "patch.tar"))
-patch.extract()
-patch2.extract()
-lpar = fl.TXT(os.path.join(patch2.extract_folder, "lecode", "lpar.txt"))
-lebin_old = fl.File(os.path.join(patch.extract_folder, "lecode", "lecode-JAP.bin"))
-lebin_new = fl.File(os.path.join(lpar.folder, "lecode-JAP.bin"))
-os.system(f"wlect lpar \"{lebin_new.path}\" > \"{lpar.path}\" -BHq")
-
-lpar.append("[LECODE-PARAMETERS]")
-os.system(f"wlect lpar -q \"{lebin_old.path}\" | grep CUP-ICON-SIZE >> \"{lpar.path}\"")
 
 if perf_monitor:
     print("Enabling the performance monitor...")
+    patch2.extract()
+    lpar = fl.TXT(os.path.join(patch2.extract_folder, "lecode", "lpar.txt"))
+    jap = fl.File(os.path.join(lpar.folder, "lecode-JAP.bin"))
+    os.system(f"wlect lpar \"{jap.path}\" > \"{lpar.path}\" -BH")
+    lpar.rewrite(lpar.find("LIMIT-MODE"), "LIMIT-MODE\t= LE$EXPERIMENTAL")
+    lpar.rewrite(lpar.find("PERF-MONITOR"), "PERF-MONITOR\t= 2")
     
-    lpar.append("LIMIT-MODE\t= LE$EXPERIMENTAL")
-    lpar.append("PERF-MONITOR\t= 2")
+    for region in cs.regions:
+        lebin = fl.File(os.path.join(lpar.folder, f"lecode-{region}.bin"))
+        os.system(f"wlect patch \"{lebin.path}\" --lpar \"{lpar.path}\" -o")
     
-for region in cs.regions:
-    lecode_bin = fl.File(os.path.join(lpar.folder, f"lecode-{region}.bin"))
-    os.system(f"wlect patch -q \"{lecode_bin.path}\" --lpar \"{lpar.path}\" -o")
-
-lpar.delete()
-patch.delete_extract()
-patch2.build()
+    lpar.delete()
+    patch2.build()
 
 # Move ISO and patch2.tar
 patch2.move_down([intermezzo])
@@ -385,7 +375,7 @@ if new_iso.exists():
         new_iso.rename(name)
     new_iso.move(os.path.join(directory.path, new_iso.filename))
 
-# Executes pycache setting
+# Execute pycache setting
 delete_pycache = fl.CFG(os.path.join(settings.path, "pycache.cfg")).get_value()
 pycache = fl.Folder(os.path.join(cwd, "__pycache__"))
 
