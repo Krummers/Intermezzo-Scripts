@@ -13,8 +13,8 @@
   M60	= \c{red1}We are switching to battle region 20222!
   M79	= \c{yor6}Grand Prix with 7 races!
   M80	= \c{yor7}Grand Prix with 8 races!
-  M91	= These used to be Kanto's favourite messages...
-  M92	= These used to be Kanto's favourite messages...
+  M91	= This used to be Kanto's favourite message...
+  M92	= This one too!
 
    7e2	= \c{blue1}Intermezzo XX
    838	= \c{blue1}Intermezzo XX

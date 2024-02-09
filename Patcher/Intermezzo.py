@@ -263,44 +263,42 @@ txz.extract()
 tar = fl.TAR(txz.tar)
 tar.extract()
 
-# Execute gesso and kumo setting
+# Execute gesso, kumo and perf-monitor setting
 gesso = fl.CFG(os.path.join(settings.path, "gesso.cfg")).get_value()
 kumo = fl.CFG(os.path.join(settings.path, "kumo.cfg")).get_value()
+perf_monitor = fl.CFG(os.path.join(settings.path, "perf-monitor.cfg")).get_value()
 
-if gesso != "feather" or kumo != "normal":
+if gesso != "feather" or kumo != "normal" or perf_monitor:
     patch2.extract()
+    
     if gesso != "feather":
         print(f"Copying {gesso}...")
         brres = fl.File(os.path.join(patch2.extract_folder, "common", "gesso.brres"))
         other = fl.File(os.path.join(cwd, "Files", "gesso", f"{gesso}.brres"))
         brres.delete()
         other.copy(brres.path)
+    
     if kumo != "normal":
         print(f"Copying {kumo}...")
         brres = fl.File(os.path.join(patch2.extract_folder, "common", "kumo.brres"))
         other = fl.File(os.path.join(cwd, "Files", "kumo", f"{kumo}.brres"))
         other.copy(brres.path)
+    
+    if perf_monitor:
+        print("Enabling the performance monitor...")
+        lpar = fl.TXT(os.path.join(patch2.extract_folder, "lecode", "lpar.txt"))
+        jap = fl.File(os.path.join(lpar.folder, "lecode-JAP.bin"))
+        os.system(f"wlect lpar \"{jap.path}\" > \"{lpar.path}\" -BH")
+        lpar.rewrite(lpar.find("LIMIT-MODE"), "LIMIT-MODE\t= LE$EXPERIMENTAL")
+        lpar.rewrite(lpar.find("PERF-MONITOR"), "PERF-MONITOR\t= 2")
+        
+        for region in cs.regions:
+            lebin = fl.File(os.path.join(lpar.folder, f"lecode-{region}.bin"))
+            os.system(f"wlect patch \"{lebin.path}\" --lpar \"{lpar.path}\" -o")
+        
+        lpar.delete()
+    
     patch2.build()
-
-# Execute perf-monitor setting
-perf_monitor = fl.CFG(os.path.join(settings.path, "perf-monitor.cfg")).get_value()
-patch = fl.TAR(os.path.join(tar.extract_folder, "patch.tar"))
-
-if perf_monitor:
-    print("Enabling the performance monitor...")
-    patch.extract()
-    lpar = fl.TXT(os.path.join(patch.extract_folder, "lecode", "lpar.txt"))
-    jap = fl.File(os.path.join(lpar.folder, "lecode-JAP.bin"))
-    os.system(f"wlect lpar \"{jap.path}\" > \"{lpar.path}\" -BH")
-    lpar.rewrite(lpar.find("LIMIT-MODE"), "LIMIT-MODE\t= LE$EXPERIMENTAL")
-    lpar.rewrite(lpar.find("PERF-MONITOR"), "PERF-MONITOR\t= 2")
-    
-    for region in cs.regions:
-        lebin = fl.File(os.path.join(lpar.folder, f"lecode-{region}.bin"))
-        os.system(f"wlect patch \"{lebin.path}\" --lpar \"{lpar.path}\" -o")
-    
-    lpar.delete()
-    patch.build()
 
 # Move ISO and patch2.tar
 patch2.move_down([intermezzo])
