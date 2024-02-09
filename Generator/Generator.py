@@ -180,7 +180,7 @@ if prefix == "mkw-intermezzo":
 else:
     link = "https://download.wiimm.de/intermezzo/texture-hacks/"
 link = link + intermezzo + ".txz"
-ft.download(link, txz.path)
+ft.download(link, txz.path, progress = "Intermezzo")
 
 # Extract TXZ and TAR
 print("Extracting files...")
