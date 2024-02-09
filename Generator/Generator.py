@@ -174,7 +174,6 @@ directory = fl.Folder(os.path.join(cwd, intermezzo))
 txz = fl.TXZ(os.path.join(cwd, intermezzo + ".txz"))
 
 # Download Intermezzo
-print("Downloading Intermezzo...")
 if prefix == "mkw-intermezzo":
     link = "https://download.wiimm.de/intermezzo/"
 else:
