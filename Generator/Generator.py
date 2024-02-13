@@ -201,10 +201,10 @@ translations.rename("translate.txt")
 info = tf.read_file(translations.path)
 prefixes = tf.get_prefix_list()
 
-translated = 0
+translated = -32
 total = 1
 if language != "E":
-    total = 0
+    total = -32
     wiiki = tf.Wiiki()
     
     for k in range(len(info)):
