@@ -10,8 +10,9 @@ import Modules.file as fl
 import Modules.functions as ft
 
 cwd = os.getcwd()
-settings = fl.Folder(os.path.join(cwd, "Settings"))
 cache = fl.Folder(os.path.join(cwd, "Cache"))
+files = fl.Folder(os.path.join(cwd, "Files"))
+settings = fl.Folder(os.path.join(cwd, "Settings"))
 
 # Check if all settings are defined
 while True:
@@ -60,11 +61,9 @@ while True:
     
     if choice in cs.types[:2]:
         prefix = "mkw-intermezzo"
-        patch2_download = "https://drive.google.com/uc?id=1WARKQAZb-9Vky-oyjgOgqjep0SLiBG1N&export=download"
         break
     elif choice in cs.types[2:]:
         prefix = ""
-        patch2_download = "https://drive.google.com/uc?id=1WDYTgw73XOZEPAnlNsqKURm3hudfQnhD&export=download"
         break
     else:
         print("This is not an option. Please try again.")
@@ -156,7 +155,7 @@ if prefix == "mkw-intermezzo":
         print(chr(x + 65), ". ", options[x], sep = "")
     
     while True:
-        choice = str(input("Which Intermezzo should be installed? (Enter the corresponding option): "))
+        choice = str(input("Which Intermezzo should be installed? (Enter the corresponding option): ")).upper()
         
         if len(choice) != 1:
             print("This is not an option. Please try again.")
@@ -172,7 +171,7 @@ else:
         print(choices[x], ". ", options[x], sep = "")
     
     while True:
-        choice = str(input("Which Intermezzo should be installed? (Enter the corresponding option): "))
+        choice = str(input("Which Intermezzo should be installed? (Enter the corresponding option): ")).upper()
         
         if choice in choices:
             index = choices.index(choice)
@@ -238,7 +237,8 @@ else:
             print("This is not an option. Please try again.")
 
 if not present:
-    ft.download(patch2_download, patch2.path, progress = "patch2.tar")
+    file = fl.TAR(os.path.join(files.path, "patch2", "200cc.tar" if prefix == "mkw-intermezzo" else "ri.tar"))
+    file.copy(patch2.path)
 
 # Setup directory before patching
 intermezzo = prefix + "-" + date
@@ -274,14 +274,14 @@ if gesso != "feather" or kumo != "normal" or perf_monitor:
     if gesso != "feather":
         print(f"Copying {gesso}...")
         brres = fl.File(os.path.join(patch2.extract_folder, "common", "gesso.brres"))
-        other = fl.File(os.path.join(cwd, "Files", "gesso", f"{gesso}.brres"))
+        other = fl.File(os.path.join(files.path, "gesso", f"{gesso}.brres"))
         brres.delete()
         other.copy(brres.path)
     
     if kumo != "normal":
         print(f"Copying {kumo}...")
         brres = fl.File(os.path.join(patch2.extract_folder, "common", "kumo.brres"))
-        other = fl.File(os.path.join(cwd, "Files", "kumo", f"{kumo}.brres"))
+        other = fl.File(os.path.join(files.path, "kumo", f"{kumo}.brres"))
         other.copy(brres.path)
     
     if perf_monitor:

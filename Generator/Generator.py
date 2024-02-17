@@ -111,7 +111,7 @@ if prefix == "mkw-intermezzo":
         print(chr(x + 65), ". ", options[x], sep = "")
     
     while True:
-        choice = str(input("Which Intermezzo should be edited? (Enter the corresponding option): "))
+        choice = str(input("Which Intermezzo should be edited? (Enter the corresponding option): ")).upper()
         
         if len(choice) != 1:
             print("This is not an option. Please try again.")
@@ -127,7 +127,7 @@ else:
         print(choices[x], ". ", options[x], sep = "")
     
     while True:
-        choice = str(input("Which Intermezzo should be edited? (Enter the corresponding option): "))
+        choice = str(input("Which Intermezzo should be edited? (Enter the corresponding option): ")).upper()
         
         if choice in choices:
             index = choices.index(choice)
@@ -145,10 +145,9 @@ for identifier in cs.identifiers:
     print(identifier, ". ", cs.languages[cs.identifiers.index(identifier)], sep = "")
 
 while True:
-    language = str(input("Which language should be translated to? (Enter the corresponding option): "))
+    language = str(input("Which language should be translated to? (Enter the corresponding option): ")).upper()
     
-    if language.upper() in cs.identifiers:
-        language = language.upper()
+    if language in cs.identifiers:
         break
     else:
         print("This is not an option. Please try again.")
@@ -158,12 +157,12 @@ for x in range(len(cs.modes)):
     print(chr(x + 65), ". ", cs.modes[x], sep = "")
 
 while True:
-    mode = str(input("Which mode should be applied? (Enter the corresponding option): "))
+    mode = str(input("Which mode should be applied? (Enter the corresponding option): ")).upper()
     
     if len(mode) != 1:
         print("This is not an option. Please try again.")
-    elif mode.isalpha() and ord(mode.upper()) - 65 in range(len(cs.modes)):
-        mode = cs.modes[ord(mode.upper()) - 65]
+    elif mode.isalpha() and ord(mode) - 65 in range(len(cs.modes)):
+        mode = cs.modes[ord(mode) - 65]
         break
     else:
         print("This is not an option. Please try again.")
