@@ -17,13 +17,15 @@ def download(link, path, progress = None):
                 if total is None:
                     file.write(data.content)
                 else:
+                    size = os.get_terminal_size()[0] - 15
                     download = 0
                     total = int(total)
                     for chunk in data.iter_content(chunk_size = 1024):
                         download += len(chunk)
                         file.write(chunk)
-                        completion = int(100 * download / total)
-                        print(f"\r[{'=' * completion}{' ' * (100 - completion)}]", f"{completion}%", end = "") 
+                        percentage = int(100 * download / total)
+                        completion = int(size * download / total)
+                        print(f"\r[{'=' * completion}{' ' * (size - completion)}]", f"{percentage}%", end = "") 
                 print("\n")
             else:
                 file.write(data.content)
