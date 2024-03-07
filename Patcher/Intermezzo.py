@@ -8,15 +8,15 @@ import Modules.constants as cs
 import Modules.date as dt
 import Modules.file as fl
 import Modules.functions as ft
+import Modules.setting as st
 
 cwd = os.getcwd()
 cache = fl.Folder(os.path.join(cwd, "Cache"))
 files = fl.Folder(os.path.join(cwd, "Files"))
-settings = fl.Folder(os.path.join(cwd, "Settings"))
 
 # Check if all settings are defined
 while True:
-    if not all([fl.CFG(os.path.join(settings.path, setting + ".cfg")).exists() for setting in cs.settings]):
+    if not all([st.Setting().create(setting).get_value() != None for setting in cs.settings]):
         print("Not all settings are defined!")
         it.main()
     else:
@@ -41,7 +41,7 @@ while True:
 
 # Check if all user-defined directories exist
 while True:
-    if not all([os.path.exists(fl.CFG(os.path.join(settings.path, setting + ".cfg")).get_value()) \
+    if not all([os.path.exists(st.Setting().create(setting).get_value()) \
                 for setting in ["directory", "downloads"]]):
         print("Not all drives are accessible!")
         input("Please make all drives defined in the settings available. (Press enter to restart): ")
@@ -49,7 +49,7 @@ while True:
         break
 
 # Move downloaded patches into main directory
-downloads = fl.CFG(os.path.join(settings.path, "downloads.cfg")).get_value()
+downloads = st.Setting().create("downloads").get_value()
 for identifier in cs.identifiers + ["2"]:
     file = fl.File(os.path.join(downloads, f"patch{identifier}.tar"))
     if file.exists():
@@ -186,7 +186,7 @@ else:
 
 # Check and handle patch2.tar
 patch2 = fl.TAR(os.path.join(cwd, "patch2.tar"))
-pref_language = fl.CFG(os.path.join(settings.path, "pref-language.cfg")).get_value()
+pref_language = st.Setting().create("pref-language").get_value()
 
 options = []
 for identifier in cs.identifiers:
@@ -264,9 +264,9 @@ tar = fl.TAR(txz.tar)
 tar.extract()
 
 # Execute gesso, kumo and perf-monitor setting
-gesso = fl.CFG(os.path.join(settings.path, "gesso.cfg")).get_value()
-kumo = fl.CFG(os.path.join(settings.path, "kumo.cfg")).get_value()
-perf_monitor = fl.CFG(os.path.join(settings.path, "perf-monitor.cfg")).get_value()
+gesso = st.Setting().create("gesso").get_value()
+kumo = st.Setting().create("kumo").get_value()
+perf_monitor = st.Setting().create("perf-monitor").get_value()
 
 if gesso != "feather" or kumo != "normal" or perf_monitor:
     patch2.extract()
@@ -335,14 +335,14 @@ for file in os.listdir():
         sh.rmtree(file)
 
 # Execute riivo-suffix setting
-riivo_suffix = fl.CFG(os.path.join(settings.path, "riivo-suffix.cfg")).get_value()
+riivo_suffix = st.Setting().create("riivo-suffix").get_value()
 if riivolution.exists() and riivo_suffix:
     print("Adding suffix to Riivolution build...")
     suffix = date if prefix == "mkw-intermezzo" else intermezzo
     riivolution, Wiimm_Intermezzo = ft.rename_riivolution(riivolution, Wiimm_Intermezzo, suffix)
 
 # Execute iso-rename setting
-iso_rename = fl.CFG(os.path.join(settings.path, "iso-rename.cfg")).get_value()
+iso_rename = st.Setting().create("iso-rename").get_value()
 if new_iso.exists() and iso_rename:
     print("Renaming ISO...")
     for file in os.listdir():
@@ -357,8 +357,8 @@ if new_iso.exists() and iso_rename:
         break_loop = False
 
 # Execute directory setting
-directory = fl.Folder(fl.CFG(os.path.join(settings.path, "directory.cfg")).get_value())
-overwrite = fl.CFG(os.path.join(settings.path, "overwrite-perm.cfg")).get_value()
+directory = fl.Folder(st.Setting().create("directory").get_value())
+overwrite = st.Setting().create("overwrite-perm").get_value()
 
 old_iso = os.path.join(directory.path, new_iso.filename)
 
@@ -394,7 +394,7 @@ if new_iso.exists():
     new_iso.move(os.path.join(directory.path, new_iso.filename))
 
 # Execute pycache setting
-delete_pycache = fl.CFG(os.path.join(settings.path, "pycache.cfg")).get_value()
+delete_pycache = st.Setting().create("pycache").get_value()
 pycache = fl.Folder(os.path.join(cwd, "__pycache__"))
 
 if pycache.exists() and delete_pycache:
