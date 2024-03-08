@@ -270,6 +270,7 @@ perf_monitor = st.Setting().create("perf-monitor").get_value()
 
 if gesso != "feather" or kumo != "normal" or perf_monitor:
     patch2.extract()
+    race = fl.File(os.path.join(patch2.extract_folder, "files", "Scene", "UI", "Race.szs"))
     
     if gesso != "feather":
         print(f"Copying {gesso}...")
@@ -277,12 +278,30 @@ if gesso != "feather" or kumo != "normal" or perf_monitor:
         other = fl.File(os.path.join(files.path, "gesso", f"{gesso}.brres"))
         brres.delete()
         other.copy(brres.path)
+        
+        os.system(f"wszst extract \"{race.path}\"")
+        tpl = fl.File(os.path.join(patch2.extract_folder, "files", "Scene", \
+                      "UI", "Race.d", "game_image", "timg", "fm_item_gesso.tpl"))
+        other = fl.File(os.path.join(files.path, "gesso", f"{gesso}.tpl"))
+        tpl.delete()
+        other.copy(tpl.path)
+        os.system(f"wszst create \"{race.path[:-3] + 'd'}\" -o")
+        sh.rmtree(race.path[:-3] + "d")
     
     if kumo != "normal":
         print(f"Copying {kumo}...")
         brres = fl.File(os.path.join(patch2.extract_folder, "common", "kumo.brres"))
         other = fl.File(os.path.join(files.path, "kumo", f"{kumo}.brres"))
         other.copy(brres.path)
+        
+        os.system(f"wszst extract \"{race.path}\"")
+        tpl = fl.File(os.path.join(patch2.extract_folder, "files", "Scene", \
+                      "UI", "Race.d", "game_image", "timg", "fm_item_pikakumo.tpl"))
+        other = fl.File(os.path.join(files.path, "kumo", f"{kumo}.tpl"))
+        tpl.delete()
+        other.copy(tpl.path)
+        os.system(f"wszst create \"{race.path[:-3] + 'd'}\" -o")
+        sh.rmtree(race.path[:-3] + "d")
     
     if perf_monitor:
         print("Enabling the performance monitor...")
