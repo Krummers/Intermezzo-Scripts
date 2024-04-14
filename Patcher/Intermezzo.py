@@ -220,7 +220,7 @@ else:
     
     while True:
         if pref_language not in options:
-            choice = str(input("Which patch2.tar should be used? (Enter the corresponding option): "))
+            choice = str(input("Which patch2.tar should be used? (Enter the corresponding option): ")).upper()
         else:
             choice = pref_language
         
