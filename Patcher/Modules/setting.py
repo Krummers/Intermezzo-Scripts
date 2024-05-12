@@ -247,11 +247,14 @@ class PreferredLanguage(Setting):
         self.default = "E"
         self.documentation = "This option is the preferred language. If any language patch gets found during the installation process, it will pick this language automatically."
         
-        self.options = ["B", "E", "F", "G", "I", "J", "K", "M", "N", "P", "Q", "S"]
-        self.display_options = ["Portuguese (NTSC)", "English", "French (PAL)", \
-                                "German", "Italian", "Japanese", "Korean", \
-                                "Spanish (NTSC)", "Dutch", "Portuguese (PAL)", \
-                                "French (NTSC)", "Spanish (PAL)"]
+        self.options = ["B", "Q", "Z", "D", "G", "L", "E", "S", "H", \
+                       "F", "I", "J", "K", "M", "N", "O", "P", "R", \
+                       "W", "U"]
+        self.display_options = ["Portuguese (NTSC)", "French (NTSC)", "Czech", "Danish", \
+                                "German", "Greek", "English (PAL)", "Spanish (PAL)", \
+                                "Finnish", "French (PAL)", "Italian", "Japanese", \
+                                "Korean", "Spanish (NTSC)", "Dutch", "Polish", \
+                                "Portuguese (PAL)", "Russian", "Swedish", "English (NTSC)"]
         
         self.cfg = fl.CFG(os.path.join(settings.path, f"{self.internal}.cfg"))
     

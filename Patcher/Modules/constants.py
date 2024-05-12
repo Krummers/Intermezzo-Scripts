@@ -54,13 +54,16 @@ names = {"11": "Luigi Circuit", "12": "Moo Moo Meadows", \
          "A": "Recent 80 Texture Hacks", "B": "Recent 200 Texture Hacks", \
          "C": "Texture Hacks"}
 
-identifiers = ["B", "E", "F", "G", "I", "J", "K", "M", "N", "P", "Q", "S"]
+identifiers = ["B", "Q", "Z", "D", "G", "L", "E", "S", "H", \
+               "F", "I", "J", "K", "M", "N", "O", "P", "R", \
+               "W", "U"]
 
-languages = ["Portuguese (NTSC)", "English", "French (PAL)", "German", \
-             "Italian", "Japanese", "Korean", "Spanish (NTSC)", \
-             "Dutch", "Portuguese (PAL)", "French (NTSC)", \
-             "Spanish (PAL)"]
+languages = ["Portuguese (NTSC)", "French (NTSC)", "Czech", "Danish", \
+             "German", "Greek", "English (PAL)", "Spanish (PAL)", \
+             "Finnish", "French (PAL)", "Italian", "Japanese", \
+             "Korean", "Spanish (NTSC)", "Dutch", "Polish", \
+             "Portuguese (PAL)", "Russian", "Swedish", "English (NTSC)"]
 
-abbreviations = ["pt-N", "en", "fr-P", "de", "it", "ja", \
-                 "ko", "es-N", "nl", "pt-P", "fr-P", \
-                 "es-P"]
+abbreviations = ["br", "ca", "cs", "da", "de", "el", "en", "es", "fi", \
+                 "fr", "it", "ja", "ko", "mx", "nl", "pl", "pt", "ru", \
+                 "sv", "us"]
