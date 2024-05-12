@@ -54,13 +54,27 @@ names = {"11": "Luigi Circuit", "12": "Moo Moo Meadows", \
          "A": "Recent 80 Texture Hacks", "B": "Recent 200 Texture Hacks", \
          "C": "Texture Hacks"}
 
-identifiers = ["B", "E", "F", "G", "I", "J", "K", "M", "N", "P", "Q", "S"]
+slot_dict = {"T11": "7008", "T12": "7001", "T13": "7002", "T14": "7004", \
+             "T21": "7000", "T22": "7005", "T23": "7006", "T24": "7007", \
+             "T31": "7009", "T32": "700f", "T33": "700b", "T34": "7003", \
+             "T41": "700e", "T42": "700a", "T43": "700c", "T44": "700d", \
+             "T51": "7010", "T52": "7014", "T53": "7019", "T54": "701a", \
+             "T61": "701b", "T62": "701f", "T63": "7017", "T64": "7012", \
+             "T71": "7015", "T72": "701e", "T73": "701d", "T74": "7011", \
+             "T81": "7018", "T82": "7016", "T83": "7013", "T84": "701c", \
+             "U11": "7021", "U12": "7020", "U13": "7023", "U14": "7022", "U15": "7024", \
+             "U21": "7027", "U22": "7028", "U23": "7029", "U24": "7025", "U25": "7026"}
 
-languages = ["Portuguese (NTSC)", "English", "French (PAL)", "German", \
-             "Italian", "Japanese", "Korean", "Spanish (NTSC)", \
-             "Dutch", "Portuguese (PAL)", "French (NTSC)", \
-             "Spanish (PAL)"]
+identifiers = ["B", "Q", "Z", "D", "G", "L", "E", "S", "H", \
+               "F", "I", "J", "K", "M", "N", "O", "P", "R", \
+               "W", "U"]
 
-abbreviations = ["pt-N", "en", "fr-P", "de", "it", "ja", \
-                 "ko", "es-N", "nl", "pt-P", "fr-P", \
-                 "es-P"]
+languages = ["Portuguese (NTSC)", "French (NTSC)", "Czech", "Danish", \
+             "German", "Greek", "English (PAL)", "Spanish (PAL)", \
+             "Finnish", "French (PAL)", "Italian", "Japanese", \
+             "Korean", "Spanish (NTSC)", "Dutch", "Polish", \
+             "Portuguese (PAL)", "Russian", "Swedish", "English (NTSC)"]
+
+abbreviations = ["br", "ca", "cs", "da", "de", "el", "en", "es", "fi", \
+                 "fr", "it", "ja", "ko", "mx", "nl", "pl", "pt", "ru", \
+                 "sv", "us"]

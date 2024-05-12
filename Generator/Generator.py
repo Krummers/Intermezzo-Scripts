@@ -6,8 +6,6 @@ import Modules.date as dt
 import Modules.file as fl
 import Modules.functions as ft
 
-import Modules.temporary_functions as tf
-
 cwd = os.getcwd()
 cache = fl.Folder(os.path.join(cwd, "Cache"))
 
@@ -192,93 +190,93 @@ patch = fl.TAR(os.path.join(directory.path, "patch.tar"))
 patch.move_up(1)
 patch.extract()
 
-# Temporary code that needs to be rewritten
-translations = fl.TXT(os.path.join(cwd, "patch-dir", "bmg", "track-names", "_base.txt"))
-translations.move_up(3)
-translations.rename("translate.txt")
+# Download translation JSON and prepare translation process
+json = ft.get_translations()
+prefix_set = ft.get_prefixes()
 
-info = tf.read_file(translations.path)
-prefixes = tf.get_prefix_list()
+translate = fl.TXT(os.path.join(cwd, "patch-dir", "bmg", "track-names", "_base.txt"))
+translate.move_up(3)
+translate.rename("translate.txt")
 
-translated = -32
+entries = translate.read()
+translated = -30
 total = 1
+
 if language != "E":
     total = -32
-    wiiki = tf.Wiiki()
     
-    for k in range(len(info)):
-        # Checks if a line is a track
-        if len(info[k]) < 7:
+    for k in range(len(entries)):
+        # Check if an entry is a track
+        if len(entries[k]) < 7:
             continue
-        l = info[k].split("\\n")
-        if l[1] == "-":
+        entry = entries[k].split("\\n")
+        if entry[1] == "-":
             continue
         
-        # Extracts needed information from the line
-        if (pos := l[1].find("(")) != -1:
-            track = l[1][:pos - 1]
-            parenthesis = l[1][pos + 1:-1]
+        # Extract information
+        message = entry[0]
+        slot = message[2:message.find("\t")]
+        track = entry[1]
+        if "(" in track:
+            extra_begin = entry[1].rfind("(")
+            extra = track[extra_begin + 1:-1]
+            track = track.replace(f" ({extra})", "")
         else:
-            track = l[1]
-            parenthesis = ""
-        track_type = l[6]
-        prefix = l[7]
-        colour_prefixes = l[9]
-        colour_version = l[10]
+            extra = ""
+        track_type = entry[6]
+        colour_prefixes = entry[9]
+        prefixes = colour_prefixes.split("\\c{")
+        prefixes = [prefix[prefix.find("}") + 1:].strip() for prefix in prefixes]
+        prefixes = [prefix for prefix in prefixes if prefix in prefix_set]
+        prefix = entry[7]
+        colour_version = entry[10]
         
-        # Translates the track name
-        translation = wiiki.translate(prefix + track, cs.abbreviations[cs.identifiers.index(language)])
+        # Translate entry
+        try:
+            if f"{prefix}{track} ({extra})" in json.keys():
+                translation = json[f"{prefix}{track} ({extra})"]["translate"][cs.abbreviations[cs.identifiers.index(language)]]
+            elif prefix + track in json.keys():
+                translation = json[prefix + track]["translate"][cs.abbreviations[cs.identifiers.index(language)]]
+            else:
+                translation = None
+        except KeyError:
+            translation = None
         
-            # Translation ratio
         total += 1
-        if translation != None:
+        if translation is None:
+            translation = f"{prefix}{track} ({extra})" if extra else prefix + track
+            colour_version += " \\z{800,46}\\c{yor7}(NT)"
+            new_prefixes = prefixes
+        else:
+            new_prefixes = []
+            for x, y in zip(prefixes, range(len(prefixes))):
+                if x in translation:
+                    new_prefixes.append(x)
+                    translation = translation.replace(f"{x} ", "")
+                else:
+                    new_prefixes.append(translation.split(" ")[y])
+                    translation = " ".join(translation.split(" ")[1:])
             translated += 1
         
-        if translation == None and parenthesis != "":
-            translation = prefix + track + " (" + parenthesis + ")"
-            colour_version = colour_version + " \\z{800,46}\\c{yor7}(NT)"
-        elif translation == None and parenthesis == "":
-            translation = prefix + track
-            colour_version = colour_version + " \\z{800,46}\\c{yor7}(NT)"
+        # Insert information        
+        if slot in cs.slot_dict.keys():
+            entry[0] = message.replace(slot, cs.slot_dict[slot])
         
-        # Removes prefix from translation
-        for p in prefixes:
-            if translation.startswith(p + " "):
-                prefix = p
-                translation = translation[len(p) + 1:]
-                break
-            prefix = ""
+        entry[1] = translation
+        entry[10] = colour_version
+        for prefix, new in zip(prefixes, new_prefixes):
+            entry[7] = entry[7].replace(prefix, new)
+            entry[9] = entry[9].replace(prefix, new)
+        entry[13] = track_type + translation
         
-        # Inserting new information
-        l[0] = l[0][0:l[0].find("=") + 5] + translation.lower() + " " + parenthesis + l[0][-3:]
-        slot = l[0][2:l[0].find("\t")]
-        if slot in tf.slot_dict.keys():
-            l[0] = l[0].replace(slot, tf.slot_dict[slot])
+        entries[k] = entry
         
-        if parenthesis != "":
-            l[1] = translation + " (" + parenthesis + ")"
-            l[13] = track_type + translation + " (" + parenthesis + ")\n"
-        else:
-            l[1] = translation
-            l[13] = track_type + translation + "\n"
-        
-        if prefix != "":
-            l[7] = prefix + " "
-        
-        for p, q in zip(["SFC", "64", "GC", "Wii U"], ["SNES", "N64", "GCN", "WiiU"]):
-            if prefix == p:
-                l[9] = colour_prefixes[:colour_prefixes.find(q)] + prefix + colour_prefixes[-8:]
-        
-        l[10] = colour_version
-        
-        info[k] = l
-        # Printing results
-        if prefix != "":
-            print("Translation to {} is {} {}.".format(cs.languages[cs.identifiers.index(language)], prefix, translation))
-        else:
-            print("Translation to {} is {}.".format(cs.languages[cs.identifiers.index(language)], translation))
+        # Print results
+        print(f"Translation of{' ' + ' '.join(prefixes) if prefixes else ''} " +
+              f"{track} to {cs.languages[cs.identifiers.index(language)]} is" +
+              f"{' ' + ' '.join(new_prefixes) if prefixes else ''} {translation}.")
 
-# Already rewritten
+# Print more results
 print(f"Translated {translated} out of {total} names.")
 print(f"Translation ratio is {translated / total * 100:.2f}%.")
 
@@ -290,16 +288,9 @@ if not statistics.exists():
 else:
     statistics.append(results)
 
-# End of already rewritten
-
-for k in range(len(info)):
-    if type(info[k]) == str:
-        continue
-    info[k] = "\\n".join(info[k])
-
-tf.write_file("translate.txt", info)
-
-# End of temporary code that needs to be rewritten
+# Insert new translations
+entries = [entry if isinstance(entry, str) else "\\n".join(entry) for entry in entries]
+translate.write(entries)
 
 # Setup files for patch2.tar
 print("Preparing patch2.tar...")
@@ -322,7 +313,7 @@ folder.delete()
 
 # Edit text files for patch2.tar
 for file in {"_base.txt", "en-all.txt", "en-nin.txt"}:
-    translations.copy(os.path.join(patch_dir.path, "bmg", "track-names", file))
+    translate.copy(os.path.join(patch_dir.path, "bmg", "track-names", file))
 
 force = fl.TXT(os.path.join(patch_dir.path, "bmg", "messages", "force.txt"))
 force.move_up(3)
@@ -344,7 +335,7 @@ sp.run(f"7z a patch{language}.tar \"{patch_dir.path}\"")
 
 # Clean directory
 print("Cleaning directory...")
-translations.delete()
+translate.delete()
 force.delete()
 tar.delete()
 txz.delete()

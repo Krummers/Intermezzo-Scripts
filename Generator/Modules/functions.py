@@ -1,3 +1,5 @@
+import cloudscraper as cc
+import json as js
 import os
 import platform as pf
 import requests as rq
@@ -66,6 +68,26 @@ def clear_screen():
         os.system("cls")
     else:
         os.system("clear")
+
+def get_translations():
+    scraper = cc.create_scraper(browser = {"custom": "ScraperBot"})
+    text = scraper.get("https://wiki.tockdom.com/info-w/translations.json").text
+    json = js.loads(text)
+    return json["translate"]
+
+def get_prefixes():
+    file = fl.TXT(os.path.join(os.getcwd(), "prefixes.txt"))
+    download("https://ct.wiimm.de/export/prefix", file.path)
+    
+    info = file.read()
+    
+    prefixes = set()
+    for k in range(len(info)):
+        if info[k][0] == "#" or info[k][0] == "@":
+            continue
+        prefixes.add(info[k][:info[k].find("|")])
+    file.delete()
+    return prefixes
 
 def rename_riivolution(riivolution, Wiimm_Intermezzo, new_suffix):
     for file in os.listdir(riivolution.path):
