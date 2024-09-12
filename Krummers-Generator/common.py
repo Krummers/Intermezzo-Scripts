@@ -10,19 +10,9 @@ import Modules.functions as ft
 selections = fd.get_folder("Selections")
 generations = fd.get_folder("Generations")
 
-class TrackListing(object):
-    
-    def __init__(self, trackids: dict[int, str]) -> None:
-        if not isinstance(trackids, dict):
-            raise ValueError("trackids must be a dictionary")
-        
-        self.tracklist = []
-        for trackid, track_type in trackids:
-            self.tracklist.append((trackid, track_type))
-
 class TrackID(object):
     
-    def __init__(self, trackid: int, selection: str, track_type: str) -> None:
+    def __init__(self, trackid: int, selection: str, track_type = "normal") -> None:
         self.trackid = trackid
         self.selection = selection        
         self.track_type = track_type
@@ -38,16 +28,23 @@ class TrackID(object):
         if not isinstance(other, TrackID):
             raise ValueError("'other' must be a TrackID")
         
-        if self.track_type == "wish" and other.track_type == "normal":
-            return True
-        
-        if self.track_type == "normal" and other.track_type == "wish":
-            return False
-        
         self_data = self.get_information()
         other_data = other.get_information()
         
-        return self_data["name"] < other_data["name"]
+        if self.track_type == other.track_type:
+            return self_data["name"] < other_data["name"]
+        
+        if self.track_type == "wish":
+            return True
+        
+        if self.track_type == "nintendo":
+            if other.track_type == "wish":
+                return False
+            if other.track_type == "normal":
+                return True
+        
+        if self.track_type == "normal":
+            return False
     
     def __le__(self, other) -> bool:
         if not isinstance(other, TrackID):
@@ -114,14 +111,13 @@ class TrackID(object):
         data = self.read_json()
         information = dict()
         
-        if data["track_info"][0]["track_customtrack"] == 1:
-            information["is_track"] = True
-        else:
-            information["is_track"] = False
+        information["is_track"] = bool(data["track_info"][0]["track_customtrack"])
+        information["is_nintendo"] = bool(data["track_info"][0]["track_nintendo"])
         
         information["prefix"] = data["track_info"][0]["prefix"]
         information["name"] = data["track_info"][0]["trackname"]
         information["author"] = data["track_info"][0]["track_author"]
+        information["editor"] = data["track_info"][0]["track_editor"]
         version = data["track_info"][0]["track_version"]
         version_extra = data["track_info"][0]["track_version_extra"]
         if version_extra is not None:
@@ -139,6 +135,20 @@ class TrackID(object):
         information["music"] = cs.music_slots[f"{music:#04x}"]
         
         return information
+    
+    def get_identifier(self, colour = False) -> str:
+        if self.track_type == "normal":
+            return
+        elif self.track_type == "wish":
+            if colour:
+                return "\\c{blue2}+W\\c{off}"
+            else:
+                return "+W"
+        elif self.track_type == "nintendo":
+            if colour:
+                return "\\c{green}+N\\c{off}"
+            else:
+                return "+N"
 
 class Slot(object):
     
@@ -171,7 +181,7 @@ class Slot(object):
 
 def print_from_list(values: list[str]) -> None:
     for x, value in enumerate(values):
-        print(chr(x + 65), ". ", value.capitalize(), sep = "")
+        print(chr(x + 65), ". ", value, sep = "")
     if not values:
         print("\t* (none)")
 

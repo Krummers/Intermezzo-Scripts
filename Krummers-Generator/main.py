@@ -28,10 +28,14 @@ def main() -> None:
         print_menu(actions)
         action = select_action(actions)
         
-        if action == "exit":
+        if action == "Create":
+            create.main()
+        elif action == "Generate":
+            generate.main()
+        elif action == "Delete":
+            delete.main()
+        elif action == "Exit":
             return
-        else:
-            exec(f"{action}.main()")
 
 if __name__ == "__main__":
     main()

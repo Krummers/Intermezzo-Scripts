@@ -1,4 +1,4 @@
-actions = ["create", "generate", "delete", "settings", "exit"]
+actions = ["Create", "Generate", "Delete", "Exit"]
 
 settings = ["pulsar-directory"]
 
@@ -7,6 +7,8 @@ extensions = ["iso", "ciso", "wdf", "wbfs", "gcx", "wia"]
 binaries = ["yes", "y", "no", "n"]
 
 regions = {"JAP", "KOR", "PAL", "USA"}
+
+regions_letters = {"E", "J", "K", "P"}
 
 codenames = {"11": "luigi-circuit", "12": "moo-moo-meadows", \
              "13": "mushroom-gorge", "14": "toad's-factory", \

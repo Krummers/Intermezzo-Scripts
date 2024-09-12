@@ -135,6 +135,12 @@ def trackid_downloader(trackid: int, selection: str, track_type: str) -> cm.Trac
     entry.download_json()
     if not entry.json.exists():
         return None
+    
+    # Mark as Nintendo track when needed
+    information = entry.get_information()
+    if information["is_nintendo"] and entry.track_type != "wish":
+        entry.track_type = "nintendo"
+    
     entry.download_wbz()
     return entry
 
