@@ -40,18 +40,21 @@ def generation_loop(trackids: list[cm.TrackID], files: tuple[fl.TXT]) -> int:
         
         identifier = entry.get_identifier()
         c_identifier = entry.get_identifier(colour = True)
+        name = entry.get_prefix()
+        c_name = entry.get_prefix(colour = True)
         
-        name = information["prefix"]
-        if name is not None:
+        if name != "":
             name += " "
+            c_name += " "
         else:
             name = ""
+            c_name = ""
         name += information["name"]
+        c_name += information["name"]
         if identifier is not None:
-            c_name = f"{c_identifier} {name}"
             name = f"{identifier} {name}"
-        else:
-            c_name = name
+            c_name = f"{c_identifier} {c_name}"
+        
         author = information["author"]
         editor = information["editor"]
         version = information["version"]
