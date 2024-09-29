@@ -54,12 +54,14 @@ def select_action() -> str:
     """Select action to perform on a selection."""
     
     while True:
-        option = input("Add tracks, remove tracks or exit? (A, R or X): ").lower()
+        option = input("Add tracks, remove tracks, redownload information or exit? (A, R, D or X): ").lower()
         
         if option == "a":
             return "add"
         elif option == "r":
             return "remove"
+        elif option == "d":
+            return "download"
         elif option == "x":
             return "exit"
         else:
@@ -174,6 +176,13 @@ def remove_trackids(trackids: list[cm.TrackID], selection: str, first: int, last
     
     return trackids
 
+def redownload_information(trackids: list[cm.TrackID], selection: str) -> None:
+    """Redownload JSON for every track ID."""
+    
+    for trackid in trackids:
+        print(f"Redownloading information from track ID {trackid.trackid}...")
+        trackid.download_json()
+
 def main() -> None:
     while True:
         folders = fd.get_selections()
@@ -204,6 +213,8 @@ def main() -> None:
                 print_trackids(trackids)
                 first, last = trackid_selector(action)
                 trackids = remove_trackids(trackids, selection, first, last)
+            elif action == "download":
+                redownload_information(trackids, selection)
         
             save_tracks(selection, trackids)
 
