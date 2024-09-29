@@ -76,7 +76,7 @@ class TrackID(object):
         
         return not (self == other)
     
-    def download_json(self) -> None:            
+    def download_json(self) -> None:
         url = f"https://szslibrary.com/api/api.php?id={self.trackid}"
         ft.download(url, self.json.path)
         
@@ -133,6 +133,9 @@ class TrackID(object):
         else:
             music = int(data["track_info"][0]["track_music"])
         information["music"] = cs.music_slots[f"{music:#04x}"]
+        
+        information["speed"] = float(data["track_info"][0]["track_speed"])
+        information["laps"] = int(data["track_info"][0]["track_laps"])
         
         return information
     

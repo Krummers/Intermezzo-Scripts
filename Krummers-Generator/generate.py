@@ -43,6 +43,8 @@ def generation_loop(trackids: list[cm.TrackID], files: tuple[fl.TXT]) -> int:
         name = entry.get_prefix()
         c_name = entry.get_prefix(colour = True)
         
+        speed = information["speed"]
+        
         if name != "":
             name += " "
             c_name += " "
@@ -57,7 +59,12 @@ def generation_loop(trackids: list[cm.TrackID], files: tuple[fl.TXT]) -> int:
         
         author = information["author"]
         editor = information["editor"]
+        
         version = information["version"]
+        c_version = information["version"]
+        if information["speed"] != 1.0:
+            c_version += f" \\c{{off}}\\c{{blue2}}×{speed}"
+        
         slot = information["slot"]
         music = information["music"]
         
@@ -66,7 +73,7 @@ def generation_loop(trackids: list[cm.TrackID], files: tuple[fl.TXT]) -> int:
             authors.append(f"{author},,{editor}")
         else:
             authors.append(author)
-        versions.append(version)
+        versions.append(c_version)
         slots.append(slot)
         musics.append(music)
         
