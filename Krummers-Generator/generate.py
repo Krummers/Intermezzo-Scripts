@@ -173,11 +173,11 @@ def edit_xml(xml: fl.File, selection: str, pulsarid: str) -> None:
     root[2][-1].set("disc", "main.dol")
     root[2][-1].set("create", "true")
     root[2][-1].tail = "\n\t\t"
-    root[2].append(et.Element("file"))
-    root[2][-1].set("external", f"/{selection}/Items/Common.szs")
-    root[2][-1].set("disc", "Race/Common.szs")
-    root[2][-1].set("create", "true")
-    root[2][-1].tail = "\n\t"
+    # root[2].append(et.Element("file"))
+    # root[2][-1].set("external", f"/{selection}/Items/Common.szs")
+    # root[2][-1].set("disc", "Race/Common.szs")
+    # root[2][-1].set("create", "true")
+    # root[2][-1].tail = "\n\t"
     
     # Add performance monitor main.dol loader
     root[-1].tail = "\n\t"
@@ -197,8 +197,8 @@ def copy_files(mod_folder: fl.Folder) -> None:
     """Copies additional files into a given distribution folder."""
     
     files = fd.get_folder("Files")
-    common = fl.File(os.path.join(files.path, "Common.szs"))
-    common.copy(os.path.join(mod_folder.path, "Items", common.filename))
+    # common = fl.File(os.path.join(files.path, "Common.szs"))
+    # common.copy(os.path.join(mod_folder.path, "Items", common.filename))
     
     for region in cs.regions_letters:
         mdol = fl.File(os.path.join(files.path, f"main{region}.dol"))
