@@ -8,10 +8,14 @@ import Modules.constants as cs
 fd.generate_folders()
 
 def print_menu(actions: list[str]) -> None:
+    """Print actions the program can perform."""
+    
     for x in range(len(actions)):
         print(chr(x + 65), ". ", actions[x].capitalize(), sep = "")
 
 def select_action(actions: list[str]) -> str:
+    """Select an action for the program."""
+    
     while True:
         choice = input("What action needs to be performed? (Enter the corresponding option): ")
         

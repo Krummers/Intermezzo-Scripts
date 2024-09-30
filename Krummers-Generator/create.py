@@ -82,6 +82,7 @@ def select_track_type() -> str:
 
 def print_trackids(trackids: list[cm.TrackID]) -> None:
     """Print track IDs in a readable way."""
+    
     print("Track IDs included:")
     for entry in trackids:
         print(f"{entry.trackid}. {entry.track_type}")

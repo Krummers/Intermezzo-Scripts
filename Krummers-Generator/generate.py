@@ -12,6 +12,8 @@ import Modules.functions as ft
 selections = fd.get_folder("Selections")
 
 def create_text_files(generation: fl.Folder) -> list[fl.TXT]:
+    """Create text files for Pulsar mass import."""
+    
     names = fl.TXT(os.path.join(generation.path, "names.txt"))
     authors = fl.TXT(os.path.join(generation.path, "authors.txt"))
     versions = fl.TXT(os.path.join(generation.path, "versions.txt"))
@@ -21,6 +23,7 @@ def create_text_files(generation: fl.Folder) -> list[fl.TXT]:
     return names, authors, versions, slots, musics, tracklist
 
 def generation_loop(trackids: list[cm.TrackID], files: tuple[fl.TXT]) -> int:
+    """Main loop for generating the track list, BMGs and files."""
     names, authors, versions, slots, musics, tracklist = files
     track_counter = 0
     slot_number = cm.Slot(8, 4)
@@ -106,6 +109,8 @@ def generation_loop(trackids: list[cm.TrackID], files: tuple[fl.TXT]) -> int:
     return track_counter
 
 def instructions(selection: str, track_counter: int, files: list[fl.TXT]) -> None:
+    """Print instructions for Pulsar."""
+    
     print(f"Amount of required cups is {mt.ceil(track_counter / 8) * 2}.")
     print("Drag the track files to the \"/Pulsar/import\" folder.")
     print(f"Name the mod folder name \"{selection}\".")
@@ -116,6 +121,8 @@ def instructions(selection: str, track_counter: int, files: list[fl.TXT]) -> Non
     print(f"Continue once the two folders are in \"/Krummers-Generator/Generations/{selection}\"")
 
 def check_process(selection: str, generation: fl.File) -> tuple[fl.Folder, fl.File]:
+    """Checks if the Pulsar-generated distribution has been placed correctly."""
+    
     mod_folder = fl.Folder(os.path.join(generation.path, selection))
     xml = fl.File(os.path.join(generation.path, "riivolution", f"{selection}.xml"))
     
@@ -131,6 +138,8 @@ def check_process(selection: str, generation: fl.File) -> tuple[fl.Folder, fl.Fi
         print("The folders do not exist yet.")
 
 def get_pulsar_id(xml: fl.File, selection: str) -> str:
+    """Extracts randomly gerenated Pulsar ID from a given XML."""
+    
     tree = et.parse(xml.path)
     root = tree.getroot()
     packid = root[1][0][0][0][0].get("id")
@@ -138,6 +147,8 @@ def get_pulsar_id(xml: fl.File, selection: str) -> str:
     return pulsarid
 
 def edit_xml(xml: fl.File, selection: str, pulsarid: str) -> None:
+    """Modifies a given XML to let Riivolution read from the correct locations."""
+    
     tree = et.parse(xml.path)
     root = tree.getroot()
     
@@ -183,6 +194,8 @@ def edit_xml(xml: fl.File, selection: str, pulsarid: str) -> None:
     tree.write(xml.path)
 
 def copy_files(mod_folder: fl.Folder) -> None:
+    """Copies additional files into a given distribution folder."""
+    
     files = fd.get_folder("Files")
     common = fl.File(os.path.join(files.path, "Common.szs"))
     common.copy(os.path.join(mod_folder.path, "Items", common.filename))
