@@ -162,23 +162,23 @@ class TrackID(object):
         
         if colour:
             if prefix == "SNES":
-                return "\\c{yor7}SNES\\c{off}"
+                return "\\c{red4}SNES\\c{off}"
             elif prefix == "N64":
-                return "\\c{yor6}N64\\c{off}"
+                return "\\c{yellow}N64\\c{off}"
             elif prefix == "GBA":
-                return "\\c{yor5}GBA\\c{off}"
+                return "\\c{yor4}GBA\\c{off}"
             elif prefix == "GCN":
-                return "\\c{yor4}GCN\\c{off}"
+                return "\\c{green}GCN\\c{off}"
             elif prefix == "DS":
-                return "\\c{yor3}DS\\c{off}"
+                return "\\c{blue2}DS\\c{off}"
             elif prefix == "Wii":
                 return "\\c{blue1}Wii\\c{off}"
             elif prefix == "3DS":
                 return "\\c{yor2}3DS\\c{off}"
             elif prefix == "Wii U" or prefix == "SW":
-                return f"\\c{{yor1}}{prefix}\\c{{off}}"
+                return f"\\c{{yor6}}{prefix}\\c{{off}}"
             elif prefix == "Tour":
-                return "\\c{yor0}Tour\\c{off}"
+                return "\\c{red1}Tour\\c{off}"
             else:
                 return f"\\c{{green}}{prefix}\\c{{off}}"
         else:
