@@ -1,4 +1,3 @@
-# import cloudscraper as cc
 import json as js
 import os
 import platform as pf
@@ -68,12 +67,6 @@ def clear_screen():
         os.system("cls")
     else:
         os.system("clear")
-
-# def get_translations():
-#     scraper = cc.create_scraper(browser = {"custom": "ScraperBot"})
-#     text = scraper.get("https://wiki.tockdom.com/info-w/translations.json").text
-#     json = js.loads(text)
-#     return json["translate"]
 
 def get_prefixes():
     file = fl.TXT(os.path.join(os.getcwd(), "prefixes.txt"))
