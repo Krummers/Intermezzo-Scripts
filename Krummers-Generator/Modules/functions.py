@@ -1,35 +1,32 @@
-import json as js
+import httpx as hx
 import os
 import platform as pf
 import requests as rq
+import tqdm as td
 
 import Modules.constants as cs
 import Modules.file as fl
 
 cwd = os.getcwd()
 
-def download(link, path, progress = None):
-    with open(path, "wb") as file:
-        with rq.get(link, stream = True) as data:
-            if progress:
-                print(f"Downloading {progress}...")
-                total = data.headers.get("content-length")
-                
-                if total is None:
-                    file.write(data.content)
-                else:
-                    size = os.get_terminal_size()[0] - 15
-                    download = 0
-                    total = int(total)
-                    for chunk in data.iter_content(chunk_size = 1024):
-                        download += len(chunk)
+def download(link, path, progress = True, description = None):
+    if description is not None:
+        print(f"Downloading {description}...")
+    
+    with hx.Client(http2 = True) as client:
+        with client.stream("get", link) as response:
+            with open(path, "wb") as file:
+                total = int(response.headers.get("Content-Length", 0))
+                with td.tqdm(total = total, \
+                             unit_scale = True, \
+                             unit_divisor = 2**10, \
+                             unit = "B", \
+                             disable = not progress) as progress:
+                    num_bytes_downloaded = response.num_bytes_downloaded
+                    for chunk in response.iter_bytes():
                         file.write(chunk)
-                        percentage = int(100 * download / total)
-                        completion = int(size * download / total)
-                        print(f"\r[{'=' * completion}{' ' * (size - completion)}]", f"{percentage}%", end = "") 
-                print("\n")
-            else:
-                file.write(data.content)
+                        progress.update(response.num_bytes_downloaded)
+                        num_bytes_downloaded = response.num_bytes_downloaded
 
 def question(string):
     while True:

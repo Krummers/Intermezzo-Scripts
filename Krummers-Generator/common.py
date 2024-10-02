@@ -78,7 +78,7 @@ class TrackID(object):
     
     def download_json(self) -> None:
         url = f"https://szslibrary.com/api/api.php?id={self.trackid}"
-        ft.download(url, self.json.path)
+        ft.download(url, self.json.path, progress = False, description = f"{self.trackid}.json")
         
         try:
             self.read_json()
@@ -88,7 +88,7 @@ class TrackID(object):
     
     def download_wbz(self) -> None:
         url = f"https://szslibrary.com/scripts/download.php?id={self.trackid}"
-        ft.download(url, self.wbz.path, f"{self.trackid}.wbz")
+        ft.download(url, self.wbz.path, progress = True, description = f"{self.trackid}.wbz")
     
     def convert_szs(self) -> None:
         if not self.wbz.exists():

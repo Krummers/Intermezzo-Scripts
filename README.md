@@ -6,9 +6,7 @@ This repository contains various scripts for automating processes related to Int
 
 ## Installation
 1. Install [Python](https://www.python.org/downloads/) from the official website. Do not use any other method of installing.
-2. Install the following modules with the command `pip install MODULE` in a console:
-* [requests](https://pypi.org/project/requests/)
-* [cloudscraper](https://pypi.org/project/cloudscraper/)
+2. Install the required modules with the command `pip install -r requirements.txt` in a console with the provided file.
 3. Install [7zip](https://www.7-zip.org/download.html) and add it to PATH. This can be done by adding the location where 7zip is installed under `Environment Variables > User Variables > Path > Edit > New` for Windows. Save all screens once this is completed.
 4. Install [Wiimms SZS Tools](https://szs.wiimm.de/) v2.39a or higher and check if it is added to PATH.
 5. Download this repository and place it in your desired location.
