@@ -1,9 +1,8 @@
 import os
+import script_utilities.file as fl
 
 import common as cm
 import folders as fd
-
-import Modules.file as fl
 
 selections = fd.get_folder("Selections")
 
@@ -36,7 +35,7 @@ def new_selection(folders: list[str]) -> str:
             continue
         
         directory = fl.Folder(os.path.join(selections.path, selection))
-        if directory.exists():
+        if bool(directory):
             print("This name is already in use. Please try again.")
             continue
         
@@ -46,7 +45,7 @@ def new_selection(folders: list[str]) -> str:
 def save_tracks(selection: str, trackids: list[cm.TrackID]) -> None:
     """Save tracks of a given selection."""
     
-    tracks = fl.CFG(os.path.join(selections.path, selection, "tracks.cfg"))
+    tracks = fl.PKL(os.path.join(selections.path, selection, "tracks.pkl"))
     tracks.set_value(trackids)
     return
 
@@ -131,12 +130,12 @@ def trackid_downloader(trackid: int, selection: str, track_type: str) -> cm.Trac
     
     entry = cm.TrackID(trackid, selection, track_type)
     
-    if entry.json.exists() and entry.wbz.exists():
+    if bool(entry.json) and bool(entry.wbz):
         print(f"Skipping ID {entry.trackid}; files already exist.")
         return
     
     entry.download_json()
-    if not entry.json.exists():
+    if not bool(entry.json):
         return None
     
     # Mark as Nintendo track when needed
@@ -168,9 +167,9 @@ def remove_trackids(trackids: list[cm.TrackID], selection: str, first: int, last
         match = trackids[matches.index(True)]
         
         print(f"Removing ID {trackid}...")        
-        if match.wbz.exists():
+        if bool(match.wbz):
             match.wbz.delete()
-        if match.json.exists():
+        if bool(match.json):
             match.json.delete()
         
         trackids.remove(match)

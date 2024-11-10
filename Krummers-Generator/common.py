@@ -1,11 +1,11 @@
 import json as js
 import os
+import script_utilities.file as fl
+import script_utilities.functions as ft
 
 import folders as fd
 
 import Modules.constants as cs
-import Modules.file as fl
-import Modules.functions as ft
 
 selections = fd.get_folder("Selections")
 generations = fd.get_folder("Generations")
@@ -91,12 +91,12 @@ class TrackID(object):
         ft.download(url, self.wbz.path, progress = True, description = f"{self.trackid}.wbz")
     
     def convert_szs(self) -> None:
-        if not self.wbz.exists():
+        if not bool(self.wbz):
             raise FileNotFoundError("wbz file does not exist")
         os.system(f"wszst compress --szs {self.wbz.path} --dest={self.szs.path}")
     
     def read_json(self) -> dict:
-        if not self.json.exists:
+        if not bool(self.json):
             raise FileNotFoundError("json does not exist")
         
         with open(self.json.path, "r", encoding = "utf-8") as file:
@@ -105,7 +105,7 @@ class TrackID(object):
         return data
     
     def get_information(self) -> dict[str, bool | str]:
-        if not self.json.exists:
+        if not bool(self.json):
             raise FileNotFoundError("json does not exist")
         
         data = self.read_json()
@@ -239,7 +239,7 @@ def select_from_list(values: list[str], question: str, print_menu = True) -> str
 
 def load_tracks(selection: str) -> list[TrackID]:
     """Load tracks of a given selection."""
-    tracks = fl.CFG(os.path.join(selections.path, selection, "tracks.cfg"))
+    tracks = fl.PKL(os.path.join(selections.path, selection, "tracks.pkl"))
     trackids = tracks.get_value()
     if trackids is None:
         trackids = []

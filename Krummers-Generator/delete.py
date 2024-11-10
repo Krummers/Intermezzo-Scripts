@@ -1,10 +1,9 @@
 import os
+import script_utilities.file as fl
+import script_utilities.functions as ft
 
 import common as cm
 import folders as fd
-
-import Modules.file as fl
-import Modules.functions as ft
 
 selections = fd.get_folder("Selections")
 

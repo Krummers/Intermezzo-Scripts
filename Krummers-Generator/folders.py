@@ -1,6 +1,5 @@
 import os
-
-import Modules.file as fl
+import script_utilities.file as fl
 
 def get_folder(name: str) -> fl.Folder:
     cwd = os.getcwd()
@@ -15,14 +14,14 @@ def get_selections() -> list[str]:
 def generate_folders() -> None:
     for folder in ["Selections", "Generations"]:
         folder = get_folder(folder)
-        if not folder.exists():
+        if not bool(folder):
             os.mkdir(folder.path)
 
 def make_generation_folder(selection: str) -> fl.Folder:
     generations = get_folder("Generations")
     generation = fl.Folder(os.path.join(generations.path, selection))
     
-    if generation.exists():
+    if bool(generation):
         generation.delete()
     
     os.mkdir(generation.path)

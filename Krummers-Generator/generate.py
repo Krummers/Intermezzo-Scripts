@@ -1,13 +1,13 @@
 import math as mt
 import os
+import script_utilities.file as fl
+import script_utilities.functions as ft
 import xml.etree.ElementTree as et
 
 import common as cm
 import folders as fd
 
 import Modules.constants as cs
-import Modules.file as fl
-import Modules.functions as ft
 
 selections = fd.get_folder("Selections")
 
@@ -71,14 +71,14 @@ def generation_loop(trackids: list[cm.TrackID], files: tuple[fl.TXT]) -> int:
         slot = information["slot"]
         music = information["music"]
         
-        names.append(c_name)
+        names.append(c_name + "\n")
         if editor is not None:
             authors.append(f"{author},,{editor}")
         else:
-            authors.append(author)
-        versions.append(c_version)
-        slots.append(slot)
-        musics.append(music)
+            authors.append(author + "\n")
+        versions.append(c_version + "\n")
+        slots.append(slot + "\n")
+        musics.append(music + "\n")
         
         string = f" {slot_number}\t{slot:<8s}{music:<8s}{name} {version}"
         if editor is not None:
@@ -86,9 +86,9 @@ def generation_loop(trackids: list[cm.TrackID], files: tuple[fl.TXT]) -> int:
         else:
             string += f" ({author})"
         string += f" [id={entry.trackid}]"
-        tracklist.append(string)
+        tracklist.append(string + "\n")
         if slot_number.track == 4:
-            tracklist.append(" ")
+            tracklist.append(" \n")
     
     if track_counter % 8 != 0:
         for entry in reversed(trackids):
@@ -97,11 +97,11 @@ def generation_loop(trackids: list[cm.TrackID], files: tuple[fl.TXT]) -> int:
                 slot = information["slot"]
                 music = information["music"]
                 for y in range(8 - (track_counter % 8)):
-                    names.append("-")
-                    authors.append("-")
-                    versions.append("-")
-                    slots.append(slot)
-                    musics.append(music)
+                    names.append("-\n")
+                    authors.append("-\n")
+                    versions.append("-\n")
+                    slots.append(slot + "\n")
+                    musics.append(music + "\n")
                     last_szs = fl.File(os.path.join(entry.szs.folder, f"{x}.szs"))
                     x += 1
                     last_szs.copy(os.path.join(entry.szs.folder, f"{x}.szs"))
@@ -132,7 +132,7 @@ def check_process(selection: str, generation: fl.File) -> tuple[fl.Folder, fl.Fi
         if not continue_process:
             continue
         
-        if mod_folder.exists() and xml.exists():
+        if bool(mod_folder) and bool(xml):
             return mod_folder, xml
     
         print("The folders do not exist yet.")
@@ -204,8 +204,8 @@ def copy_files(mod_folder: fl.Folder) -> None:
         mdol = fl.File(os.path.join(files.path, f"main{region}.dol"))
         pdol = fl.File(os.path.join(files.path, f"perf{region}.dol"))
         
-        mdol.copy(os.path.join(mod_folder.path, "Codes", mdol.filename))
-        pdol.copy(os.path.join(mod_folder.path, "Codes", pdol.filename))
+        mdol.copy(os.path.join(mod_folder.path, "Codes", mdol.filename + mdol.extension))
+        pdol.copy(os.path.join(mod_folder.path, "Codes", pdol.filename + pdol.extension))
 
 def main() -> None:
     folders = fd.get_selections()
