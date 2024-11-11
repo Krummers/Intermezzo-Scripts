@@ -71,14 +71,14 @@ def generation_loop(trackids: list[cm.TrackID], files: tuple[fl.TXT]) -> int:
         slot = information["slot"]
         music = information["music"]
         
-        names.append(c_name + "\n")
+        names.append(c_name)
         if editor is not None:
             authors.append(f"{author},,{editor}")
         else:
-            authors.append(author + "\n")
-        versions.append(c_version + "\n")
-        slots.append(slot + "\n")
-        musics.append(music + "\n")
+            authors.append(author)
+        versions.append(c_version)
+        slots.append(slot)
+        musics.append(music)
         
         string = f" {slot_number}\t{slot:<8s}{music:<8s}{name} {version}"
         if editor is not None:
@@ -86,9 +86,9 @@ def generation_loop(trackids: list[cm.TrackID], files: tuple[fl.TXT]) -> int:
         else:
             string += f" ({author})"
         string += f" [id={entry.trackid}]"
-        tracklist.append(string + "\n")
+        tracklist.append(string)
         if slot_number.track == 4:
-            tracklist.append(" \n")
+            tracklist.append(" ")
     
     if track_counter % 8 != 0:
         for entry in reversed(trackids):
@@ -97,11 +97,11 @@ def generation_loop(trackids: list[cm.TrackID], files: tuple[fl.TXT]) -> int:
                 slot = information["slot"]
                 music = information["music"]
                 for y in range(8 - (track_counter % 8)):
-                    names.append("-\n")
-                    authors.append("-\n")
-                    versions.append("-\n")
-                    slots.append(slot + "\n")
-                    musics.append(music + "\n")
+                    names.append("-")
+                    authors.append("-")
+                    versions.append("-")
+                    slots.append(slot)
+                    musics.append(music)
                     last_szs = fl.File(os.path.join(entry.szs.folder, f"{x}.szs"))
                     x += 1
                     last_szs.copy(os.path.join(entry.szs.folder, f"{x}.szs"))
