@@ -1,45 +1,31 @@
+import script_utilities.functions as ft
+
 import create
 import folders as fd
 import generate
 import delete
 
-import Modules.constants as cs
-
-fd.generate_folders()
-
-def print_menu(actions: list[str]) -> None:
-    """Print actions the program can perform."""
-    
-    for x in range(len(actions)):
-        print(chr(x + 65), ". ", actions[x].capitalize(), sep = "")
-
-def select_action(actions: list[str]) -> str:
-    """Select an action for the program."""
-    
-    while True:
-        choice = input("What action needs to be performed? (Enter the corresponding option): ")
-        
-        if len(choice) != 1:
-            print("This is not an option. Please try again.")
-        elif ord(choice.upper()) - 65 in range(len(actions)):
-            return actions[ord(choice.upper()) - 65]
-        else:
-            print("This is not an option. Please try again.")
+import Modules.enumerables as eb
 
 def main() -> None:
+    fd.generate_folders()
+    
     while True:
-        actions = cs.actions
-        print_menu(actions)
-        action = select_action(actions)
+        actions = list(eb.Action)
+        display = [action.name for action in actions]
+        action = ft.options_question(actions,
+                                     "What action needs to be performed?",
+                                     display)
         
-        if action == "Create":
-            create.main()
-        elif action == "Generate":
-            generate.main()
-        elif action == "Delete":
-            delete.main()
-        elif action == "Exit":
-            return
+        match action.name:
+            case "Create":
+                create.main()
+            case "Generate":
+                generate.main()
+            case "Delete":
+                delete.main()
+            case "Exit":
+                return
 
 if __name__ == "__main__":
     main()
