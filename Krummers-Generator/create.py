@@ -35,14 +35,12 @@ def save_tracks(selection: str, trackids: list[cm.TrackID]) -> None:
     tracks.set_value(trackids)
     return
 
-def print_trackids(trackids: list[cm.TrackID]) -> None:
-    """Print track IDs in a readable way."""
+def print_tracks(distribution: cm.Distribution) -> None:
+    """Prints tracks of a distribution."""
     
     print("Track IDs included:")
-    for entry in trackids:
-        print(f"{entry.trackid}. {entry.track_type}")
-    if not trackids:
-        print("\t* (none)")
+    string = str(distribution)
+    print(string) if string else print("\t* (none)")
 
 def trackid_selector(action: eb.CreateEditAction) -> tuple[int]:
     """Lets the user select a range of tracks."""
@@ -84,63 +82,54 @@ def trackid_selector(action: eb.CreateEditAction) -> tuple[int]:
         
         return first, last
 
-def trackid_downloader(trackid: int, selection: str, track_type: str) -> cm.TrackID | None:
-    """Download a given track for a certain selection."""
+def download_track(distribution: cm.Distribution, trackid: int,
+                   track_type: eb.TrackType) -> None:
+    """Downloads a track with given track ID."""
     
-    entry = cm.TrackID(trackid, selection, track_type)
+    track = cm.Track(trackid, distribution.name, track_type)
     
-    if bool(entry.json) and bool(entry.wbz):
-        print(f"Skipping ID {entry.trackid}; files already exist.")
-        return
+    if not bool(track.json):
+        track.download_json()
     
-    entry.download_json()
-    if not bool(entry.json):
-        return None
+    if not bool(track.wbz):
+        track.download_wbz()
     
-    # Mark as Nintendo track when needed
-    information = entry.get_information()
-    if information["is_nintendo"] and entry.track_type != "wish":
-        entry.track_type = "nintendo"
+    information = track.get_information()
+    if information["is_nintendo"] and track.track_type != eb.TrackType.Wish:
+        track.track_type = eb.TrackType.Nintendo
     
-    entry.download_wbz()
-    return entry
+    distribution.append(track)
 
-def add_trackids(trackids: list[cm.TrackID], selection: str, track_type: str, first: int, last: int) -> list[cm.TrackID]:
-    """Add track IDs to track selection."""
+def add_tracks(distribution: cm.Distribution, track_type: eb.TrackType,
+               first: int, last: int) -> None:
+    """Adds a range of tracks to a distribution."""
     
     for trackid in range(first, last + 1):
-        entry = trackid_downloader(trackid, selection, track_type)
-        if entry is not None:
-            trackids.append(entry)
-    return trackids
+        track = download_track(distribution, trackid, track_type)
+        if track is not None:
+            distribution.tracks.append(track)
 
-def remove_trackids(trackids: list[cm.TrackID], selection: str, first: int, last: int) -> list[cm.TrackID]:
-    """Remove track IDs from track selection."""
+def remove_tracks(distribution: cm.Distribution, first: int, last: int) -> None:
+    """Removes a range of tracks from a distribution."""
     
     for trackid in range(first, last + 1):
-        matches = [trackid == entry.trackid for entry in trackids]
-        if not any(matches):
+        track = distribution.get_track(trackid)
+        if track is None:
             print(f"Skipping ID {trackid}; track does not exist.")
             continue
         
-        match = trackids[matches.index(True)]
+        if bool(track.json):
+            track.json.delete()
+        if bool(track.wbz):
+            track.wbz.delete()
         
-        print(f"Removing ID {trackid}...")        
-        if bool(match.wbz):
-            match.wbz.delete()
-        if bool(match.json):
-            match.json.delete()
-        
-        trackids.remove(match)
-    
-    return trackids
+        distribution.remove(track)
 
-def redownload_information(trackids: list[cm.TrackID], selection: str) -> None:
-    """Redownload JSON for every track ID."""
+def redownload_information(distribution: cm.Distribution) -> None:
+    """Redownloads all track information of a distribution."""
     
-    for trackid in trackids:
-        print(f"Redownloading information from track ID {trackid.trackid}...")
-        trackid.download_json()
+    for track in distribution.tracks:
+        track.download_json()
 
 def main() -> None:
     while True:
@@ -153,19 +142,17 @@ def main() -> None:
         
         match action.name:
             case "Create":
-                cm.print_from_list(folders)
+                ft.print_menu(folders)
                 selection = new_selection()
             case "Edit":
-                cm.print_from_list(folders)
-                selection = cm.select_from_list(folders,
+                selection = ft.options_question(folders,
                                                 "Which selection needs "
-                                                "to be edited?",
-                                                print_menu = False)
+                                                "to be edited?")
             case "Exit":
                 return
         
-        trackids = cm.load_tracks(selection)
         while True:
+            distribution = cm.Distribution(selection)
             edit_actions = list(eb.CreateEditAction)
             display = [edit.name for edit in edit_actions]
             edit_action = ft.options_question(edit_actions,
@@ -179,19 +166,19 @@ def main() -> None:
                     track_type = ft.options_question(track_types,
                                                      "What type should the track get?",
                                                      display)
-                    print_trackids(trackids)
+                    print_tracks(distribution)
                     first, last = trackid_selector(edit_action)
-                    trackids = add_trackids(trackids, selection, track_type, first, last)
+                    add_tracks(distribution, track_type, first, last)
                 case "Remove":
-                    print_trackids(trackids)
+                    print_tracks(distribution)
                     first, last = trackid_selector(edit_action)
-                    trackids = remove_trackids(trackids, selection, first, last)
+                    remove_tracks(distribution, first, last)
                 case "Redownload":
-                    redownload_information(trackids, selection)
+                    redownload_information(distribution)
                 case "Exit":
                     break
             
-            save_tracks(selection, trackids)
+            distribution.save_tracks()
 
 if __name__ == "__main__":
     main()
