@@ -213,30 +213,6 @@ class Slot(object):
         
         return result
 
-def print_from_list(values: list[str]) -> None:
-    for x, value in enumerate(values):
-        print(chr(x + 65), ". ", value, sep = "")
-    if not values:
-        print("\t* (none)")
-
-def select_from_list(values: list[str], question: str, print_menu = True) -> str:
-    if not values:
-        print("There are no values to select from.")
-        return None
-    
-    if print_menu:
-        print_from_list(values)
-    
-    while True:
-        choice = input(f"{question} (Enter the corresponding option): ")
-        
-        if len(choice) != 1:
-            print("This is not an option. Please try again.")
-        elif ord(choice.upper()) - 65 in range(len(values)):
-            return values[ord(choice.upper()) - 65]
-        else:
-            print("This is not an option. Please try again.")
-
 def load_tracks(selection: str) -> list[TrackID]:
     """Load tracks of a given selection."""
     tracks = fl.PKL(os.path.join(selections.path, selection, "tracks.pkl"))
