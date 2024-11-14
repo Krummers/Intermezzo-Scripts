@@ -61,7 +61,7 @@ class Track(object):
             return self.track_type < other.track_type
         
         if self_data["name"] != other_data["name"]:
-            return self_data["name"].lower < other_data["name"].lower()
+            return self_data["name"].lower() < other_data["name"].lower()
         
         if self_data["date"] != other_data["date"]:
             self_date = dt.Date(*self_data["date".split("-")])
@@ -130,7 +130,7 @@ class Track(object):
             raise FileNotFoundError("The system cannot find the file specified: "
                                     f"'{self.wbz.path}'")
             
-        os.system(f"wszst compress --szs \"{self.wbz.path}\""
+        os.system(f"wszst compress --szs \"{self.wbz.path}\" "
                   f"--dest=\"{self.szs.path}\"")
     
     def read_json(self) -> dict:
@@ -161,7 +161,8 @@ class Track(object):
         information["prefix"] = data["track_info"][0]["prefix"]
         information["name"] = data["track_info"][0]["trackname"]
         information["author"] = data["track_info"][0]["track_author"]
-        information["editor"] = data["track_info"][0]["track_editor"]
+        editor = data["track_info"][0]["track_editor"]
+        information["editor"] = editor if editor else ""
         version = data["track_info"][0]["track_version"]
         version_extra = data["track_info"][0]["track_version_extra"]
         if version_extra is not None:
@@ -233,180 +234,6 @@ class Track(object):
                     prefixes[x] = f"\\c{{green}}{prefix}\\c{{off}}"
         
         return " ".join(prefixes)
-
-class TrackID(object):
-    
-    def __init__(self, trackid: int, selection: str, track_type = "normal") -> None:
-        self.trackid = trackid
-        self.selection = selection        
-        self.track_type = track_type
-        
-        self.json = fl.File(os.path.join(selections.path, selection, f"{trackid}.json"))
-        self.wbz = fl.File(os.path.join(selections.path, selection, f"{trackid}.wbz"))
-        self.szs = fl.File(os.path.join(generations.path, selection, f"{trackid}.szs"))
-    
-    def __repr__(self) -> str:
-        return f"Track ID: {self.trackid}"
-    
-    def __lt__(self, other) -> bool:
-        if not isinstance(other, TrackID):
-            raise ValueError("'other' must be a TrackID")
-        
-        self_data = self.get_information()
-        other_data = other.get_information()
-        
-        if self.track_type == other.track_type:
-            return self_data["name"] < other_data["name"]
-        
-        if self.track_type == "wish":
-            return True
-        
-        if self.track_type == "nintendo":
-            if other.track_type == "wish":
-                return False
-            if other.track_type == "normal":
-                return True
-        
-        if self.track_type == "normal":
-            return False
-    
-    def __le__(self, other) -> bool:
-        if not isinstance(other, TrackID):
-            raise ValueError("'other' must be a TrackID")
-        
-        return self < other or self == other
-    
-    def __eq__(self, other) -> bool:
-        if not isinstance(other, TrackID):
-            raise ValueError("'other' must be a TrackID")
-        
-        return self.trackid == other.trackid and self.track_type == other.track_type
-    
-    def __ge__(self, other) -> bool:
-        if not isinstance(other, TrackID):
-            raise ValueError("'other' must be a TrackID")
-        
-        return self > other or self == other
-    
-    def __gt__(self, other) -> bool:
-        if not isinstance(other, TrackID):
-            raise ValueError("'other' must be a TrackID")
-        
-        return not (self <= other)
-    
-    def __ne__(self, other) -> bool:
-        if not isinstance(other, TrackID):
-            raise ValueError("'other' must be a TrackID")
-        
-        return not (self == other)
-    
-    def download_json(self) -> None:
-        url = f"https://szslibrary.com/api/api.php?id={self.trackid}"
-        ft.download(url, self.json.path, progress = False, description = f"{self.trackid}.json")
-        
-        try:
-            self.read_json()
-        except js.JSONDecodeError:
-            print(f"Track ID {self.trackid} is unavailable.")
-            self.json.delete()
-    
-    def download_wbz(self) -> None:
-        url = f"https://szslibrary.com/scripts/download.php?id={self.trackid}"
-        ft.download(url, self.wbz.path, progress = True, description = f"{self.trackid}.wbz")
-    
-    def convert_szs(self) -> None:
-        if not bool(self.wbz):
-            raise FileNotFoundError("wbz file does not exist")
-        os.system(f"wszst compress --szs {self.wbz.path} --dest={self.szs.path}")
-    
-    def read_json(self) -> dict:
-        if not bool(self.json):
-            raise FileNotFoundError("json does not exist")
-        
-        with open(self.json.path, "r", encoding = "utf-8") as file:
-            data = js.load(file)
-        
-        return data
-    
-    def get_information(self) -> dict[str, bool | str]:
-        if not bool(self.json):
-            raise FileNotFoundError("json does not exist")
-        
-        data = self.read_json()
-        information = dict()
-        
-        information["is_track"] = bool(data["track_info"][0]["track_customtrack"])
-        information["is_nintendo"] = bool(data["track_info"][0]["track_nintendo"])
-        
-        information["prefix"] = data["track_info"][0]["prefix"]
-        information["name"] = data["track_info"][0]["trackname"]
-        information["author"] = data["track_info"][0]["track_author"]
-        information["editor"] = data["track_info"][0]["track_editor"]
-        version = data["track_info"][0]["track_version"]
-        version_extra = data["track_info"][0]["track_version_extra"]
-        if version_extra is not None:
-            version += f"-{version_extra}"
-        information["version"] = version
-        if data["track_info"][0]["track_prop"] is None:
-            slot = 8
-        else:
-            slot = int(data["track_info"][0]["track_prop"])
-        information["slot"] = cs.property_slots[f"{slot:#04x}"]
-        if data["track_info"][0]["track_music"] is None:
-            music = 117
-        else:
-            music = int(data["track_info"][0]["track_music"])
-        information["music"] = cs.music_slots[f"{music:#04x}"]
-        
-        information["speed"] = float(data["track_info"][0]["track_speed"])
-        information["laps"] = int(data["track_info"][0]["track_laps"])
-        
-        return information
-    
-    def get_identifier(self, colour = False) -> str:
-        if self.track_type == "normal":
-            return
-        elif self.track_type == "wish":
-            if colour:
-                return "\\c{blue2}+W\\c{off}"
-            else:
-                return "+W"
-        elif self.track_type == "nintendo":
-            if colour:
-                return "\\c{green}+N\\c{off}"
-            else:
-                return "+N"
-    
-    def get_prefix(self, colour = False) -> str:
-        information = self.get_information()
-        prefix = information["prefix"]
-        
-        if prefix is None:
-            return ""
-        
-        if colour:
-            if prefix == "SNES":
-                return "\\c{red4}SNES\\c{off}"
-            elif prefix == "N64":
-                return "\\c{yellow}N64\\c{off}"
-            elif prefix == "GBA":
-                return "\\c{yor4}GBA\\c{off}"
-            elif prefix == "GCN":
-                return "\\c{green}GCN\\c{off}"
-            elif prefix == "DS":
-                return "\\c{blue2}DS\\c{off}"
-            elif prefix == "Wii":
-                return "\\c{blue1}Wii\\c{off}"
-            elif prefix == "3DS":
-                return "\\c{yor2}3DS\\c{off}"
-            elif prefix == "Wii U" or prefix == "SW":
-                return f"\\c{{yor6}}{prefix}\\c{{off}}"
-            elif prefix == "Tour":
-                return "\\c{red1}Tour\\c{off}"
-            else:
-                return f"\\c{{green}}{prefix}\\c{{off}}"
-        else:
-            return prefix
 
 class Distribution(object):
     
@@ -528,11 +355,3 @@ class Slot(object):
                 result.track = 1
         
         return result
-
-def load_tracks(selection: str) -> list[TrackID]:
-    """Load tracks of a given selection."""
-    tracks = fl.PKL(os.path.join(selections.path, selection, "tracks.pkl"))
-    trackids = tracks.get_value()
-    if trackids is None:
-        trackids = []
-    return trackids
