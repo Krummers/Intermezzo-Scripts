@@ -19,9 +19,9 @@ class CreateEditAction(en.Enum):
     Exit = en.auto()
 
 class TrackType(en.Enum):
-    Normal = en.auto()
     Wish = en.auto()
     Nintendo = en.auto()
+    Normal = en.auto()
     
     def __lt__(self, other: tp.Self) -> bool:
         if not isinstance(other, TrackType):

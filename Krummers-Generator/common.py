@@ -64,8 +64,8 @@ class Track(object):
             return self_data["name"].lower() < other_data["name"].lower()
         
         if self_data["date"] != other_data["date"]:
-            self_date = dt.Date(*self_data["date".split("-")])
-            other_date = dt.Date(*other_data["date".split("-")])
+            self_date = dt.Date(*map(int, self_data["date"].split("-")))
+            other_date = dt.Date(*map(int, other_data["date"].split("-")))
             return self_date < other_date
         
         return False

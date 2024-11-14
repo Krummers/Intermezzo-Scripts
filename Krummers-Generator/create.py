@@ -154,7 +154,7 @@ def main() -> None:
             
             match edit_action.name:
                 case "Add":
-                    track_types = list(eb.TrackType)[:-1]
+                    track_types = list((eb.TrackType.Normal, eb.TrackType.Wish))
                     display = [ttype.name for ttype in track_types]
                     track_type = ft.options_question(track_types,
                                                      "What type should the track get?",
