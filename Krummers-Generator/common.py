@@ -98,7 +98,7 @@ class Track(object):
         return not (self <= other)
     
     def __ne__(self, other) -> bool:
-        if not isinstance(other, TrackID):
+        if not isinstance(other, Track):
             return True
         
         return self.trackid != other.trackid or self.track_type != other.track_type

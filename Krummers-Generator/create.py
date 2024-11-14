@@ -28,13 +28,6 @@ def new_selection() -> str:
         os.mkdir(directory.path)
         return selection
 
-def save_tracks(selection: str, trackids: list[cm.TrackID]) -> None:
-    """Saves a list of tracks to a given selection."""
-    
-    tracks = fl.PKL(os.path.join(selections.path, selection, "tracks.pkl"))
-    tracks.set_value(trackids)
-    return
-
 def print_tracks(distribution: cm.Distribution) -> None:
     """Prints tracks of a distribution."""
     
