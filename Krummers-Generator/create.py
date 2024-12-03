@@ -81,8 +81,13 @@ def download_track(distribution: cm.Distribution, trackid: int,
     
     track = cm.Track(trackid, distribution.name, track_type)
     
+    # Download track information for the first time
     if not bool(track.json):
         track.download_json()
+    
+    # If the information does not exist after trying, return
+    if not bool(track.json):
+        return
     
     if not bool(track.wbz):
         track.download_wbz()
