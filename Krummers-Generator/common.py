@@ -218,7 +218,12 @@ class Track(object):
         if not colour:
             return prefix
         
+        for spaced_prefix in ["Spyro 1", "Wii U", "TLoZ ALttP",
+                              "TLoZ OoT", "TLoZ TP", "TLoZ TWW"]:
+            prefix = prefix.replace(spaced_prefix, spaced_prefix.replace(" ", "|"))
+        
         prefixes = prefix.split()
+        prefixes = [prefix.replace("|", " ") for prefix in prefixes]
         for x, prefix in enumerate(prefixes):
             match prefix:
                 case "SNES":
