@@ -166,6 +166,9 @@ class Track(object):
         version = data["track_info"][0]["track_version"]
         version_extra = data["track_info"][0]["track_version_extra"]
         
+        if version_extra == "":
+            version_extra = None
+        
         if version_extra is not None:
             version += f"-{version_extra}"
         
