@@ -165,18 +165,24 @@ class Track(object):
         information["editor"] = editor if editor else ""
         version = data["track_info"][0]["track_version"]
         version_extra = data["track_info"][0]["track_version_extra"]
+        
         if version_extra is not None:
             version += f"-{version_extra}"
+        
         information["version"] = version
+        
         if data["track_info"][0]["track_prop"] is None:
             slot = 8
         else:
             slot = int(data["track_info"][0]["track_prop"])
+        
         information["slot"] = cs.property_slots[f"{slot:#04x}"]
+        
         if data["track_info"][0]["track_music"] is None:
             music = 117
         else:
             music = int(data["track_info"][0]["track_music"])
+        
         information["music"] = cs.music_slots[f"{music:#04x}"]
         
         information["sha1"] = data["track_info"][0]["track_sha1"]
