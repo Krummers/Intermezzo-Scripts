@@ -66,7 +66,10 @@ property_slots = {"0x08": "LC", "0x01": "MMM", "0x02": "MG", "0x04": "TF", \
                   "0x10": "rPB", "0x14": "rYF", "0x19": "rGV2", "0x1a": "rMR", \
                   "0x1b": "rSL", "0x1f": "rSGB", "0x17": "rDS", "0x12": "rWS", \
                   "0x15": "rDH", "0x1e": "rBC3", "0x1d": "rDKJP", "0x11": "rMC", \
-                  "0x18": "rMC3", "0x16": "rPG", "0x13": "rDKM", "0x1c": "rBC"}
+                  "0x18": "rMC3", "0x16": "rPG", "0x13": "rDKM", "0x1c": "rBC", \
+                  "0x21": "aBP", "0x20": "aDP", "0x23": "aFS", "0x22": "aCCW", \
+                  "0x24": "aTD", "0x27": "arBC4", "0x28": "arBC3", "0x29": "arS", \
+                  "0x25": "arCL", "0x26": "arTH"}
 
 music_slots = {"0x75": "LC", "0x77": "MMM", "0x79": "MG", "0x7b": "TF", \
                "0x7d": "MC", "0x7f": "CM", "0x81": "DKS", "0x83": "WGM", \
