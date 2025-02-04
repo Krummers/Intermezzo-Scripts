@@ -9,7 +9,22 @@ def get_folder(name: str) -> fl.Folder:
 def get_selections() -> list[str]:
     selections = get_folder("Selections")
     folders = os.listdir(selections.path)
-    return folders
+    
+    order = []
+    
+    for folder in folders:
+        if folder.startswith("IM") and len(folder.split("-")) == 3:
+            components = folder.split("-")
+            sorting_attribute = (folder, f"IM-{components[2]}-{components[1]}")
+        else:
+            sorting_attribute = (folder, folder)
+        
+        order.append(sorting_attribute)
+    
+    order = sorted(order, key = lambda x:x[1])
+    sorted_folders = [folder[0] for folder in order]
+    
+    return sorted_folders
 
 def generate_folders() -> None:
     for folder in ["Selections", "Generations"]:
