@@ -141,47 +141,39 @@ def edit_xml(xml: fl.File, selection: str, pulsarid: str) -> None:
     """Modifies a given XML to let Riivolution read from the correct locations."""
     
     tree = et.parse(xml.path)
-    root = tree.getroot()
+    wiidisc = tree.getroot()
     
     # Add performance monitor option
-    root[1][0].append(et.Element("option"))
-    root[1][0][1].tail = "\n\t\t\t"
-    root[1][0][2].set("name", "Performance Monitor")
-    root[1][0][2].text = "\n\t\t\t\t"
-    root[1][0][2].tail = "\n\t\t"
-    root[1][0][2].append(et.Element("choice"))
-    root[1][0][2][0].set("name", "Enabled")
-    root[1][0][2][0].text = "\n\t\t\t\t\t"
-    root[1][0][2][0].tail = "\n\t\t\t"
-    root[1][0][2][0].append(et.Element("patch"))
-    root[1][0][2][0][0].set("id", f"{selection}{pulsarid}PerfMon")
-    root[1][0][2][0][0].tail = "\n\t\t\t\t"
+    performance_option = et.SubElement(wiidisc[1][0], "option")
+    performance_option.set("name", "Performance Monitor")
+    choice = et.SubElement(performance_option, "choice")
+    choice.set("name", "Enabled")
+    patch = et.SubElement(choice, "patch")
+    patch.set("id", f"{selection}{pulsarid}PerfMon")
     
     # Add main.dol and Common.szs loader
-    root[2][-1].tail = "\n\t\t"
-    root[2].append(et.Element("file"))
-    root[2][-1].set("external", f"/{selection}/Codes/main{{$__region}}.dol")
-    root[2][-1].set("disc", "main.dol")
-    root[2][-1].set("create", "true")
-    root[2][-1].tail = "\n\t\t"
-    root[2].append(et.Element("file"))
-    root[2][-1].set("external", f"/{selection}/Items/Common.szs")
-    root[2][-1].set("disc", "Race/Common.szs")
-    root[2][-1].set("create", "true")
-    root[2][-1].tail = "\n\t"
+    file_patch = wiidisc[2]
+    dol = et.SubElement(file_patch, "file")
+    dol.set("external", f"/{selection}/Codes/main{{$__region}}.dol")
+    dol.set("disc", "/main.dol")
+    dol.set("create", "true")
+    
+    common = et.SubElement(file_patch, "file")
+    common.set("external", f"/{selection}/Items/Common.szs")
+    common.set("disc", "/Race/Common.szs")
+    common.set("create", "true")
     
     # Add performance monitor main.dol loader
-    root[-1].tail = "\n\t"
-    root.append(et.Element("patch"))
-    root[-1].set("id", f"{selection}{pulsarid}PerfMon")
-    root[-1].text = "\n\t\t"
-    root[-1].append(et.Element("file"))
-    root[-1][0].set("external", f"/{selection}/Codes/perf{{$__region}}.dol")
-    root[-1][0].set("disc", "main.dol")
-    root[-1][0].set("create", "true")
-    root[-1][0].tail = "\n\t"
-    root[-1].tail = "\n"
+    perf_loader = et.SubElement(wiidisc, "patch")
+    perf_loader.set("id", f"{selection}{pulsarid}PerfMon")
     
+    perf_dol = et.SubElement(perf_loader, "file")
+    perf_dol.set("external", f"/{selection}/Codes/perf{{$__region}}.dol")
+    perf_dol.set("disc", "/main.dol")
+    perf_dol.set("create", "true")
+    
+    tree = et.ElementTree(wiidisc)
+    et.indent(tree, space = "\t")
     tree.write(xml.path)
 
 def copy_files(mod_folder: fl.Folder) -> None:
