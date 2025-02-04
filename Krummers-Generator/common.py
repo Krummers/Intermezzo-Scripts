@@ -63,6 +63,9 @@ class Track(object):
         if self_data["name"] != other_data["name"]:
             return self_data["name"].lower() < other_data["name"].lower()
         
+        if self_data["prefix"] != other_data["prefix"]:
+            return self_data["prefix"].lower() < other_data["prefix"].lower()
+        
         if self_data["date"] != other_data["date"]:
             self_date = dt.Date(*map(int, self_data["date"].split("-")))
             other_date = dt.Date(*map(int, other_data["date"].split("-")))
