@@ -329,7 +329,7 @@ class Distribution(object):
 
 class Slot(object):
     
-    def __init__(self, cup: int, track: int) -> None:
+    def __init__(self, cup: int, track: int, arena = False) -> None:
         if not isinstance(cup, int):
             raise TypeError("unsupported type for cup: "
                             f"'{type(cup).__name__}'")
@@ -343,6 +343,7 @@ class Slot(object):
         
         self.cup = cup
         self.track = track
+        self.arena = arena
     
     def __repr__(self) -> str:
         """Represents the object in a console."""
@@ -352,7 +353,8 @@ class Slot(object):
     def __str__(self) -> str:
         """Returns the cup and track with a dot."""
         
-        return f"{self.cup}.{self.track}"
+        string = f"{self.cup}.{self.track}"
+        return f"A{string}" if self.arena else string
     
     def __add__(self, amount: int) -> tp.Self:
         """Adds an integer to a slot."""
@@ -365,9 +367,10 @@ class Slot(object):
             raise ValueError("value of amount must be non-negative")
         
         result = self
+        maximum_per_cup = 5 if self.arena else 4
         for _ in range(amount):
             result.track += 1
-            if result.track > 4:
+            if result.track > maximum_per_cup:
                 result.cup += 1
                 result.track = 1
         

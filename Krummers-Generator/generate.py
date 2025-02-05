@@ -29,6 +29,7 @@ def pulsar_preparation(tracks: list[cm.Track], text_files: tuple[fl.TXT]) -> int
     track_counter = 0
     slot_counter = cm.Slot(8, 4)
     
+    arenas = []
     for x, track in enumerate(tracks):
         information = track.get_information()
         track_counter += information["is_track"]
@@ -36,6 +37,7 @@ def pulsar_preparation(tracks: list[cm.Track], text_files: tuple[fl.TXT]) -> int
         
         # If the track is an arena, skip it
         if not information["is_track"]:
+            arenas.append(track)
             continue
         
         track.szs.filename = str(x)
@@ -74,6 +76,7 @@ def pulsar_preparation(tracks: list[cm.Track], text_files: tuple[fl.TXT]) -> int
         tracklist_string += f" ({creators})"
         tracklist_string += f" [id={track.trackid}]"
         tracklist.append(tracklist_string)
+        
         if slot_counter.track == 4:
             tracklist.append(" ")
     
@@ -96,8 +99,9 @@ def pulsar_preparation(tracks: list[cm.Track], text_files: tuple[fl.TXT]) -> int
                     x += 1
                     szs.copy(os.path.join(track.szs.folder, f"{x}.szs"))
                 
-                return track_counter
-    return track_counter
+                return track_counter, arenas
+    
+    return track_counter, arenas
 
 def instructions(selection: str, track_counter: int, files: list[fl.TXT]) -> None:
     """Prints build instructions for Pulsar."""
@@ -151,7 +155,7 @@ def edit_xml(xml: fl.File, selection: str, pulsarid: str) -> None:
     patch = et.SubElement(choice, "patch")
     patch.set("id", f"{selection}{pulsarid}PerfMon")
     
-    # Add main.dol and Common.szs loader
+    # Add main.dol, Common.szs and arena loader
     file_patch = wiidisc[2]
     dol = et.SubElement(file_patch, "file")
     dol.set("external", f"/{selection}/Codes/main{{$__region}}.dol")
@@ -162,6 +166,16 @@ def edit_xml(xml: fl.File, selection: str, pulsarid: str) -> None:
     common.set("external", f"/{selection}/Items/Common.szs")
     common.set("disc", "/Race/Common.szs")
     common.set("create", "true")
+    
+    arenas = et.SubElement(file_patch, "folder")
+    arenas.set("external", f"/{selection}/Arenas")
+    arenas.set("disc", "/Race/Course")
+    arenas.set("create", "true")
+    
+    menus = et.SubElement(file_patch, "folder")
+    menus.set("external", f"/{selection}/Menus")
+    menus.set("disc", "/Scene/UI")
+    menus.set("create", "true")
     
     # Add performance monitor main.dol loader
     perf_loader = et.SubElement(wiidisc, "patch")
@@ -175,6 +189,102 @@ def edit_xml(xml: fl.File, selection: str, pulsarid: str) -> None:
     tree = et.ElementTree(wiidisc)
     et.indent(tree, space = "\t")
     tree.write(xml.path)
+
+def add_arenas(arenas: list[cm.Track], selection: str, text_files: tuple[fl.TXT]) -> None:
+    """Adds a maximum of 10 arenas to the distribution."""
+    
+    if not arenas:
+        return
+    
+    names, authors, versions, slots, musics, tracklist = text_files
+    tracklist.append(" ")
+    
+    arena_folder = fl.Folder(os.path.join(os.getcwd(), "Generations", selection, selection, "Arenas"))
+    if not bool(arena_folder):
+        os.mkdir(arena_folder.path)
+    
+    # Extract text files for BMGs
+    for language in cs.languages:
+        szs = fl.File(os.path.join(os.getcwd(), "Files", f"MenuSingle_{language}.szs"))
+        copied_szs = szs.copy(os.path.join(os.getcwd(), "Generations", selection, f"MenuSingle_{language}.szs"))
+        extracted_file = fl.Folder(os.path.join(os.getcwd(), "Generations", selection, f"MenuSingle_{language}.d"))
+        bmg = fl.File(os.path.join(extracted_file.path, "message", "Common.bmg"))
+        
+        os.system(f"wszst extract \"{copied_szs.path}\"")
+        os.system(f"wbmgt decode \"{bmg.path}\"")
+    
+    slot_counter = cm.Slot(1, 1, arena = True)
+    used_slots = set()
+    for arena in arenas:
+        information = arena.get_information()
+        
+        slot = information["slot"]
+        if slot in used_slots:
+            print(f"{arena} cannot be added because its slot is already in use.")
+            continue
+        
+        slot_counter += 1
+        used_slots.add(slot)
+        filename = cs.arena_filenames[slot]
+        
+        arena.szs.filename = filename
+        arena.szs.path = os.path.join(arena.szs.folder, selection, "Arenas", f"{filename}.szs")
+        arena.convert_szs()
+        
+        identifier = arena.get_identifier()
+        c_identifier = arena.get_identifier(colour = True)
+        prefix = arena.get_prefix()
+        c_prefix = arena.get_prefix(colour = True)
+        name = information["name"]
+        c_name = information["name"]
+        
+        name = " ".join(filter(bool, [identifier, prefix, name]))
+        c_name = " ".join(filter(bool, [c_identifier, c_prefix, c_name]))
+        
+        creators = ",,".join(filter(bool, [information["author"], information["editor"]]))
+        
+        version = information["version"]
+        c_version = information["version"]
+        speed = information["speed"]
+        
+        if speed != 1.0:
+            c_version += f" \\c{{off}}\\c{{blue2}}×{speed}"
+        
+        for language in cs.languages:
+            extracted_file = fl.Folder(os.path.join(os.getcwd(), "Generations", selection, f"MenuSingle_{language}.d"))
+            text = fl.TXT(os.path.join(extracted_file.path, "message", "Common.txt"))
+            
+            index = text.find(f"U{cs.arena_order[slot]}")
+            
+            # Edge case for French (NTSC-U)
+            if language == "Q" and slot == "arS":
+                index = text.find("24c1")
+            
+            line = text.read()[index]
+            new_line = line[:line.find("=") + 2]
+            new_line += f"{c_name} {c_version}"
+            
+            text.rewrite(index, new_line, newline = False)
+        
+        tracklist_string = f" {slot_counter}\t{slot:<8s}{slot:<8s}{name} {version}"
+        tracklist_string += f" ({creators})"
+        tracklist_string += f" [id={arena.trackid}]"
+        tracklist.append(tracklist_string)
+        
+        if slot_counter.track == 5:
+            tracklist.append(" ")
+    
+    # Create new BMGs and add them to the distribution
+    for language in cs.languages:
+        copied_szs = szs.copy(os.path.join(os.getcwd(), "Generations", selection, f"MenuSingle_{language}.szs"))
+        extracted_file = fl.Folder(os.path.join(os.getcwd(), "Generations", selection, f"MenuSingle_{language}.d"))
+        text = fl.TXT(os.path.join(extracted_file.path, "message", "Common.txt"))
+        
+        os.system(f"wbmgt encode \"{text.path}\" -o")
+        text.delete()
+        os.system(f"wszst create \"{extracted_file.path}\" -o")
+        extracted_file.delete()
+        copied_szs.move_down([selection, "Menus"])
 
 def copy_files(mod_folder: fl.Folder) -> None:
     """Copies additional files into a given distribution folder."""
@@ -202,12 +312,13 @@ def main() -> None:
     generation = fd.make_generation_folder(distribution.name)
     text_files = create_text_files(generation)
     
-    track_counter = pulsar_preparation(tracks, text_files)
+    track_counter, arenas = pulsar_preparation(tracks, text_files)
     instructions(distribution.name, track_counter, text_files)
     
     mod_folder, xml = check_process(distribution.name, generation)
     pulsar_id = get_pulsar_id(xml, distribution.name)
     edit_xml(xml, distribution.name, pulsar_id)
+    add_arenas(arenas, selection, text_files)
     copy_files(mod_folder)
 
 if __name__ == "__main__":
