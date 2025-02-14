@@ -159,12 +159,12 @@ def edit_xml(xml: fl.File, selection: str, pulsarid: str) -> None:
     file_patch = wiidisc[2]
     dol = et.SubElement(file_patch, "file")
     dol.set("external", f"/{selection}/Codes/main{{$__region}}.dol")
-    dol.set("disc", "/main.dol")
+    dol.set("disc", "main.dol")
     dol.set("create", "true")
     
     common = et.SubElement(file_patch, "file")
     common.set("external", f"/{selection}/Items/Common.szs")
-    common.set("disc", "/Race/Common.szs")
+    common.set("disc", "Race/Common.szs")
     common.set("create", "true")
     
     arenas = et.SubElement(file_patch, "folder")
@@ -183,7 +183,7 @@ def edit_xml(xml: fl.File, selection: str, pulsarid: str) -> None:
     
     perf_dol = et.SubElement(perf_loader, "file")
     perf_dol.set("external", f"/{selection}/Codes/perf{{$__region}}.dol")
-    perf_dol.set("disc", "/main.dol")
+    perf_dol.set("disc", "main.dol")
     perf_dol.set("create", "true")
     
     tree = et.ElementTree(wiidisc)
