@@ -47,7 +47,13 @@ class Track(object):
         
         information = self.get_information()
         name = information["name"]
-        return f"{self.trackid}. {self.track_type.name} [{name}]"
+        version = information["version"]
+        prefix = self.get_prefix()
+        
+        string = f"{self.trackid}. {self.track_type.name}"
+        string += f" [{prefix} " if prefix else " ["
+        string += f"{name} {version}]"
+        return string
     
     def __lt__(self, other: tp.Self) -> bool:
         if not isinstance(other, Track):
