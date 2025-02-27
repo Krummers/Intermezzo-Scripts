@@ -213,19 +213,27 @@ def add_arenas(arenas: list[cm.Track], selection: str, text_files: tuple[fl.TXT]
         os.system(f"wszst extract \"{copied_szs.path}\"")
         os.system(f"wbmgt decode \"{bmg.path}\"")
     
-    slot_counter = cm.Slot(1, 1, arena = True)
-    used_slots = set()
+    # Add as much arenas as possible
+    used_slots = cs.arena_order.copy()
     for arena in arenas:
         information = arena.get_information()
         
         slot = information["slot"]
-        if slot in used_slots:
+        if isinstance(used_slots[slot], cm.Track):
             print(f"{arena} cannot be added because its slot is already in use.")
             continue
         
-        slot_counter += 1
-        used_slots.add(slot)
+        used_slots[slot] = arena
+    
+    # Add arenas to the distribution
+    for slot, arena in used_slots.items():
         filename = cs.arena_filenames[slot]
+        
+        # Continue if slot was not filled
+        if not isinstance(arena, cm.Track):
+            continue
+        
+        information = arena.get_information()
         
         arena.szs.filename = filename
         arena.szs.path = os.path.join(arena.szs.folder, selection, "Arenas", f"{filename}.szs")
@@ -266,13 +274,13 @@ def add_arenas(arenas: list[cm.Track], selection: str, text_files: tuple[fl.TXT]
             
             text.rewrite(index, new_line, newline = False)
         
-        tracklist_string = f" {slot_counter}\t{slot:<8s}{slot:<8s}{name} {version}"
+        slot_number = cs.arena_order[slot]
+        formatted_slot_number = f"A{slot_number[0]}.{slot_number[1]}"
+        
+        tracklist_string = f" {formatted_slot_number}\t{slot:<8s}{slot:<8s}{name} {version}"
         tracklist_string += f" ({creators})"
         tracklist_string += f" [id={arena.trackid}]"
         tracklist.append(tracklist_string)
-        
-        if slot_counter.track == 5:
-            tracklist.append(" ")
     
     # Create new BMGs and add them to the distribution
     for language in cs.languages:
