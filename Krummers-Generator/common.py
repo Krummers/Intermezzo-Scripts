@@ -167,7 +167,8 @@ class Track(object):
         information["is_track"] = bool(data["track_info"][0]["track_customtrack"])
         information["is_nintendo"] = bool(data["track_info"][0]["track_nintendo"])
         
-        information["prefix"] = data["track_info"][0]["prefix"]
+        prefix = data["track_info"][0]["prefix"]
+        information["prefix"] = prefix if prefix else ""
         information["name"] = data["track_info"][0]["trackname"]
         information["author"] = data["track_info"][0]["track_author"]
         editor = data["track_info"][0]["track_editor"]
