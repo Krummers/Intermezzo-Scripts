@@ -147,14 +147,6 @@ def edit_xml(xml: fl.File, selection: str, pulsarid: str) -> None:
     tree = et.parse(xml.path)
     wiidisc = tree.getroot()
     
-    # Add performance monitor option
-    performance_option = et.SubElement(wiidisc[1][0], "option")
-    performance_option.set("name", "Performance Monitor")
-    choice = et.SubElement(performance_option, "choice")
-    choice.set("name", "Enabled")
-    patch = et.SubElement(choice, "patch")
-    patch.set("id", f"{selection}{pulsarid}PerfMon")
-    
     # Add main.dol, Common.szs and arena loader
     file_patch = wiidisc[2]
     dol = et.SubElement(file_patch, "file")
@@ -176,15 +168,6 @@ def edit_xml(xml: fl.File, selection: str, pulsarid: str) -> None:
     menus.set("external", f"/{selection}/Menus")
     menus.set("disc", "/Scene/UI")
     menus.set("create", "true")
-    
-    # Add performance monitor main.dol loader
-    perf_loader = et.SubElement(wiidisc, "patch")
-    perf_loader.set("id", f"{selection}{pulsarid}PerfMon")
-    
-    perf_dol = et.SubElement(perf_loader, "file")
-    perf_dol.set("external", f"/{selection}/Codes/perf{{$__region}}.dol")
-    perf_dol.set("disc", "main.dol")
-    perf_dol.set("create", "true")
     
     tree = et.ElementTree(wiidisc)
     et.indent(tree, space = "\t")
@@ -303,10 +286,8 @@ def copy_files(mod_folder: fl.Folder) -> None:
     
     for region in cs.regions_letters:
         mdol = fl.File(os.path.join(files.path, f"main{region}.dol"))
-        pdol = fl.File(os.path.join(files.path, f"perf{region}.dol"))
         
         mdol.copy(os.path.join(mod_folder.path, "Codes", mdol.filename + mdol.extension))
-        pdol.copy(os.path.join(mod_folder.path, "Codes", pdol.filename + pdol.extension))
 
 def main() -> None:
     folders = fd.get_selections()
