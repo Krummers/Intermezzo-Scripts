@@ -200,8 +200,10 @@ class Track(object):
         
         information["sha1"] = data["track_info"][0]["track_sha1"]
         information["date"] = data["track_info"][0]["track_created"]
-        information["speed"] = float(data["track_info"][0]["track_speed"])
-        information["laps"] = int(data["track_info"][0]["track_laps"])
+        speed = data["track_info"][0]["track_speed"]
+        information["speed"] = float(speed) if speed else 1.0
+        laps = data["track_info"][0]["track_laps"]
+        information["laps"] = int(laps) if laps else 3
         
         return information
     
