@@ -13,9 +13,9 @@ def get_selections() -> list[str]:
     order = []
     
     for folder in folders:
-        if folder.startswith("IM") and len(folder.split("-")) == 3:
+        if folder.startswith("IM") and len(folder.split("-")) == 4:
             components = folder.split("-")
-            sorting_attribute = (folder, f"IM-{components[2]}-{components[1]}")
+            sorting_attribute = (folder, f"IM-{components[3]}-{components[2]}-{components[1]}")
         else:
             sorting_attribute = (folder, folder)
         
