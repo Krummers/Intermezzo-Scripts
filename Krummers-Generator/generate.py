@@ -20,12 +20,19 @@ def create_text_files(generation: fl.Folder) -> list[fl.TXT]:
     slots = fl.TXT(os.path.join(generation.path, "slots.txt"))
     musics = fl.TXT(os.path.join(generation.path, "musics.txt"))
     tracklist = fl.TXT(os.path.join(generation.path, "tracklist.txt"))
-    return names, authors, versions, slots, musics, tracklist
+    
+    
+    files = fd.get_folder("Files")
+    bmgs = fl.TXT(os.path.join(files.path, "bmgs.txt"))
+    bmg_file = bmgs.copy(os.path.join(generation.path, "bmgs.txt"))
+    bmgs = fl.TXT(bmg_file.path)
+    
+    return names, authors, versions, slots, musics, tracklist, bmgs
 
 def pulsar_preparation(tracks: list[cm.Track], text_files: tuple[fl.TXT]) -> int:
     """Prepares all text and SZS files for Pulsar."""
     
-    names, authors, versions, slots, musics, tracklist = text_files
+    names, authors, versions, slots, musics, tracklist, bmgs = text_files
     track_counter = 0
     slot_counter = cm.Slot(8, 4)
     
@@ -103,7 +110,106 @@ def pulsar_preparation(tracks: list[cm.Track], text_files: tuple[fl.TXT]) -> int
     
     return track_counter, arenas
 
-def instructions(selection: str, track_counter: int, files: list[fl.TXT]) -> None:
+def edit_bmgs(arenas: list[cm.Track], text_files: tuple[fl.TXT]) -> dict[str, cm.Track]:
+    """Edits the BMGs."""
+    
+    names, authors, versions, slots, musics, tracklist, bmgs = text_files
+    
+    # Fix music speedup message
+    index = bmgs.find("4001")
+    line = bmgs.read()[index]
+    line = line[:line.find("=") + 2]
+    line += "Music Speedup"
+    bmgs.rewrite(index, line, newline = False)
+    
+    # Add new messages
+    bmgs.append("\n")
+    
+    # Add Hybrid message
+    line = "   cea\t= Hybrid"
+    bmgs.append(line)
+    
+    # Add battle arena messages
+    used_slots = cs.arena_order.copy()
+    for arena in arenas:
+        information = arena.get_information()
+        
+        slot = information["slot"]
+        if isinstance(used_slots[slot], cm.Track):
+            print(f"{arena} cannot be added because its slot is already in use.")
+            continue
+        
+        used_slots[slot] = arena
+    
+    for slot, arena in used_slots.items():
+        # Continue if slot was not filled
+        if not isinstance(arena, cm.Track):
+            continue
+        
+        information = arena.get_information()
+        
+        identifier = arena.get_identifier()
+        c_identifier = arena.get_identifier(colour = True)
+        prefix = arena.get_prefix()
+        c_prefix = arena.get_prefix(colour = True)
+        name = information["name"]
+        c_name = information["name"]
+        
+        name = " ".join(filter(bool, [identifier, prefix, name]))
+        c_name = " ".join(filter(bool, [c_identifier, c_prefix, c_name]))
+        c_version = information["version"]
+        speed = information["speed"]
+        
+        if speed != 1.0:
+            c_version += f" \\c{{off}}\\c{{blue2}}×{speed}"
+        
+        line = f"   U{cs.arena_order[slot]}\t= {c_name} \\c{{red4}}{c_version}\\c{{off}}"
+        bmgs.append(line)
+    
+    # Add chat messages
+    bmgs.append("   M05\t= \c{green}Ten minutes until we begin!\c{off}")
+    bmgs.append("   M06\t= \c{green}Three minutes until the GP starts!\c{off}")
+    bmgs.append("   M07\t= \c{green}Let's start this Intermezzo!\c{off}")
+    bmgs.append("   M08\t= \c{green}Two-minute break for a pee!\c{off}")
+    
+    bmgs.append("   M09\t= Is everyone here?")
+    bmgs.append("   M10\t= Is everyone ready?")
+    bmgs.append("   M11\t= Yes!")
+    bmgs.append("   M12\t= No!")
+    
+    bmgs.append("   M13\t= I am leaving!")
+    bmgs.append("   M14\t= Someone else is joining!")
+    bmgs.append("   M15\t= Let's do this!")
+    bmgs.append("   M16\t= Here we go!")
+    
+    bmgs.append("   M17\t= So many textures and edits...")
+    bmgs.append("   M18\t= We have a battle arena!")
+    bmgs.append("   M19\t= I only come for the custom tracks.")
+    bmgs.append("   M20\t= I wish there was a wish.")
+    
+    bmgs.append("   M21\t= CAAAAAAAAAARS!")
+    bmgs.append("   M22\t= Tokyo Drift cannon!")
+    bmgs.append("   M23\t= Everything about that sucked.")
+    bmgs.append("   M24\t= - \c{red4}-\c{off} by -")
+    
+    bmgs.append("   M25\t= Bastard!")
+    bmgs.append("   M26\t= Maggot!")
+    bmgs.append("   M27\t= Poophead!")
+    bmgs.append("   M28\t= Dumbass!")
+    
+    bmgs.append("   M29\t= Dumb Bullet Bill!")
+    bmgs.append("   M30\t= Shitty Shells!")
+    bmgs.append("   M31\t= Crappy Mario Kart!")
+    bmgs.append("   M32\t= Scheiß Klapsleitung!")
+    
+    bmgs.append("   M33\t= Will we ever catch up?")
+    bmgs.append("   M34\t= The bot stopped working!")
+    bmgs.append("   M35\t= I am chat.")
+    bmgs.append("   M36\t= Wiimm, our Intermezzo overlord!")
+    
+    return used_slots
+
+def instructions(selection: str, track_counter: int, files: tuple[fl.TXT]) -> None:
     """Prints build instructions for Pulsar."""
     
     print(f"Amount of required cups is {mt.ceil(track_counter / 8) * 2}.")
@@ -115,7 +221,7 @@ def instructions(selection: str, track_counter: int, files: list[fl.TXT]) -> Non
     
     print(f"Continue once the two folders are in \"/Krummers-Generator/Generations/{selection}\"")
 
-def check_process(selection: str, generation: fl.File) -> tuple[fl.Folder, fl.File]:
+def check_process(selection: str, generation: fl.Folder) -> tuple[fl.Folder, fl.File]:
     """Checks if the Pulsar-generated distribution has been placed correctly."""
     
     mod_folder = fl.Folder(os.path.join(generation.path, selection))
@@ -173,40 +279,18 @@ def edit_xml(xml: fl.File, selection: str, pulsarid: str) -> None:
     et.indent(tree, space = "\t")
     tree.write(xml.path)
 
-def add_arenas(arenas: list[cm.Track], selection: str, text_files: tuple[fl.TXT]) -> None:
+def add_arenas(arenas: list[cm.Track], selection: str, text_files: tuple[fl.TXT], used_slots: dict[str, cm.Track]) -> None:
     """Adds a maximum of 10 arenas to the distribution."""
     
     if not arenas:
         return
     
-    names, authors, versions, slots, musics, tracklist = text_files
+    names, authors, versions, slots, musics, tracklist, bmgs = text_files
     tracklist.append(" ")
     
     arena_folder = fl.Folder(os.path.join(os.getcwd(), "Generations", selection, selection, "Arenas"))
     if not bool(arena_folder):
         os.mkdir(arena_folder.path)
-    
-    # Extract text files for BMGs
-    for language in cs.languages:
-        szs = fl.File(os.path.join(os.getcwd(), "Files", f"MenuSingle_{language}.szs"))
-        copied_szs = szs.copy(os.path.join(os.getcwd(), "Generations", selection, f"MenuSingle_{language}.szs"))
-        extracted_file = fl.Folder(os.path.join(os.getcwd(), "Generations", selection, f"MenuSingle_{language}.d"))
-        bmg = fl.File(os.path.join(extracted_file.path, "message", "Common.bmg"))
-        
-        os.system(f"wszst extract \"{copied_szs.path}\"")
-        os.system(f"wbmgt decode \"{bmg.path}\"")
-    
-    # Add as much arenas as possible
-    used_slots = cs.arena_order.copy()
-    for arena in arenas:
-        information = arena.get_information()
-        
-        slot = information["slot"]
-        if isinstance(used_slots[slot], cm.Track):
-            print(f"{arena} cannot be added because its slot is already in use.")
-            continue
-        
-        used_slots[slot] = arena
     
     # Add arenas to the distribution
     for slot, arena in used_slots.items():
@@ -241,22 +325,6 @@ def add_arenas(arenas: list[cm.Track], selection: str, text_files: tuple[fl.TXT]
         if speed != 1.0:
             c_version += f" \\c{{off}}\\c{{blue2}}×{speed}"
         
-        for language in cs.languages:
-            extracted_file = fl.Folder(os.path.join(os.getcwd(), "Generations", selection, f"MenuSingle_{language}.d"))
-            text = fl.TXT(os.path.join(extracted_file.path, "message", "Common.txt"))
-            
-            index = text.find(f"U{cs.arena_order[slot]}")
-            
-            # Edge case for French (NTSC-U)
-            if language == "Q" and slot == "arS":
-                index = text.find("24c1")
-            
-            line = text.read()[index]
-            new_line = line[:line.find("=") + 2]
-            new_line += f"{c_name} {c_version}"
-            
-            text.rewrite(index, new_line, newline = False)
-        
         slot_number = cs.arena_order[slot]
         formatted_slot_number = f"A{slot_number[0]}.{slot_number[1]}"
         
@@ -264,18 +332,6 @@ def add_arenas(arenas: list[cm.Track], selection: str, text_files: tuple[fl.TXT]
         tracklist_string += f" ({creators})"
         tracklist_string += f" [id={arena.trackid}]"
         tracklist.append(tracklist_string)
-    
-    # Create new BMGs and add them to the distribution
-    for language in cs.languages:
-        copied_szs = szs.copy(os.path.join(os.getcwd(), "Generations", selection, f"MenuSingle_{language}.szs"))
-        extracted_file = fl.Folder(os.path.join(os.getcwd(), "Generations", selection, f"MenuSingle_{language}.d"))
-        text = fl.TXT(os.path.join(extracted_file.path, "message", "Common.txt"))
-        
-        os.system(f"wbmgt encode \"{text.path}\" -o")
-        text.delete()
-        os.system(f"wszst create \"{extracted_file.path}\" -o")
-        extracted_file.delete()
-        copied_szs.move_down([selection, "Menus"])
 
 def copy_files(mod_folder: fl.Folder) -> None:
     """Copies additional files into a given distribution folder."""
@@ -288,6 +344,14 @@ def copy_files(mod_folder: fl.Folder) -> None:
         mdol = fl.File(os.path.join(files.path, f"main{region}.dol"))
         
         mdol.copy(os.path.join(mod_folder.path, "Codes", mdol.filename + mdol.extension))
+
+def zip_distribution(selection: str, generation: fl.Folder) -> None:
+    """Zips up the two folders of the given distribution."""
+    
+    zip_file = fl.File(os.path.join(generation.path, f"{selection}.zip"))
+    
+    os.system(f"7z a \"{zip_file.path}\" \"{os.path.join(generation.path, selection)}\"")
+    os.system(f"7z a \"{zip_file.path}\" \"{os.path.join(generation.path, 'riivolution')}\"")
 
 def main() -> None:
     folders = fd.get_selections()
@@ -302,13 +366,16 @@ def main() -> None:
     text_files = create_text_files(generation)
     
     track_counter, arenas = pulsar_preparation(tracks, text_files)
+    used_arena_slots = edit_bmgs(arenas, text_files)
     instructions(distribution.name, track_counter, text_files)
     
     mod_folder, xml = check_process(distribution.name, generation)
     pulsar_id = get_pulsar_id(xml, distribution.name)
     edit_xml(xml, distribution.name, pulsar_id)
-    add_arenas(arenas, selection, text_files)
+    add_arenas(arenas, distribution.name, text_files, used_arena_slots)
     copy_files(mod_folder)
+    
+    zip_distribution(distribution.name, generation)
 
 if __name__ == "__main__":
     main()
