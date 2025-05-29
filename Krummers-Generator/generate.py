@@ -115,6 +115,13 @@ def edit_bmgs(arenas: list[cm.Track], text_files: tuple[fl.TXT]) -> dict[str, cm
     
     names, authors, versions, slots, musics, tracklist, bmgs = text_files
     
+    # Change "Version created" message
+    index = bmgs.find("2847")
+    line = bmgs.read()[index]
+    line = line[:line.find("=") + 2]
+    line += "Intermezzo {date}"
+    bmgs.rewrite(index, line, newline = False)
+    
     # Fix music speedup message
     index = bmgs.find("4001")
     line = bmgs.read()[index]
@@ -125,9 +132,21 @@ def edit_bmgs(arenas: list[cm.Track], text_files: tuple[fl.TXT]) -> dict[str, cm
     # Add new messages
     bmgs.append("\n")
     
-    # Add Hybrid message
-    line = "   cea\t= Hybrid"
-    bmgs.append(line)
+    # Add Hybrid messages
+    bmgs.append("   cea\t= Hybrid")
+    bmgs.append(("   ced\t= ■ Drift ■\\n"
+                 "Drift lets you take corners without\\n"
+               	 "losing speed. There are two drift modes.\\n"
+               	 "\\n"
+               	 "■ Hybrid Drift ■\\n"
+               	 "Drift automatically when turning.\\n"
+               	 "Press the drift button for Manual drift with Mini-Turbos.\\n"
+               	 "\\n"
+               	 "■ Manual Drift ■\\n"
+               	 "\\z{802,170000}Hop while turning to drift. Keep\\n"
+               	 "drifting to get a Mini-Turbo, which\\n"
+               	 "gives you a burst of speed."))
+    bmgs.append("   d16\t= Drift both automatically and manually.")
     
     # Add battle arena messages
     used_slots = cs.arena_order.copy()
@@ -167,10 +186,15 @@ def edit_bmgs(arenas: list[cm.Track], text_files: tuple[fl.TXT]) -> dict[str, cm
         bmgs.append(line)
     
     # Add chat messages
-    bmgs.append("   M05\t= \c{green}Ten minutes until we begin!\c{off}")
-    bmgs.append("   M06\t= \c{green}Three minutes until the GP starts!\c{off}")
-    bmgs.append("   M07\t= \c{green}Let's start this Intermezzo!\c{off}")
-    bmgs.append("   M08\t= \c{green}Two-minute break for a pee!\c{off}")
+    bmgs.append("   M01\t= \\c{blue}Intermezzo {date}\\c{off}")
+    bmgs.append("   M02\t= \\c{blue}Host: 0693-2070-4087\\c{off}")
+    bmgs.append("   M03\t= \\c{blue}https://discord.gg/PSBBuUa2Qe\\c{off}")
+    bmgs.append("   M04\t= \\c{blue}19:30 - 22:30 (CE(S)T)\\c{off}")
+    
+    bmgs.append("   M05\t= \\c{green}Ten minutes until we begin!\\c{off}")
+    bmgs.append("   M06\t= \\c{green}Three minutes until the GP starts!\\c{off}")
+    bmgs.append("   M07\t= \\c{green}Let's start this Intermezzo!\\c{off}")
+    bmgs.append("   M08\t= \\c{green}Two-minute break for a pee!\\c{off}")
     
     bmgs.append("   M09\t= Is everyone here?")
     bmgs.append("   M10\t= Is everyone ready?")
@@ -190,22 +214,37 @@ def edit_bmgs(arenas: list[cm.Track], text_files: tuple[fl.TXT]) -> dict[str, cm
     bmgs.append("   M21\t= CAAAAAAAAAARS!")
     bmgs.append("   M22\t= Tokyo Drift cannon!")
     bmgs.append("   M23\t= Everything about that sucked.")
-    bmgs.append("   M24\t= - \c{red4}-\c{off} by -")
+    bmgs.append("   M24\t= - \\c{red4}-\\c{off} by -")
     
-    bmgs.append("   M25\t= Bastard!")
-    bmgs.append("   M26\t= Maggot!")
-    bmgs.append("   M27\t= Poophead!")
-    bmgs.append("   M28\t= Dumbass!")
+    bmgs.append("   M25\t= Updated sun.")
+    bmgs.append("   M26\t= This community keeps surprising me.")
+    bmgs.append("   M27\t= Intermassive!")
+    bmgs.append("   M28\t= Certified Wiimm moment.")
     
-    bmgs.append("   M29\t= Dumb Bullet Bill!")
-    bmgs.append("   M30\t= Shitty Shells!")
-    bmgs.append("   M31\t= Crappy Mario Kart!")
-    bmgs.append("   M32\t= Scheiß Klapsleitung!")
+    bmgs.append("   M29\t= Bastard!")
+    bmgs.append("   M30\t= Maggot!")
+    bmgs.append("   M31\t= Poophead!")
+    bmgs.append("   M32\t= Dumbass!")
     
-    bmgs.append("   M33\t= Will we ever catch up?")
-    bmgs.append("   M34\t= The bot stopped working!")
-    bmgs.append("   M35\t= I am chat.")
-    bmgs.append("   M36\t= Wiimm, our Intermezzo overlord!")
+    bmgs.append("   M33\t= Dumb Bullet Bill!")
+    bmgs.append("   M34\t= Shitty Shells!")
+    bmgs.append("   M35\t= Crappy Mario Kart!")
+    bmgs.append("   M36\t= Scheiß Klapsleitung!")
+    
+    bmgs.append("   M37\t= Will we ever catch up?")
+    bmgs.append("   M38\t= The bot stopped working!")
+    bmgs.append("   M39\t= I am chat.")
+    bmgs.append("   M40\t= Wiimm, our Intermezzo overlord!")
+    
+    bmgs.append("   M41\t= The 60s crown is mine!")
+    bmgs.append("   M42\t= Can you put me in a 1vX?")
+    bmgs.append("   M43\t= Nobody can defeat me!")
+    bmgs.append("   M44\t= You stole my precious points!")
+    
+    bmgs.append("   M93\t= \\c{yellow}End Race Early Button Combinations\\c{off}")
+    bmgs.append("   M94\t= \\c{yellow}Wiimote: B, +, 1, 2\\c{off}")
+    bmgs.append("   M95\t= \\c{yellow}GameCube: L, R, A, Start\\c{off}")
+    bmgs.append("   M96\t= \\c{yellow}Classic: L, R, a, +\\c{off}")
     
     return used_slots
 
