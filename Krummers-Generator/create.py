@@ -1,6 +1,7 @@
 import os
 import script_utilities.file as fl
 import script_utilities.functions as ft
+import typing as tp
 
 import common as cm
 import folders as fd
@@ -35,7 +36,7 @@ def print_tracks(distribution: cm.Distribution) -> None:
     string = str(distribution)
     print(string) if string else print("\t* (none)")
 
-def trackid_selector(action: eb.CreateEditAction) -> tuple[int]:
+def trackid_selector(action: eb.CreateEditAction) -> tp.Iterable[int]:
     """Lets the user select a range of tracks."""
     
     match action.name:
@@ -53,27 +54,30 @@ def trackid_selector(action: eb.CreateEditAction) -> tuple[int]:
           "with ID 5, 6, 7, 8 and 9.")
     print(f"{present_participle.capitalize()} a single track is done "
           "by entering \"34\".")
+    print("Multiple commands can be chained together with a comma: \",\".")
     
     while True:
         prompt = input("Enter the first and last track ID separated by a dash or a single ID on its own: ")
         
         try:
-            prompt = prompt.split("-")
+            ranges = prompt.split(",")
+            split_ranges = [r.split("-") for r in ranges]
             
-            if len(prompt) == 1:
-                first, last = int(prompt[0]), int(prompt[0])
-            elif len(prompt) == 2:
-                first, last = int(prompt[0]), int(prompt[1])
-            else:
-                raise ValueError
+            entries = set()
+            for r in split_ranges:
+                if len(r) == 1:
+                    entries |= {int(r[0])}
+                elif len(r) == 2:
+                    maximum = max(int(r[0]), int(r[1]))
+                    minimum = min(int(r[0]), int(r[1]))
+                    entries |= set(range(minimum, maximum + 1))
+                else:
+                    raise ValueError
         except ValueError:
             print("This prompt was not properly formatted. Please try again.")
             continue
         
-        if last < first:
-            first, last = last, first
-        
-        return first, last
+        return entries
 
 def download_track(distribution: cm.Distribution, trackid: int,
                    track_type: eb.TrackType) -> None:
@@ -99,18 +103,18 @@ def download_track(distribution: cm.Distribution, trackid: int,
     distribution.append(track)
 
 def add_tracks(distribution: cm.Distribution, track_type: eb.TrackType,
-               first: int, last: int) -> None:
+               entries: tp.Iterable[int]) -> None:
     """Adds a range of tracks to a distribution."""
     
-    for trackid in range(first, last + 1):
+    for trackid in entries:
         track = download_track(distribution, trackid, track_type)
         if track is not None:
             distribution.tracks.append(track)
 
-def remove_tracks(distribution: cm.Distribution, first: int, last: int) -> None:
+def remove_tracks(distribution: cm.Distribution, entries: tp.Iterable[int]) -> None:
     """Removes a range of tracks from a distribution."""
     
-    for trackid in range(first, last + 1):
+    for trackid in entries:
         track = distribution.get_track(trackid)
         if track is None:
             print(f"Skipping ID {trackid}; track does not exist.")
@@ -165,12 +169,12 @@ def main() -> None:
                                                      "What type should the track get?",
                                                      display)
                     print_tracks(distribution)
-                    first, last = trackid_selector(edit_action)
-                    add_tracks(distribution, track_type, first, last)
+                    entries = trackid_selector(edit_action)
+                    add_tracks(distribution, track_type, entries)
                 case "Remove":
                     print_tracks(distribution)
-                    first, last = trackid_selector(edit_action)
-                    remove_tracks(distribution, first, last)
+                    entries = trackid_selector(edit_action)
+                    remove_tracks(distribution, entries)
                 case "Redownload":
                     redownload_information(distribution)
                 case "Exit":
