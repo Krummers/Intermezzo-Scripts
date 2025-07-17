@@ -377,7 +377,7 @@ def copy_files(mod_folder: fl.Folder) -> None:
     
     files = fd.get_folder("Files")
     common = fl.File(os.path.join(files.path, "Common.szs"))
-    common.copy(os.path.join(mod_folder.path, "Items", common.filename))
+    common.copy(os.path.join(mod_folder.path, "Items", common.filename + common.extension))
     
     for region in cs.regions_letters:
         mdol = fl.File(os.path.join(files.path, f"main{region}.dol"))
