@@ -81,7 +81,7 @@ music_slots = {"0x75": "LC", "0x77": "MMM", "0x79": "MG", "0x7b": "TF",
                "0x99": "rMC3", "0xb3": "rPG", "0xab": "rDKM", "0xa3": "rBC",
                "0xb7": "aBP", "0xb5": "aDP", "0xb9": "aFS", "0xbb": "aCCW",
                "0xbd": "aTD", "0xc3": "arBC4", "0xc5": "arBC3", "0xc7": "arS",
-               "0xbf": "arCL", "0xc1": "arTH", "0xc9": "GC"}
+               "0xbf": "arCL", "0xc1": "arTH", "0x36": "GC"}
 
 arena_filenames = {"aBP": "block_battle", "aDP": "venice_battle",
                    "aFS": "skate_battle", "aCCW": "casino_battle",
