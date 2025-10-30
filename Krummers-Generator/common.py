@@ -164,17 +164,17 @@ class Track(object):
         data = self.read_json()
         information = dict()
         
-        information["is_track"] = bool(data["track_info"][0]["track_customtrack"])
-        information["is_nintendo"] = bool(data["track_info"][0]["track_nintendo"])
+        information["is_track"] = bool(data["track_info"]["track_customtrack"])
+        information["is_nintendo"] = bool(data["track_info"]["track_nintendo"])
         
-        prefix = data["track_info"][0]["prefix"]
+        prefix = data["track_info"]["prefix"]
         information["prefix"] = prefix if prefix else ""
-        information["name"] = data["track_info"][0]["trackname"]
-        information["author"] = data["track_info"][0]["track_author"]
-        editor = data["track_info"][0]["track_editor"]
+        information["name"] = data["track_info"]["trackname"]
+        information["author"] = data["track_info"]["track_author"]
+        editor = data["track_info"]["track_editor"]
         information["editor"] = editor if editor else ""
-        version = data["track_info"][0]["track_version"]
-        version_extra = data["track_info"][0]["track_version_extra"]
+        version = data["track_info"]["track_version"]
+        version_extra = data["track_info"]["track_version_extra"]
         
         if version_extra == "":
             version_extra = None
@@ -184,25 +184,25 @@ class Track(object):
         
         information["version"] = version
         
-        if data["track_info"][0]["track_prop"] is None:
+        if data["track_info"]["track_prop"] is None:
             slot = 8
         else:
-            slot = int(data["track_info"][0]["track_prop"])
+            slot = int(data["track_info"]["track_prop"])
         
         information["slot"] = cs.property_slots[f"{slot:#04x}"]
         
-        if data["track_info"][0]["track_music"] is None:
+        if data["track_info"]["track_music"] is None:
             music = 117
         else:
-            music = int(data["track_info"][0]["track_music"])
+            music = int(data["track_info"]["track_music"])
         
         information["music"] = cs.music_slots[f"{music:#04x}"]
         
-        information["sha1"] = data["track_info"][0]["track_sha1"]
-        information["date"] = data["track_info"][0]["track_created"]
-        speed = data["track_info"][0]["track_speed"]
+        information["sha1"] = data["track_info"]["track_sha1"]
+        information["date"] = data["track_info"]["track_created"]
+        speed = data["track_info"]["track_speed"]
         information["speed"] = float(speed) if speed else 1.0
-        laps = data["track_info"][0]["track_laps"]
+        laps = data["track_info"]["track_laps"]
         information["laps"] = int(laps) if laps else 3
         
         return information
