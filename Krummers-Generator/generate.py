@@ -37,7 +37,7 @@ def pulsar_preparation(tracks: list[cm.Track], text_files: tuple[fl.TXT]) -> int
     slot_counter = cm.Slot(8, 4)
     
     arenas = []
-    for x, track in enumerate(tracks):
+    for track in tracks:
         information = track.get_information()
         track_counter += information["is_track"]
         slot_counter += information["is_track"]
@@ -47,8 +47,8 @@ def pulsar_preparation(tracks: list[cm.Track], text_files: tuple[fl.TXT]) -> int
             arenas.append(track)
             continue
         
-        track.szs.filename = str(x)
-        track.szs.path = os.path.join(track.szs.folder, f"{x}.szs")
+        track.szs.filename = str(track_counter)
+        track.szs.path = os.path.join(track.szs.folder, f"{track_counter}.szs")
         track.convert_szs()
         
         identifier = track.get_identifier()
@@ -102,9 +102,9 @@ def pulsar_preparation(tracks: list[cm.Track], text_files: tuple[fl.TXT]) -> int
                     slots.append(slot)
                     musics.append(music)
                     
-                    szs = fl.File(os.path.join(track.szs.folder, f"{x}.szs"))
-                    x += 1
-                    szs.copy(os.path.join(track.szs.folder, f"{x}.szs"))
+                    szs = fl.File(os.path.join(track.szs.folder, f"{track_counter}.szs"))
+                    track_counter += 1
+                    szs.copy(os.path.join(track.szs.folder, f"{track_counter}.szs"))
                 
                 return track_counter, arenas
     
