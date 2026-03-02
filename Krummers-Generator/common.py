@@ -1,6 +1,5 @@
 import json as js
 import os
-import script_utilities.date as dt
 import script_utilities.file as fl
 import script_utilities.functions as ft
 import typing as tp
@@ -36,6 +35,49 @@ class Track(object):
         self.json = fl.File(os.path.join(selections.path, selection, f"{trackid}.json"))
         self.wbz = fl.File(os.path.join(selections.path, selection, f"{trackid}.wbz"))
         self.szs = fl.File(os.path.join(generations.path, selection, f"{trackid}.szs"))
+        
+        self.prefix_enum = self.__init_prefix__()
+    
+    def __init_prefix__(self) -> eb.Prefix:
+        if not bool(self.json):
+            print("no json???")
+            return eb.Prefix.Empty
+        
+        prefix = self.get_prefix()
+        if prefix == "SNES":
+            return eb.Prefix.SNES
+        elif prefix == "N64":
+            return eb.Prefix.N64
+        elif prefix == "GBA":
+            return eb.Prefix.GBA
+        elif prefix == "GCN":
+            return eb.Prefix.GCN
+        elif prefix == "GP":
+            return eb.Prefix.GP
+        elif prefix == "GP2":
+            return eb.Prefix.GP2
+        elif prefix == "DS":
+            return eb.Prefix.DS
+        elif prefix == "Wii":
+            return eb.Prefix.Wii
+        elif prefix == "3DS":
+            return eb.Prefix.DS3
+        elif prefix == "DX":
+            return eb.Prefix.DX
+        elif prefix == "Wii U":
+            return eb.Prefix.WiiU
+        elif prefix == "SW":
+            return eb.Prefix.SW
+        elif prefix == "Tour":
+            return eb.Prefix.Tour
+        elif prefix == "RMX":
+            return eb.Prefix.RMX
+        elif prefix == "SW2":
+            return eb.Prefix.SW2
+        elif len(prefix) > 0:
+            return eb.Prefix.Custom
+        else:
+            return eb.Prefix.Empty
     
     def __repr__(self) -> str:
         """Represents the object in a console."""
@@ -69,13 +111,14 @@ class Track(object):
         if self_data["name"] != other_data["name"]:
             return self_data["name"].lower() < other_data["name"].lower()
         
-        if self_data["prefix"] != other_data["prefix"]:
-            return self_data["prefix"].lower() < other_data["prefix"].lower()
+        if self.prefix_enum != other.prefix_enum:
+            return self.prefix_enum < other.prefix_enum
         
-        if self_data["date"] != other_data["date"]:
-            self_date = dt.Date(*map(int, self_data["date"].split("-")))
-            other_date = dt.Date(*map(int, other_data["date"].split("-")))
-            return self_date < other_date
+        if self_data["family"] != other_data["family"]:
+            return self_data["family"] < other_data["family"]
+        
+        if self_data["version"] != other_data["version"]:
+            return self_data["version"] < other_data["version"]
         
         return False
     
@@ -124,6 +167,7 @@ class Track(object):
         except js.JSONDecodeError:
             print(f"Track ID {self.trackid} is unavailable.")
             self.json.delete()
+            return
     
     def download_wbz(self) -> None:
         """Downloads the WBZ of the track."""
@@ -173,6 +217,7 @@ class Track(object):
         information["author"] = data["track_info"]["track_author"]
         editor = data["track_info"]["track_editor"]
         information["editor"] = editor if editor else ""
+        information["family"] = data["track_info"]["track_family"]
         version = data["track_info"]["track_version"]
         version_extra = data["track_info"]["track_version_extra"]
         
@@ -272,7 +317,7 @@ class Distribution(object):
         self.pickle = fl.PKL(os.path.join(selections.path, selection, "tracklist.pkl"))
         self.tracks = []
         
-        self.load_tracks()        
+        self.load_tracks()
     
     def __repr__(self) -> str:
         """Represents the object in a console."""

@@ -62,3 +62,62 @@ class TrackType(en.Enum):
             return True
         
         return self.value != other.value
+
+class Prefix(en.Enum):
+    SNES = en.auto()
+    N64 = en.auto()
+    GBA = en.auto()
+    GCN = en.auto()
+    GP = en.auto()
+    GP2 = en.auto()
+    DS = en.auto()
+    Wii = en.auto()
+    DS3 = en.auto()
+    DX = en.auto()
+    WiiU = en.auto()
+    SW = en.auto()
+    Tour = en.auto()
+    RMX = en.auto()
+    SW2 = en.auto()
+    Custom = en.auto()
+    Empty = en.auto()
+    
+    def __lt__(self, other: tp.Self) -> bool:
+        if not isinstance(other, Prefix):
+            raise TypeError("unsupported operand type(s) for '<': "
+                            f"'{type(self).__name__}' and '{type(other).__name__}'")
+        
+        return self.value < other.value
+    
+    def __le__(self, other: tp.Self) -> bool:
+        if not isinstance(other, Prefix):
+            raise TypeError("unsupported operand type(s) for '<=': "
+                            f"'{type(self).__name__}' and '{type(other).__name__}'")
+        
+        return self.value <= other.value
+    
+    def __eq__(self, other: tp.Self) -> bool:
+        if not isinstance(other, Prefix):
+            return False
+        
+        return self.value == other.value
+    
+    def __ge__(self, other: tp.Self) -> bool:
+        if not isinstance(other, Prefix):
+            raise TypeError("unsupported operand type(s) for '>=': "
+                            f"'{type(self).__name__}' and '{type(other).__name__}'")
+        
+        return self.value >= other.value
+    
+    def __gt__(self, other: tp.Self) -> bool:
+        if not isinstance(other, Prefix):
+            raise TypeError("unsupported operand type(s) for '>': "
+                            f"'{type(self).__name__}' and '{type(other).__name__}'")
+        
+        return self.value > other.value
+    
+    def __ne__(self, other: tp.Self) -> bool:
+        if not isinstance(other, Prefix):
+            return True
+        
+        return self.value != other.value
