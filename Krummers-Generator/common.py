@@ -301,6 +301,8 @@ class Track(object):
                     prefixes[x] = f"\\c{{yor6}}{prefix}\\c{{off}}"
                 case "Tour" | "RMX":
                     prefixes[x] = f"\\c{{red1}}{prefix}\\c{{off}}"
+                case "SW2":
+                    prefixes[x] = f"\\c{{yor5}}{prefix}\\c{{off}}"
                 case _:
                     prefixes[x] = f"\\c{{green}}{prefix}\\c{{off}}"
         
