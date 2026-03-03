@@ -40,7 +40,6 @@ class Track(object):
     
     def __init_prefix__(self) -> eb.Prefix:
         if not bool(self.json):
-            print("no json???")
             return eb.Prefix.Empty
         
         prefix = self.get_prefix()
@@ -210,6 +209,8 @@ class Track(object):
         
         information["is_track"] = bool(data["track_info"]["track_customtrack"])
         information["is_nintendo"] = bool(data["track_info"]["track_nintendo"])
+        information["is_texture"] = bool(data["track_info"]["track_texturehack"])
+        information["is_edit"] = bool(data["track_info"]["track_change"])
         
         prefix = data["track_info"]["prefix"]
         information["prefix"] = prefix if prefix else ""
@@ -260,8 +261,12 @@ class Track(object):
                 return ""
             case "Wish":
                 return "\\c{blue2}+W\\c{off}" if colour else "+W"
+            case "Texture":
+                return "\\c{green}+T\\c{off}" if colour else "+T"
+            case "Edit":
+                return "\\c{red3}+E\\c{off}" if colour else "+E"
             case "Nintendo":
-                return "\\c{green}+N\\c{off}" if colour else "+N"
+                return "\\c{blue}+N\\c{off}" if colour else "+N"
     
     def get_prefix(self, colour = False) -> str:
         """Returns the prefix of the track for the BMG."""

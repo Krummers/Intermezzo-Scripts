@@ -98,7 +98,12 @@ def download_track(distribution: cm.Distribution, trackid: int,
     
     information = track.get_information()
     if information["is_nintendo"] and track.track_type != eb.TrackType.Wish:
-        track.track_type = eb.TrackType.Nintendo
+        if information["is_texture"]:
+            track.track_type = eb.TrackType.Texture
+        elif information["is_edit"]:
+            track.track_type = eb.TrackType.Edit
+        else:
+            track.track_type = eb.TrackType.Nintendo
     
     distribution.append(track)
 

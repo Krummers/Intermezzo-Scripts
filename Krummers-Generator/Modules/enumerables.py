@@ -21,6 +21,8 @@ class CreateEditAction(en.Enum):
 class TrackType(en.Enum):
     Wish = en.auto()
     Nintendo = en.auto()
+    Texture = en.auto()
+    Edit = en.auto()
     Normal = en.auto()
     
     def __lt__(self, other: tp.Self) -> bool:
