@@ -14,8 +14,12 @@ def get_selections() -> list[str]:
     
     for folder in folders:
         if folder.startswith("IM") and len(folder.split("-")) == 4:
-            components = folder.split("-")
-            sorting_attribute = (folder, f"IM-{components[3]}-{components[2]}-{components[1]}")
+            _, day, month, year = folder.split("-")
+            sorting_attribute = (folder, f"IM-{year}-{month}-{day}")
+        elif folder.startswith("IM") and len(folder.split("-")) == 3:
+            _, week, year = folder.split("-")
+            week = week[1:] if len(week) == 3 else f"0{week}"
+            sorting_attribute = (folder, f"IM-{year}-{week}")
         else:
             sorting_attribute = (folder, folder)
         
