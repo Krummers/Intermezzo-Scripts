@@ -377,12 +377,12 @@ def copy_files(mod_folder: fl.Folder) -> None:
     
     files = fd.get_folder("Files")
     common = fl.File(os.path.join(files.path, "Common.szs"))
-    common.copy(os.path.join(mod_folder.path, "Items", common.filename + common.extension))
+    common.copy(os.path.join(mod_folder.path, "Items", common.filename))
     
     for region in cs.regions_letters:
         mdol = fl.File(os.path.join(files.path, f"main{region}.dol"))
         
-        mdol.copy(os.path.join(mod_folder.path, "Codes", mdol.filename + mdol.extension))
+        mdol.copy(os.path.join(mod_folder.path, "Codes", mdol.filename))
 
 def zip_distribution(selection: str, generation: fl.Folder) -> None:
     """Zips up the two folders of the given distribution."""
